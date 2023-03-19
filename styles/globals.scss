@@ -1,7 +1,13 @@
+@import url(https://cdn.jsdelivr.net/npm/misans/lib/misans-300-light.min.css);
 body {
-    margin: 0;
+  margin: 0;
 }
 
 * {
-    font-family: MiSans;
+  font-family: MiSans;
+}
+
+::selection {
+  background-color: #ff8ca1;
+  color: #fff;
 }

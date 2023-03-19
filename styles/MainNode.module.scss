@@ -27,6 +27,26 @@ div #main {
   animation-name: start;
   animation-timing-function: cubic-bezier(1, 0, 0, 1);
   z-index: 1000;
+  user-select: none;
+
+  > div {
+    width: 0;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-duration: 500ms;
+    animation-name: iconstart;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+
+    > svg {
+      width: 50px;
+    }
+  }
 }
 
 @keyframes iconstart {
@@ -43,27 +63,6 @@ div #main {
   100% {
     width: 100px;
     opacity: 0;
-  }
-}
-
-#MTStart {
-  > div {
-    width: 0;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation-duration: 500ms;
-    animation-name: iconstart;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    opacity: 0;
-  }
-
-  > div > svg {
-    width: 50px;
   }
 }
 
@@ -88,9 +87,8 @@ p.MTText {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-}
+  user-select: none;
 
-#MTBar {
   > a > div#icon {
     width: 20px;
     height: 100%;
@@ -118,9 +116,8 @@ p.MTText {
 #MTLeftBar {
   width: 70px;
   background-color: #525e6e;
-}
+  user-select: none;
 
-#MTLeftBar {
   > a > div > img {
     margin: 20px;
     width: 25px;

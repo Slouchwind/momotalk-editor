@@ -1,9 +1,9 @@
-interface studentsInfo {
+export interface fileInfo {
     id?: number;
     info?: string;
 }
 
-interface schaleInfo {
+export interface schaleInfo {
     Id: number;
     IsReleased: boolean[];
     DefaultOrder: number;
@@ -64,24 +64,12 @@ interface schaleInfo {
     RegenCost: number;
 }
 
-export interface Main {
-    studentsJson?: studentsInfo[];
+export interface studentsJson {
+    fileJson?: fileInfo[];
     schaleJson?: schaleInfo[];
 }
 
-export interface MainInfo {
-    json?: studentsInfo;
+export interface studentInfo {
+    file?: fileInfo;
     schale?: schaleInfo;
-}
-
-export async function getStudentJson(): Promise<Main> {
-    const studentsJson: studentsInfo[] = await fetch('/students.json').then(r => r.json());
-    const schaleJson: schaleInfo[] = await fetch('https://schale.gg/data/cn/students.min.json?v=102').then(r => r.json());
-    return { studentsJson, schaleJson };
-}
-
-export function getStudentInfo({ studentsJson, schaleJson }: Main, studentId: number): MainInfo {
-    const json = studentsJson && studentsJson.filter(info => (info.id === studentId))[0];
-    const schale = schaleJson && schaleJson.filter(info => (info.Id === studentId))[0];
-    return { json, schale };
 }

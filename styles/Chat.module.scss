@@ -1,0 +1,31 @@
+@media screen and (min-width: 580px) {
+  #title {
+    width: calc((100% - 70px) / 2);
+  }
+}
+@media screen and (max-width: 580px) {
+  #title {
+    width: calc(100% - 70px);
+  }
+}
+
+#title {
+  position: fixed;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  background-color: #f3f7f8;
+  border-bottom: #e8e8e8 1px solid;
+  user-select: none;
+  justify-content: space-between;
+
+  p#left {
+    font-size: 20px;
+    margin-left: 10px;
+  }
+
+  p#right {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+}

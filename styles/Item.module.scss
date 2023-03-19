@@ -1,8 +1,26 @@
-#infoBar {
-  height: 100%;
-  width: 50%;
-  background-color: #e3e3e5;
-  overflow: auto;
+@media screen and (min-width: 580px) {
+  #infoBar {
+    width: 50%;
+    #title {
+      width: calc((100% - 70px) / 2);
+    }
+  }
+  #contentBar {
+    width: 50%;
+    display: flex;
+  }
+}
+@media screen and (max-width: 580px) {
+  #infoBar {
+    width: 100%;
+    #title {
+      width: calc(100% - 70px);
+    }
+  }
+  #contentBar {
+    width: 100%;
+    display: none;
+  }
 }
 
 #infoBar::-webkit-scrollbar {
@@ -10,35 +28,41 @@
 }
 
 #infoBar {
+  height: 100%;
+  background-color: #f3f7f8;
+  overflow: auto;
+  border-right: #dce5ec 2px solid;
+
   #title {
     position: fixed;
-    width: calc((100% - 70px) / 2);
     height: 70px;
     display: flex;
     align-items: center;
-    background-color: #e3e3e5;
-    border-bottom: #d2d3d7 2px solid;
-  }
+    background-color: #f3f7f8;
+    border-bottom: #e8e8e8 1px solid;
+    user-select: none;
 
-  #title > p {
-    font-size: 20px;
-    margin-left: 10px;
+    p {
+      font-size: 20px;
+      margin-left: 10px;
+    }
   }
 
   #all {
-    background-color: #cfdae5;
+    background-color: #e3f0f8;
     height: 30px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    border-bottom: #c8cfd7 2px solid;
-  }
+    border-bottom: #e8e8e8 1px solid;
+    user-select: none;
 
-  #all > img {
-    height: 15px;
-    margin-left: 15px;
-    margin-right: 6px;
+    img {
+      height: 15px;
+      margin-left: 15px;
+      margin-right: 6px;
+    }
   }
 
   #students {
@@ -60,35 +84,35 @@
         display: grid;
         justify-content: center;
         align-content: center;
-      }
+        user-select: none;
+        background-color: #00000038;
 
-      > div.img > img.col {
-        width: 65px;
+        img.col {
+          width: 65px;
+        }
       }
 
       > div.p {
         display: flex;
         flex-direction: column;
         justify-content: center;
-      }
 
-      > div.p > {
-        p {
+        > p {
           margin: 0;
           font-size: 18px;
         }
 
-        p.name {
+        > p.name {
           color: #000;
         }
 
-        p.info {
-          color: #484848;
+        > p.info {
+          color: #707070;
         }
       }
 
       > div.line {
-        background-color: #dbdbdd;
+        background-color: #e8e8e8;
         width: calc(100% - 30px);
         height: 2px;
         margin: auto;
@@ -99,9 +123,78 @@
 
 #contentBar {
   height: 100%;
-  width: 50%;
-  background-color: #efefef;
-  display: flex;
+  background-color: #fff;
   justify-content: center;
   align-items: center;
+  text-align: center;
+
+  #content {
+    width: 100%;
+    height: 100%;
+
+    > div.img {
+      margin: auto;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      overflow: hidden;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: grid;
+      justify-content: center;
+      align-content: center;
+      user-select: none;
+
+      img.col {
+        width: 100%;
+      }
+    }
+
+    > div.p {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      > p {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      > p.name {
+        color: #000;
+      }
+
+      > p.info {
+        color: #707070;
+      }
+    }
+
+    > div.birthday {
+      width: fit-content;
+      height: 15px;
+      color: #5f7c8c;
+      border: #c2d0d9 2px solid;
+      border-radius: 20px;
+      margin: auto;
+      margin-top: 5px;
+      padding: 4px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-content: center;
+      align-items: center;
+
+      > img {
+        margin-left: 2px;
+        margin-right: 2px;
+        height: 17px;
+      }
+
+      > p {
+        
+        margin-left: 2px;
+        margin-right: 2px;
+      }
+    }
+  }
 }
