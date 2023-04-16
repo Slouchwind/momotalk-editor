@@ -1,4 +1,4 @@
-export function useClassState<S>(
+export function getClassState<S>(
     useState: [S, React.Dispatch<React.SetStateAction<S>>]
 ): [S, (newState: Partial<S>) => void] {
     const setState = (newState: Partial<S>) => useState[1]((preState) => ({ ...preState, ...newState }));

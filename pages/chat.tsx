@@ -15,7 +15,7 @@ import { getStudentInfo, getStudentsJson } from '@/components/students/infoStude
 import Window, { AllWindow, getWindowFun } from '@/components/window';
 import Repeat from '@/components/repeat';
 import { AllWindows } from '@/components/window';
-import { useClassState } from '@/components/extraReact';
+import { getClassState } from '@/components/extraReact';
 
 interface ContentProps {
     id: number,
@@ -68,7 +68,7 @@ interface TextAlertArg {
 }
 
 export default function Info() {
-    const [state, setState] = useClassState(useState<State>({
+    const [state, setState] = getClassState(useState<State>({
         student: 0,
         studentsList: [10000, 10002],
         studentsJson: { data: {} },
