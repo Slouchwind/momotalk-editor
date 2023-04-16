@@ -103,7 +103,6 @@ export default function Info() {
                     <p>请输入需要在列表{IdPromptTypeText[type || '+']}的学生的Id</p>
                     <input type='number' onChange={e => { idPromptInputRef.current = Number(e.target.value); }} />
                     <button
-                        children={IdPromptTypeText[type || '+']}
                         onClick={() => {
                             if (type === '+') {
                                 if (studentsList?.includes(idPromptInputRef.current)) {
@@ -126,7 +125,7 @@ export default function Info() {
                                 }
                             }
                         }}
-                    />
+                    >{IdPromptTypeText[type || '+']}</button>
                 </>)}
                 zIndex={zIndex}
                 display={display}

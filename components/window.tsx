@@ -53,10 +53,7 @@ export default class Window<A> {
                         <h2>{title}</h2>
                         <p onClick={_ => closeWindow()}>x</p>
                     </div>
-                    <div
-                        className='element'
-                        children={element(closeWindow)}
-                    />
+                    <div className='element'>{element(closeWindow)}</div>
                 </div>
             )}
         </>);
