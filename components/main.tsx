@@ -25,7 +25,7 @@ function MTBarLink({ type }: { type: string }) {
     );
 }
 
-export default function MainNode({ children }: { children: JSX.Element | JSX.Element[] }) {
+export default function MainNode({ children }: { children: React.ReactNode }) {
     return (
         <div id={styles.main}>
             <div id={styles.MTStart}>

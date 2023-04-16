@@ -1,6 +1,7 @@
 //Components
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
+import Student from '@/components/student';
 
 //Styles
 import styles from '@/styles/Item.module.scss';
@@ -10,53 +11,11 @@ import { useState } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson } from '@/components/students/infoStudents';
-
-interface RepeatProps<T> {
-    variable: T,
-    repeat: number,
-    func: (variable: T) => T,
-    components: (variable: T) => JSX.Element,
-}
-
-interface StudentProps {
-    id: number,
-    allInfo: studentsJson,
-    onClick: React.MouseEventHandler<HTMLDivElement>,
-    select: boolean,
-}
+import Repeat from '@/components/repeat';
 
 interface ContentProps {
     id: number,
     allInfo: studentsJson
-}
-
-function Repeat<T>({ variable, repeat, func, components }: RepeatProps<T>) {
-    const array = new Array(repeat).fill(null);
-    array.forEach((_, i) => {
-        array[i] = components(variable);
-        variable = func(variable);
-    });
-    return <>{array}</>;
-}
-
-function Student({ id, allInfo, onClick, select }: StudentProps) {
-    const info = getStudentInfo(allInfo, id);
-    return (
-        <div onClick={onClick} style={{ backgroundColor: select ? '#dce5ec' : '#f3f7f8' }}>
-            <div className={styles.img}>
-                <img
-                    className={styles.col}
-                    src={`https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`}
-                    alt={`${info.schale?.Name} collection image`}
-                />
-            </div>
-            <div className={styles.p}>
-                <p className={styles.name}>{info.schale?.Name}</p>
-                <p className={styles.info}>{info.file?.info}</p>
-            </div>
-            <div className={styles.line} />
-        </div>
-    );
 }
 
 function Content({ id, allInfo }: ContentProps) {
@@ -143,8 +102,10 @@ export default function Info() {
                                                     studentsJson: state.studentsJson,
                                                 })}
                                                 select={state.student === v}
+                                                onError={() => { }}
                                             />
                                         )}
+                                        key={v}
                                     />
                                 );
                             }}

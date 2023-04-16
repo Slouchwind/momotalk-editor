@@ -24,8 +24,13 @@
     margin-left: 10px;
   }
 
-  p#right {
-    font-size: 20px;
+  div#right {
     margin-right: 10px;
+    display: flex;
+
+    p {
+      font-size: 20px;
+      margin: 10px;
+    }
   }
 }
