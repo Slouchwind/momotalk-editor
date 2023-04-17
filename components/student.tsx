@@ -1,6 +1,7 @@
-import ItemStyles from '@/styles/Item.module.scss';
+import Image from 'next/image';
 import { studentsJson } from './students/students';
 import { getStudentInfo } from './students/infoStudents';
+import ItemStyles from '@/styles/Item.module.scss';
 
 interface StudentProps {
     id: number,
@@ -29,4 +30,8 @@ export default function Student({ id, allInfo, onClick, select, onError }: Stude
             <div className={ItemStyles.line} />
         </div>
     );
+}
+
+export function AllStudentsIcon() {
+    return (<Image src='/api/icon/line?fill=63adc6' alt='All Students Icon' />);
 }

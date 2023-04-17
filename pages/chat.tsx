@@ -1,7 +1,8 @@
 //Components
+import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
-import Student from '@/components/student';
+import Student, { AllStudentsIcon } from '@/components/student';
 
 //Styles
 import ItemStyles from '@/styles/Item.module.scss';
@@ -27,7 +28,7 @@ function Content({ id, allInfo }: ContentProps) {
     return (
         <div id={ItemStyles.content}>
             <div className={ItemStyles.img}>
-                <img
+                <Image
                     className={ItemStyles.col}
                     src={`https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`}
                     alt={`${info.schale?.Name} collection image`}
@@ -38,7 +39,7 @@ function Content({ id, allInfo }: ContentProps) {
                 <p className={ItemStyles.info}>{info.file?.info}</p>
             </div>
             <div className={ItemStyles.birthday}>
-                <img
+                <Image
                     src='/api/icon/birth?fill=5f7c8c'
                     alt={`${info.schale?.Name} birthday icon`}
                 />
@@ -171,7 +172,7 @@ export default function Info() {
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={ItemStyles.all}>
-                    <img src='/api/icon/line?fill=63adc6' />
+                    <AllStudentsIcon/>
                     <p>所有学生</p>
                 </div>
                 <div id={ItemStyles.students}>
