@@ -1,5 +1,4 @@
 //Components
-import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/student';
@@ -8,11 +7,12 @@ import Student, { AllStudentsIcon } from '@/components/student';
 import styles from '@/styles/Item.module.scss';
 
 //Methods
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson } from '@/components/students/infoStudents';
 import Repeat from '@/components/repeat';
+import { getClassState } from '@/components/extraReact';
 
 interface ContentProps {
     id: number,
@@ -24,7 +24,7 @@ function Content({ id, allInfo }: ContentProps) {
     return (
         <div id={styles.content}>
             <div className={styles.img}>
-                <Image
+                <img
                     className={styles.col}
                     src={`https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`}
                     alt={`${info.schale?.Name} collection image`}
@@ -35,7 +35,7 @@ function Content({ id, allInfo }: ContentProps) {
                 <p className={styles.info}>{info.file?.info}</p>
             </div>
             <div className={styles.birthday}>
-                <Image
+                <img
                     src='/api/icon/birth?fill=5f7c8c'
                     alt={`${info.schale?.Name} birthday icon`}
                 />
@@ -45,21 +45,21 @@ function Content({ id, allInfo }: ContentProps) {
     );
 }
 
+interface State {
+    student: number;
+    studentsJson: {
+        data: studentsJson;
+    };
+}
+
 export default function Info() {
-    const [state, setState] = useState<{
-        student: number,
-        studentsJson: {
-            data: studentsJson,
-            fetch: boolean,
-        }
-    }>({
+    const [state, setState] = getClassState(useState<State>({
         student: 0,
-        studentsJson: { data: {}, fetch: false }
-    });
-    if (!state.studentsJson.fetch) getStudentsJson().then(r => setState({
-        student: state.student,
-        studentsJson: { data: r, fetch: true }
+        studentsJson: { data: {} }
     }));
+    useEffect(() => {
+        getStudentsJson().then(r => setState({ studentsJson: { data: r } }));
+    }, []);
     return (
         <MainNode>
             <NextSeo
@@ -71,11 +71,11 @@ export default function Info() {
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
-                    <AllStudentsIcon/>
+                    <AllStudentsIcon />
                     <p>所有学生</p>
                 </div>
                 <div id={styles.students}>
-                    {state.studentsJson.fetch &&
+                    {state.studentsJson &&
                         <Repeat
                             variable={0}
                             repeat={5}
@@ -98,12 +98,8 @@ export default function Info() {
                                                 id={v}
                                                 allInfo={state.studentsJson.data}
                                                 key={v}
-                                                onClick={_ => setState({
-                                                    student: v,
-                                                    studentsJson: state.studentsJson,
-                                                })}
+                                                onClick={_ => setState({student: v,})}
                                                 select={state.student === v}
-                                                onError={() => { }}
                                             />
                                         )}
                                         key={v}

@@ -1,3 +1,24 @@
+@mixin triangle($bgColor) {
+  background-color: $bgColor;
+  width: 7.5px;
+  height: 7.5px;
+  position: absolute;
+  transform: translateY(9px) scale(1.5, 1) rotate(45deg);
+}
+
+@mixin message-box($bgColor) {
+  padding: 2.5px 10px;
+  color: #fff;
+  background-color: $bgColor;
+  border-radius: 7.5px;
+}
+
+@mixin message-p {
+  margin: 0;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 @media screen and (min-width: 580px) {
   #title {
     width: calc((100% - 70px) / 2);
@@ -32,5 +53,77 @@
       font-size: 20px;
       margin: 10px;
     }
+  }
+}
+
+div.message {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: start;
+
+  > div#right {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: calc(100% - 105px);
+
+    > p {
+      margin: 0;
+      margin-bottom: 2px;
+    }
+
+    > div {
+      > div#triangle {
+        @include triangle(#4c5a6e);
+      }
+
+      > div#text {
+        @include message-box(#4c5a6e);
+        width: fit-content;
+
+        > p {
+          @include message-p();
+        }
+      }
+    }
+  }
+}
+
+div.sensei {
+  float: right;
+
+  > div#triangle {
+    @include triangle(#4a89ca);
+    right: 15px;
+  }
+
+  > div#text {
+    @include message-box(#4a89ca);
+    margin-right: 15px;
+
+    > p {
+      @include message-p();
+    }
+  }
+}
+
+div#editor {
+  height: 60px;
+  background-color: #f3f7f8;
+  position: fixed;
+  bottom: 0;
+  width: calc((100% - 70px) / 2);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  border-top: #dce5ec 2px solid;
+
+  > img {
+    width: 30px;
+    height: 30px;
   }
 }

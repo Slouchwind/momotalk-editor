@@ -6,7 +6,8 @@ export default function handler(
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'image/svg+xml');
-    const { fill = 'fff' } = req.query;
+    let { fill = 'fff' } = req.query;
+    if (fill instanceof String) fill = fill.substring(0, 6);
     res.status(200).send(`<?xml version="1.0" encoding="utf-8"?>
     <svg width="34.053787px" height="39.500008px" viewBox="0 0 34.053787 39.500008" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
       <defs>

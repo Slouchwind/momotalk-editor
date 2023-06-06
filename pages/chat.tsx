@@ -1,5 +1,4 @@
 //Components
-import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/student';
@@ -17,44 +16,154 @@ import Window, { AllWindow, getWindowFun } from '@/components/window';
 import Repeat from '@/components/repeat';
 import { AllWindows } from '@/components/window';
 import { getClassState } from '@/components/extraReact';
+import ImgCol from '@/components/imgCol';
+import { downloadFile, uploadFile } from '@/components/loadFile';
 
-interface ContentProps {
-    id: number,
-    allInfo: studentsJson,
+interface MessageProps {
+    id: number | 'sensei';
+    msg: React.ReactNode;
+    allInfo: studentsJson;
 }
 
-function Content({ id, allInfo }: ContentProps) {
-    const info = getStudentInfo(allInfo, id);
+function Message({ id, msg, allInfo }: MessageProps) {
+    if (id === 'sensei') {
+        return (
+            <div className={ChatStyles.sensei}>
+                <div id={ChatStyles.triangle} />
+                <div id={ChatStyles.text}>{msg}</div>
+            </div>
+        );
+    }
+    else {
+        const info = getStudentInfo(allInfo, id);
+        return (
+            <div className={ChatStyles.message}>
+                <ImgCol
+                    style={{
+                        margin: 10
+                    }}
+                    size={60}
+                    info={info}
+                />
+                <div id={ChatStyles.right}>
+                    <p>{info.schale?.Name}</p>
+                    <div>
+                        <div id={ChatStyles.triangle} />
+                        <div id={ChatStyles.text}>{msg}</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+interface MessageData {
+    type: 'text' | 'img';
+    id: number | 'sensei';
+    msg: string;
+}
+
+interface MessagesGroupProps {
+    data: MessageData[];
+    allInfo: studentsJson;
+}
+
+function MessagesGroup({ data, allInfo }: MessagesGroupProps) {
+    return (<>
+        {data.map((v, i) => {
+            if (v.type === 'text')
+                return (
+                    <Message
+                        id={v.id}
+                        msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
+                        allInfo={allInfo}
+                        key={i}
+                    />
+                );
+        })}
+    </>);
+}
+
+interface LoaderState {
+    type: 'up' | 'down';
+    chatState: ChatState;
+    setChatState: (newState: Partial<ChatState>) => void;
+}
+
+function Loader({ type, chatState, setChatState }: LoaderState) {
     return (
-        <div id={ItemStyles.content}>
-            <div className={ItemStyles.img}>
-                <Image
-                    className={ItemStyles.col}
-                    src={`https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`}
-                    alt={`${info.schale?.Name} collection image`}
-                />
-            </div>
-            <div className={ItemStyles.p}>
-                <p className={ItemStyles.name}>{info.schale?.Name}</p>
-                <p className={ItemStyles.info}>{info.file?.info}</p>
-            </div>
-            <div className={ItemStyles.birthday}>
-                <Image
-                    src='/api/icon/birth?fill=5f7c8c'
-                    alt={`${info.schale?.Name} birthday icon`}
-                />
-                <p>{info.schale?.Birthday}</p>
-            </div>
+        <img
+            src={`/api/icon/${type}load?fill=000`}
+            alt={`${type}load icon`}
+            title={{
+                'up': '上传',
+                'down': '下载'
+            }[type] + 'JSON文件'}
+            onClick={() => {
+                if (type === 'up') uploadFile(e => {
+                    const result = e.target?.result;
+                    if (typeof result !== 'string') return;
+                    const json = JSON.parse(result);
+                    setChatState({ studentsChat: json });
+                });
+                if (type === 'down') downloadFile(chatState.studentsChat || {}, 'untitled.json');
+            }}
+        />
+    )
+}
+
+function ChatEditorBar({ chatState, setChatState }: {
+    chatState: ChatState;
+    setChatState: (newState: Partial<ChatState>) => void;
+}) {
+    return (
+        <div id={ChatStyles.editor}>
+            <Loader
+                type='up'
+                chatState={chatState}
+                setChatState={setChatState}
+            />
+            <Loader
+                type='down'
+                chatState={chatState}
+                setChatState={setChatState}
+            />
         </div>
     );
 }
 
-interface State {
-    student?: number,
-    studentsList?: number[],
+interface ContentProps {
+    id: number;
+    chatState: ChatState;
+    setChatState: (newState: Partial<ChatState>) => void;
+    allInfo: studentsJson;
+}
+
+function Content({ id, chatState, setChatState, allInfo }: ContentProps) {
+    return (
+        <div id={ItemStyles.content}>
+            <MessagesGroup
+                data={chatState.studentsChat?.[String(id)] || []}
+                allInfo={allInfo}
+            />
+            <ChatEditorBar
+                chatState={chatState}
+                setChatState={setChatState}
+            />
+        </div>
+    );
+}
+
+interface ListState {
+    student?: number;
+    studentsList?: number[];
     studentsJson?: {
-        data: studentsJson,
-    }
+        data: studentsJson;
+    };
+}
+
+interface ChatState {
+    studentsChat?: { [x: string]: MessageData[] };
 }
 
 interface IdPromptArg {
@@ -69,14 +178,37 @@ interface TextAlertArg {
 }
 
 export default function Info() {
-    const [state, setState] = getClassState(useState<State>({
+    const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
         studentsList: [10000, 10002],
         studentsJson: { data: {} },
     }));
+    const [chatState, setChatState] = getClassState(useState<ChatState>({
+        studentsChat: {
+            "10000": [
+                { type: 'text', id: 10000, msg: '这是什么？' },
+                { type: 'text', id: 10000, msg: '00000000000000000000000000000000000000000000000000000000000' },
+                { type: 'text', id: 'sensei', msg: '这是什么？' },
+            ],
+            "10045": [
+                { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
+            ]
+        }
+    }));
 
     useEffect(() => {
-        getStudentsJson().then(r => setState({ studentsJson: { data: r } }));
+        let list: string = window?.localStorage.studentsList;
+        if (list !== undefined) {
+            setListState({ studentsList: list.split(',').map(v => Number(v)) });
+        }
+        let chat: string = window?.localStorage.studentsChat;
+        if (chat !== undefined) {
+            setChatState({ studentsChat: JSON.parse(chat) });
+        }
+    }, [])
+
+    useEffect(() => {
+        getStudentsJson().then(r => setListState({ studentsJson: { data: r } }));
     }, []);
 
     //Window
@@ -110,7 +242,9 @@ export default function Info() {
                                     openWindow(all, TextAlert, { title: '错误', elem: '已有此学生' });
                                 }
                                 else {
-                                    setState({ studentsList: studentsList?.concat(idPromptInputRef.current) });
+                                    studentsList = studentsList?.concat(idPromptInputRef.current);
+                                    window.localStorage.studentsList = studentsList?.join();
+                                    setListState({ studentsList });
                                     close();
                                 }
                             }
@@ -121,7 +255,8 @@ export default function Info() {
                                 else {
                                     const i = studentsList.indexOf(idPromptInputRef.current);
                                     studentsList.splice(i, 1);
-                                    setState({ studentsList });
+                                    window.localStorage.studentsList = studentsList?.join();
+                                    setListState({ studentsList });
                                     close();
                                 }
                             }
@@ -146,6 +281,26 @@ export default function Info() {
         ));
     }, []);
 
+    useEffect(() => {
+        listState.studentsList?.forEach(id => {
+            if (listState.studentsJson?.data.schaleJson === undefined) return;
+            if (getStudentInfo(listState.studentsJson.data, id).schale?.CollectionTexture !== undefined) return;
+            openWindow(allWindow.all, TextAlert, {
+                title: '错误',
+                elem: `${id}的学生Id不存在`,
+                fun() {
+                    openWindow(allWindow.all, IdPrompt, {
+                        studentsList: listState.studentsList,
+                        type: '+'
+                    });
+                },
+            });
+            const { studentsList } = listState;
+            studentsList?.splice(studentsList?.indexOf(id), 1);
+            setListState({ studentsList });
+        });
+    }, [listState.studentsList]);
+
     return (
         <MainNode>
             <NextSeo
@@ -154,17 +309,17 @@ export default function Info() {
             <AllWindows zIndex={999} allWindow={allWindow} />
             <div id={ItemStyles.infoBar}>
                 <div id={ChatStyles.title}>
-                    <p id={ChatStyles.left}>学生({state.studentsList?.length})</p>
+                    <p id={ChatStyles.left}>学生({listState.studentsList?.length})</p>
                     <div id={ChatStyles.right}>
                         <p onClick={_ => {
                             openWindow(allWindow.all, IdPrompt, {
-                                studentsList: state.studentsList,
+                                studentsList: listState.studentsList,
                                 type: '+'
                             });
                         }}>+</p>
                         <p onClick={_ => {
                             openWindow(allWindow.all, IdPrompt, {
-                                studentsList: state.studentsList,
+                                studentsList: listState.studentsList,
                                 type: '-'
                             });
                         }}>-</p>
@@ -172,41 +327,25 @@ export default function Info() {
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={ItemStyles.all}>
-                    <AllStudentsIcon/>
+                    <AllStudentsIcon />
                     <p>所有学生</p>
                 </div>
                 <div id={ItemStyles.students}>
-                    {state.studentsJson && state.studentsList &&
+                    {listState.studentsJson && listState.studentsList &&
                         <Repeat
                             variable={0}
-                            repeat={state.studentsList?.length}
+                            repeat={listState.studentsList?.length}
                             func={v => v + 1}
                             components={v => {
-                                if (!state.studentsList || !state.studentsJson) return;
-                                const id = state.studentsList[v];
+                                if (!listState.studentsJson || !listState.studentsList) return;
+                                const id = listState.studentsList[v];
                                 return (
                                     <Student
                                         id={id}
-                                        allInfo={state.studentsJson.data}
+                                        allInfo={listState.studentsJson.data}
                                         key={id}
-                                        onClick={() => setState({ student: id })}
-                                        select={state.student === id}
-                                        onError={id => {
-                                            if (state.studentsJson?.data.schaleJson === undefined) return;
-                                            openWindow(allWindow.all, TextAlert, {
-                                                title: '错误',
-                                                elem: `${id}的学生Id不存在`,
-                                                fun() {
-                                                    openWindow(allWindow.all, IdPrompt, {
-                                                        studentsList: state.studentsList,
-                                                        type: '+'
-                                                    });
-                                                },
-                                            });
-                                            const { studentsList } = state;
-                                            studentsList?.splice(studentsList?.indexOf(id), 1);
-                                            setState({ studentsList });
-                                        }}
+                                        onClick={() => setListState({ student: id })}
+                                        select={listState.student === id}
                                     />
                                 );
                             }}
@@ -215,10 +354,16 @@ export default function Info() {
                 </div>
             </div>
             <div id={ItemStyles.contentBar}>
-                {state.student !== 0 ?
-                    state.student && state.studentsJson &&
-                    (<Content id={state.student} allInfo={state.studentsJson.data} />)
-                    : <p>请选择学生。</p>
+                {listState.student !== 0 ?
+                    listState.student && listState.studentsJson &&
+                    <Content
+                        id={listState.student}
+                        chatState={chatState}
+                        setChatState={setChatState}
+                        allInfo={listState.studentsJson.data}
+                    />
+                    :
+                    <p>请选择学生。</p>
                 }
             </div>
         </MainNode>

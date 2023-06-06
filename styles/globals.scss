@@ -67,3 +67,16 @@ div.back {
   background-color: #0000004d;
   backdrop-filter: blur(10px) saturate(1.2);
 }
+
+div.imgCol {
+  overflow: hidden;
+  border-radius: 50%;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  user-select: none;
+
+  img.col {
+    width: 100%;
+  }
+}
