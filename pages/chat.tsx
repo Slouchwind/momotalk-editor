@@ -4,8 +4,7 @@ import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/student';
 
 //Styles
-import ItemStyles from '@/styles/Item.module.scss';
-import ChatStyles from '@/styles/Chat.module.scss';
+import styles from '@/styles/Chat.module.scss';
 
 //Methods
 import { useState, useEffect, useRef, createContext, useContext } from 'react';
@@ -43,16 +42,16 @@ function Message({ id, msg }: MessageProps) {
     const allInfo = listState.studentsJson?.data || {};
     if (id === 'sensei') {
         return (
-            <div className={ChatStyles.sensei}>
-                <div id={ChatStyles.triangle} />
-                <div id={ChatStyles.text}>{msg}</div>
+            <div className={styles.sensei}>
+                <div id={styles.triangle} />
+                <div id={styles.text}>{msg}</div>
             </div>
         );
     }
     else {
         const info = getStudentInfo(allInfo, id);
         return (
-            <div className={ChatStyles.message}>
+            <div className={styles.message}>
                 <ImgCol
                     style={{
                         margin: 10
@@ -60,11 +59,11 @@ function Message({ id, msg }: MessageProps) {
                     size={60}
                     info={info}
                 />
-                <div id={ChatStyles.right}>
+                <div id={styles.right}>
                     <p>{info.schale?.Name}</p>
                     <div>
-                        <div id={ChatStyles.triangle} />
-                        <div id={ChatStyles.text}>{msg}</div>
+                        <div id={styles.triangle} />
+                        <div id={styles.text}>{msg}</div>
                     </div>
                 </div>
             </div>
@@ -141,7 +140,7 @@ function Sender({ id }: SenderState) {
 function ChatEditorBar() {
     const { listState } = useContext(StatesContext);
     return (
-        <div id={ChatStyles.editor}>
+        <div id={styles.editor}>
             <Sender id={listState.student || 10000} />
             <Sender id='sensei' />
             <Loader type='up' />
@@ -151,8 +150,11 @@ function ChatEditorBar() {
 }
 
 function Content() {
+    const { listState } = useContext(StatesContext);
+    if (!listState.studentsJson) return null;
+    if (listState.student === 0) return (<p>请选择学生。</p>);
     return (
-        <div id={ItemStyles.content}>
+        <div id={styles.content}>
             <MessagesGroup />
             <ChatEditorBar />
         </div>
@@ -306,7 +308,7 @@ export default function Info() {
                             selId || 10000
                         ).schale?.Name
                     }的消息</p>
-                    <input type='text' onChange={e => sendMessageInputRef.current = e.target.value} />
+                    <textarea onChange={e => sendMessageInputRef.current = e.target.value} />
                     <button
                         onClick={() => {
                             if (!studentsChat) return;
@@ -350,10 +352,10 @@ export default function Info() {
                 title={getTitle('聊天编辑')}
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
-            <div id={ItemStyles.infoBar}>
-                <div id={ChatStyles.title}>
-                    <p id={ChatStyles.left}>学生({listState.studentsList?.length})</p>
-                    <div id={ChatStyles.right}>
+            <div id={styles.infoBar}>
+                <div id={styles.title}>
+                    <p id={styles.left}>学生({listState.studentsList?.length})</p>
+                    <div id={styles.right}>
                         <p onClick={_ => {
                             openWindow(allWindow.all, IdPrompt, {
                                 studentsList: listState.studentsList,
@@ -369,11 +371,11 @@ export default function Info() {
                     </div>
                 </div>
                 <div style={{ height: 70 }} />
-                <div id={ItemStyles.all}>
+                <div id={styles.all}>
                     <AllStudentsIcon />
                     <p>所有学生</p>
                 </div>
-                <div id={ItemStyles.students}>
+                <div id='students'>
                     {listState.studentsJson && listState.studentsList &&
                         <Repeat
                             variable={0}
@@ -396,29 +398,24 @@ export default function Info() {
                     }
                 </div>
             </div>
-            <div id={ItemStyles.contentBar}>
-                {listState.student !== 0 ?
-                    listState.student && listState.studentsJson &&
-                    <StatesContext.Provider value={{
-                        allWindow,
-                        listState,
-                        chatState,
-                        setChatState,
+            <div id={styles.contentBar} style={listState.student === 0 ? { 'alignItems': 'center' } : {}}>
+                <StatesContext.Provider value={{
+                    allWindow,
+                    listState,
+                    chatState,
+                    setChatState,
+                }}>
+                    <SendMessageFunContext.Provider value={id => {
+                        openWindow(allWindow.all, SendMessage, {
+                            studentsJson: listState.studentsJson,
+                            selId: listState.student,
+                            studentsChat: chatState.studentsChat,
+                            id,
+                        });
                     }}>
-                        <SendMessageFunContext.Provider value={id => {
-                            openWindow(allWindow.all, SendMessage, {
-                                studentsJson: listState.studentsJson,
-                                selId: listState.student,
-                                studentsChat: chatState.studentsChat,
-                                id,
-                            });
-                        }}>
-                            <Content />
-                        </SendMessageFunContext.Provider>
-                    </StatesContext.Provider>
-                    :
-                    <p>请选择学生。</p>
-                }
+                        <Content />
+                    </SendMessageFunContext.Provider>
+                </StatesContext.Provider>
             </div>
         </MainNode>
     );

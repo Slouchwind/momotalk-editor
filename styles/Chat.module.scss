@@ -2,8 +2,9 @@
   background-color: $bgColor;
   width: 7.5px;
   height: 7.5px;
-  position: absolute;
-  transform: translateY($y + 9px) scale(1.5, 1) rotate(45deg);
+  position: relative;
+  transform: scale(1.5, 1) rotate(45deg);
+  top: $y + 16px;
 }
 
 @mixin message-box($bgColor) {
@@ -20,13 +21,27 @@
 }
 
 @media screen and (min-width: 580px) {
-  #title {
-    width: calc((100% - 70px) / 2);
+  #infoBar {
+    width: 50%;
+    #title {
+      width: calc((100% - 70px) / 2);
+    }
+  }
+  #contentBar {
+    width: 50%;
+    display: flex;
   }
 }
 @media screen and (max-width: 580px) {
-  #title {
-    width: calc(100% - 70px);
+  #infoBar {
+    width: 100%;
+    #title {
+      width: calc(100% - 70px);
+    }
+  }
+  #contentBar {
+    width: 100%;
+    display: none;
   }
 }
 
@@ -56,6 +71,51 @@
   }
 }
 
+#infoBar {
+  height: 100%;
+  background-color: #f3f7f8;
+  overflow: auto;
+  border-right: #dce5ec 2px solid;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  #all {
+    background-color: #e3f0f8;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: #e8e8e8 1px solid;
+    user-select: none;
+
+    img {
+      height: 15px;
+      margin-left: 15px;
+      margin-right: 6px;
+    }
+  }
+}
+
+#contentBar {
+  height: 100%;
+  background-color: #fff;
+  justify-content: center;
+
+  #content {
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+}
+
 div.message {
   display: flex;
   flex-direction: row;
@@ -77,6 +137,7 @@ div.message {
     > div {
       > div#triangle {
         @include triangle(#4c5a6e);
+        right: 0.5px;
       }
 
       > div#text {
@@ -98,7 +159,7 @@ div.sensei {
 
   > div#triangle {
     @include triangle(#4a89ca, 5px);
-    right: 15px;
+    left: calc(100% - 21px);
   }
 
   > div#text {

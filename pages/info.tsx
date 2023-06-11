@@ -4,7 +4,7 @@ import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/student';
 
 //Styles
-import styles from '@/styles/Item.module.scss';
+import styles from '@/styles/Info.module.scss';
 
 //Methods
 import { useEffect, useState } from 'react';
@@ -74,7 +74,7 @@ export default function Info() {
                     <AllStudentsIcon />
                     <p>所有学生</p>
                 </div>
-                <div id={styles.students}>
+                <div id='students'>
                     {state.studentsJson &&
                         <Repeat
                             variable={0}
@@ -98,7 +98,7 @@ export default function Info() {
                                                 id={v}
                                                 allInfo={state.studentsJson.data}
                                                 key={v}
-                                                onClick={_ => setState({student: v,})}
+                                                onClick={_ => setState({ student: v, })}
                                                 select={state.student === v}
                                             />
                                         )}

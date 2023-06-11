@@ -23,8 +23,19 @@
   }
 }
 
-#infoBar::-webkit-scrollbar {
-  width: 0;
+#title {
+  position: fixed;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  background-color: #f3f7f8;
+  border-bottom: #e8e8e8 1px solid;
+  user-select: none;
+
+  p {
+    font-size: 20px;
+    margin-left: 10px;
+  }
 }
 
 #infoBar {
@@ -33,19 +44,8 @@
   overflow: auto;
   border-right: #dce5ec 2px solid;
 
-  #title {
-    position: fixed;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    background-color: #f3f7f8;
-    border-bottom: #e8e8e8 1px solid;
-    user-select: none;
-
-    p {
-      font-size: 20px;
-      margin-left: 10px;
-    }
+  &::-webkit-scrollbar {
+    width: 0;
   }
 
   #all {
@@ -62,61 +62,6 @@
       height: 15px;
       margin-left: 15px;
       margin-right: 6px;
-    }
-  }
-
-  #students {
-    > div {
-      height: 80px;
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-      justify-content: flex-start;
-    }
-
-    > div {
-      > div.img {
-        margin: 10px;
-        overflow: hidden;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: grid;
-        justify-content: center;
-        align-content: center;
-        user-select: none;
-        background-color: #00000038;
-
-        img.col {
-          width: 65px;
-        }
-      }
-
-      > div.p {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        > p {
-          margin: 0;
-          font-size: 18px;
-        }
-
-        > p.name {
-          color: #000;
-        }
-
-        > p.info {
-          color: #707070;
-        }
-      }
-
-      > div.line {
-        background-color: #e8e8e8;
-        width: calc(100% - 30px);
-        height: 2px;
-        margin: auto;
-      }
     }
   }
 }

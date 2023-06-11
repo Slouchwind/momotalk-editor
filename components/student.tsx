@@ -1,6 +1,5 @@
 import { studentsJson } from './students/students';
 import { getStudentInfo } from './students/infoStudents';
-import ItemStyles from '@/styles/Item.module.scss';
 import ImgCol from './imgCol';
 
 interface StudentProps {
@@ -13,17 +12,17 @@ interface StudentProps {
 export default function Student({ id, allInfo, onClick, select }: StudentProps) {
     const info = getStudentInfo(allInfo, id);
     return (
-        <div onClick={onClick} style={{ backgroundColor: select ? '#dce5ec' : '#f3f7f8' }} title={`id:${id}`}>
+        <div onClick={onClick} className={select ? 'select' : ''} title={`id:${id}`}>
             <ImgCol
                 style='student'
                 size={60}
                 info={info}
             />
-            <div className={ItemStyles.p}>
-                <p className={ItemStyles.name}>{info.schale?.Name}</p>
-                <p className={ItemStyles.info}>{info.file?.info}</p>
+            <div className='p'>
+                <p className='name'>{info.schale?.Name}</p>
+                <p className='info'>{info.file?.info}</p>
             </div>
-            <div className={ItemStyles.line} />
+            <div className='line' />
         </div>
     );
 }

@@ -118,13 +118,23 @@ p.MTText {
   background-color: #525e6e;
   user-select: none;
 
-  > a > div > img {
-    margin: 20px;
-    width: 25px;
-  }
+  > a {
+    > div {
+      transition-duration: 0.2s;
 
-  > a.nowLink > div {
-    background-color: #667487;
+      > img {
+        margin: 20px;
+        width: 25px;
+      }
+    }
+
+    & > div:hover {
+      background-color: #78859b;
+    }
+
+    &.nowLink > div {
+      background-color: #667487;
+    }
   }
 }
 

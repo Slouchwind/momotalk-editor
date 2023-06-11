@@ -12,6 +12,69 @@ body {
   color: #fff;
 }
 
+#students {
+  > div {
+    transition-duration: 0.2s;
+    height: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: #f3f7f8;
+
+    &.select {
+      background-color: #dce5ec;
+    }
+
+    &:not([class="select"]):hover {
+      background-color: #ebeff1;
+    }
+
+    > div.imgCol {
+      margin: 10px;
+      overflow: hidden;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: grid;
+      justify-content: center;
+      align-content: center;
+      user-select: none;
+      background-color: #00000038;
+
+      img.col {
+        width: 65px;
+      }
+    }
+
+    > div.p {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      > p {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      > p.name {
+        color: #000;
+      }
+
+      > p.info {
+        color: #707070;
+      }
+    }
+
+    > div.line {
+      background-color: #e8e8e8;
+      width: calc(100% - 30px);
+      height: 2px;
+      margin: auto;
+    }
+  }
+}
+
 div.ask {
   position: absolute;
   box-shadow: 0 0 10px 0px #00000080;
@@ -39,6 +102,23 @@ div.ask {
 
     input {
       width: calc(100% - 10px);
+    }
+
+    textarea::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      background-color: #0000;
+    }
+
+    textarea::-webkit-scrollbar-thumb {
+      border-radius: 2.5px;
+      background-color: #ccc;
+    }
+
+    textarea {
+      width: calc(100% - 10px);
+      height: 100px;
+      resize: none;
     }
 
     button {
