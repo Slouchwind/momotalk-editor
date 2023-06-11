@@ -8,24 +8,39 @@ import ItemStyles from '@/styles/Item.module.scss';
 import ChatStyles from '@/styles/Chat.module.scss';
 
 //Methods
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createContext, useContext } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson } from '@/components/students/infoStudents';
-import Window, { AllWindow, getWindowFun } from '@/components/window';
+import Window, { AllWindow, OpenWindow, getWindowFun } from '@/components/window';
 import Repeat from '@/components/repeat';
 import { AllWindows } from '@/components/window';
-import { getClassState } from '@/components/extraReact';
+import { setStateFun, getClassState } from '@/components/extraReact';
 import ImgCol from '@/components/imgCol';
 import { downloadFile, uploadFile } from '@/components/loadFile';
 
+const StatesContext = createContext<{
+    allWindow: AllWindow;
+    listState: ListState;
+    chatState: ChatState;
+    setChatState: setStateFun<ChatState>;
+}>({
+    allWindow: {},
+    listState: {},
+    chatState: {},
+    setChatState: () => { },
+});
+
+const SendMessageFunContext = createContext<(id: MessageData['id']) => void>(() => { });
+
 interface MessageProps {
-    id: number | 'sensei';
+    id: MessageData['id'];
     msg: React.ReactNode;
-    allInfo: studentsJson;
 }
 
-function Message({ id, msg, allInfo }: MessageProps) {
+function Message({ id, msg }: MessageProps) {
+    const { listState } = useContext(StatesContext);
+    const allInfo = listState.studentsJson?.data || {};
     if (id === 'sensei') {
         return (
             <div className={ChatStyles.sensei}>
@@ -63,12 +78,9 @@ interface MessageData {
     msg: string;
 }
 
-interface MessagesGroupProps {
-    data: MessageData[];
-    allInfo: studentsJson;
-}
-
-function MessagesGroup({ data, allInfo }: MessagesGroupProps) {
+function MessagesGroup() {
+    const { listState, chatState } = useContext(StatesContext);
+    const data = chatState.studentsChat?.[String(listState.student)] || [];
     return (<>
         {data.map((v, i) => {
             if (v.type === 'text')
@@ -76,7 +88,6 @@ function MessagesGroup({ data, allInfo }: MessagesGroupProps) {
                     <Message
                         id={v.id}
                         msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
-                        allInfo={allInfo}
                         key={i}
                     />
                 );
@@ -86,11 +97,10 @@ function MessagesGroup({ data, allInfo }: MessagesGroupProps) {
 
 interface LoaderState {
     type: 'up' | 'down';
-    chatState: ChatState;
-    setChatState: (newState: Partial<ChatState>) => void;
 }
 
-function Loader({ type, chatState, setChatState }: LoaderState) {
+function Loader({ type }: LoaderState) {
+    const { chatState, setChatState } = useContext(StatesContext);
     return (
         <img
             src={`/api/icon/${type}load?fill=000`}
@@ -112,44 +122,39 @@ function Loader({ type, chatState, setChatState }: LoaderState) {
     )
 }
 
-function ChatEditorBar({ chatState, setChatState }: {
-    chatState: ChatState;
-    setChatState: (newState: Partial<ChatState>) => void;
-}) {
+interface SenderState {
+    id: MessageData['id'];
+}
+
+function Sender({ id }: SenderState) {
+    const sendMessageFun = useContext(SendMessageFunContext);
+    return (
+        <img
+            src='/api/icon/chat?fill=000'
+            alt={`${id} send icon`}
+            title={typeof id === 'number' ? '发送学生消息' : '发送老师消息'}
+            onClick={() => sendMessageFun(id)}
+        />
+    );
+}
+
+function ChatEditorBar() {
+    const { listState } = useContext(StatesContext);
     return (
         <div id={ChatStyles.editor}>
-            <Loader
-                type='up'
-                chatState={chatState}
-                setChatState={setChatState}
-            />
-            <Loader
-                type='down'
-                chatState={chatState}
-                setChatState={setChatState}
-            />
+            <Sender id={listState.student || 10000} />
+            <Sender id='sensei' />
+            <Loader type='up' />
+            <Loader type='down' />
         </div>
     );
 }
 
-interface ContentProps {
-    id: number;
-    chatState: ChatState;
-    setChatState: (newState: Partial<ChatState>) => void;
-    allInfo: studentsJson;
-}
-
-function Content({ id, chatState, setChatState, allInfo }: ContentProps) {
+function Content() {
     return (
         <div id={ItemStyles.content}>
-            <MessagesGroup
-                data={chatState.studentsChat?.[String(id)] || []}
-                allInfo={allInfo}
-            />
-            <ChatEditorBar
-                chatState={chatState}
-                setChatState={setChatState}
-            />
+            <MessagesGroup />
+            <ChatEditorBar />
         </div>
     );
 }
@@ -167,7 +172,7 @@ interface ChatState {
 }
 
 interface IdPromptArg {
-    studentsList?: number[];
+    studentsList?: ListState['studentsList'];
     type?: '+' | '-';
 }
 
@@ -175,6 +180,13 @@ interface TextAlertArg {
     title: string;
     elem: React.ReactNode;
     fun?: () => any;
+}
+
+interface SendMessageArg {
+    studentsJson?: ListState['studentsJson'];
+    selId?: ListState['student'];
+    studentsChat?: ChatState['studentsChat'];
+    id: MessageData['id'];
 }
 
 export default function Info() {
@@ -226,6 +238,10 @@ export default function Info() {
     //Alert
     const TextAlert = new Window<TextAlertArg>('TextAlert');
 
+    //Message
+    const sendMessageInputRef = useRef('');
+    const SendMessage = new Window<SendMessageArg>('SendMessage');
+
     useEffect(() => {
         const IdPromptTypeText = { '+': '添加', '-': '去除' };
         addNewWindow(IdPrompt, (zIndex, id, display, { studentsList, type }, all) => (
@@ -271,10 +287,37 @@ export default function Info() {
             <TextAlert.Component
                 title={title}
                 closeWindow={() => {
-                    if (fun) fun();
+                    fun?.();
                     closeWindow(all, id);
                 }}
                 element={() => elem}
+                zIndex={zIndex}
+                display={display}
+            />
+        ));
+        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id }, all) => (
+            <SendMessage.Component
+                title={typeof id === 'number' ? '发送学生消息' : '发送老师消息'}
+                closeWindow={() => closeWindow(all, winId)}
+                element={close => (<>
+                    <p>请输入需要发送{typeof id === 'number' ? '的' : '给'}{
+                        getStudentInfo(
+                            studentsJson?.data || {},
+                            selId || 10000
+                        ).schale?.Name
+                    }的消息</p>
+                    <input type='text' onChange={e => sendMessageInputRef.current = e.target.value} />
+                    <button
+                        onClick={() => {
+                            if (!studentsChat) return;
+                            let messageData = studentsChat[String(selId)];
+                            let newData: MessageData = { type: 'text', id, msg: sendMessageInputRef.current };
+                            studentsChat[String(selId)] = messageData ? messageData.concat(newData) : [newData];
+                            setChatState({ studentsChat: studentsChat });
+                            close();
+                        }}
+                    >发送</button>
+                </>)}
                 zIndex={zIndex}
                 display={display}
             />
@@ -356,12 +399,23 @@ export default function Info() {
             <div id={ItemStyles.contentBar}>
                 {listState.student !== 0 ?
                     listState.student && listState.studentsJson &&
-                    <Content
-                        id={listState.student}
-                        chatState={chatState}
-                        setChatState={setChatState}
-                        allInfo={listState.studentsJson.data}
-                    />
+                    <StatesContext.Provider value={{
+                        allWindow,
+                        listState,
+                        chatState,
+                        setChatState,
+                    }}>
+                        <SendMessageFunContext.Provider value={id => {
+                            openWindow(allWindow.all, SendMessage, {
+                                studentsJson: listState.studentsJson,
+                                selId: listState.student,
+                                studentsChat: chatState.studentsChat,
+                                id,
+                            });
+                        }}>
+                            <Content />
+                        </SendMessageFunContext.Provider>
+                    </StatesContext.Provider>
                     :
                     <p>请选择学生。</p>
                 }

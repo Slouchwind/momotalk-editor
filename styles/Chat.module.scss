@@ -1,9 +1,9 @@
-@mixin triangle($bgColor) {
+@mixin triangle($bgColor, $y: 0px) {
   background-color: $bgColor;
   width: 7.5px;
   height: 7.5px;
   position: absolute;
-  transform: translateY(9px) scale(1.5, 1) rotate(45deg);
+  transform: translateY($y + 9px) scale(1.5, 1) rotate(45deg);
 }
 
 @mixin message-box($bgColor) {
@@ -93,15 +93,19 @@ div.message {
 
 div.sensei {
   float: right;
+  width: calc(100% - 45px);
+  text-align: start;
 
   > div#triangle {
-    @include triangle(#4a89ca);
+    @include triangle(#4a89ca, 5px);
     right: 15px;
   }
 
   > div#text {
     @include message-box(#4a89ca);
-    margin-right: 15px;
+    float: right;
+    width: fit-content;
+    margin: 5px 15px 5px 0;
 
     > p {
       @include message-p();
