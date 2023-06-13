@@ -6,6 +6,7 @@ import styles from '@/styles/MainNode.module.scss';
 
 //Methods
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 function MomoTalkIcon() {
     return <img src='/api/icon/' alt='MomoTalk Icon' />;
@@ -25,15 +26,30 @@ function MTBarLink({ type }: { type: string }) {
     );
 }
 
+function MTStart() {
+    const [start, setStart] = useState<'true' | 'false'>('false');
+    useEffect(() => {
+        const { animation } = window.sessionStorage;
+        if (animation !== undefined) setStart(animation);
+        else {
+            window.sessionStorage.animation = 'false';
+            setStart('true');
+        }
+    }, [])
+    return <>{start === 'true' && (
+        <div id={styles.MTStart}>
+            <div>
+                <MomoTalkIcon />
+                <p className={styles.MTText}>MomoTalk</p>
+            </div>
+        </div>
+    )}</>;
+}
+
 export default function MainNode({ children }: { children: React.ReactNode }) {
     return (
         <div id={styles.main}>
-            <div id={styles.MTStart}>
-                <div>
-                    <MomoTalkIcon />
-                    <p className={styles.MTText}>MomoTalk</p>
-                </div>
-            </div>
+            <MTStart />
             <div id={styles.MTBackground}>
                 <div id={styles.MTBar}>
                     <Link href='/'>
