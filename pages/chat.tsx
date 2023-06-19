@@ -64,8 +64,7 @@ function Message({ id, msg, type }: MessageProps) {
                 onContextMenu={e => {
                     e.preventDefault();
                 }}
-                children={<Msg msg={msg} type={type} />}
-            />
+            ><Msg msg={msg} type={type} /></div>
         );
     }
     else {
@@ -85,8 +84,7 @@ function Message({ id, msg, type }: MessageProps) {
                         onContextMenu={e => {
                             e.preventDefault();
                         }}
-                        children={<Msg msg={msg} type={type} />}
-                    />
+                    ><Msg msg={msg} type={type} /></div>
                 </div>
             </div>
         );
