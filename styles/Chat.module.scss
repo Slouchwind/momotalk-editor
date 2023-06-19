@@ -65,6 +65,7 @@
     display: flex;
 
     p {
+      cursor: pointer;
       font-size: 20px;
       margin: 10px;
     }
@@ -177,6 +178,7 @@ div#editor {
   border-top: #dce5ec 2px solid;
 
   > img {
+    cursor: pointer;
     width: 30px;
     height: 30px;
   }

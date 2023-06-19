@@ -114,9 +114,12 @@ div.ask {
     justify-content: space-between;
     align-items: center;
 
-    h2,
-    p {
+    h2 {
       margin: 10px;
+    }
+    p {
+      cursor: pointer;
+      @extend h2;
     }
   }
 
