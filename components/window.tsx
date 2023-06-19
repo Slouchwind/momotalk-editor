@@ -60,8 +60,6 @@ export default class Window<A> {
     }
 }
 
-export type OpenWindow = <A>(all: AllWindow['all'], window: Window<A>, arg: A) => void;
-
 export function AllWindows({ zIndex, allWindow }: {
     zIndex: number,
     allWindow: AllWindow

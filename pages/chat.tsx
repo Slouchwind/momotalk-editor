@@ -1,7 +1,7 @@
 //Components
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/student';
+import Student, { AllStudentsIcon } from '@/components/students/student';
 
 //Styles
 import styles from '@/styles/Chat.module.scss';
@@ -10,10 +10,9 @@ import styles from '@/styles/Chat.module.scss';
 import { useState, useEffect, useRef, createContext, useContext } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
-import { getStudentInfo, getStudentsJson } from '@/components/students/infoStudents';
-import Window, { AllWindow, OpenWindow, getWindowFun } from '@/components/window';
+import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
+import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
 import Repeat from '@/components/repeat';
-import { AllWindows } from '@/components/window';
 import { setStateFun, getClassState } from '@/components/extraReact';
 import ImgCol from '@/components/imgCol';
 import { downloadFile, uploadFile } from '@/components/loadFile';
@@ -30,22 +29,43 @@ const StatesContext = createContext<{
     setChatState: () => { },
 });
 
-const SendMessageFunContext = createContext<(id: MessageData['id']) => void>(() => { });
+const SendMessageFunContext = createContext<(
+    id: MessageData['id'],
+    type?: MessageData['type'],
+) => void>(() => { });
+
+interface MsgProps {
+    msg: MessageProps['msg'];
+    type: MessageData['type'];
+}
+
+function Msg({ msg, type }: MsgProps) {
+    if (type === 'text') return (<>
+        <div id={styles.triangle} />
+        <div id={styles.text}>{msg}</div>
+    </>);
+    else if (type === 'img') return (<div id={styles.img}>{msg}</div>);
+    else return (<></>);
+}
 
 interface MessageProps {
     id: MessageData['id'];
     msg: React.ReactNode;
+    type: MessageData['type'];
 }
 
-function Message({ id, msg }: MessageProps) {
+function Message({ id, msg, type }: MessageProps) {
     const { listState } = useContext(StatesContext);
     const allInfo = listState.studentsJson?.data || {};
     if (id === 'sensei') {
         return (
-            <div className={styles.sensei}>
-                <div id={styles.triangle} />
-                <div id={styles.text}>{msg}</div>
-            </div>
+            <div
+                className={styles.sensei}
+                onContextMenu={e => {
+                    e.preventDefault();
+                }}
+                children={<Msg msg={msg} type={type} />}
+            />
         );
     }
     else {
@@ -61,10 +81,12 @@ function Message({ id, msg }: MessageProps) {
                 />
                 <div id={styles.right}>
                     <p>{info.schale?.Name}</p>
-                    <div>
-                        <div id={styles.triangle} />
-                        <div id={styles.text}>{msg}</div>
-                    </div>
+                    <div
+                        onContextMenu={e => {
+                            e.preventDefault();
+                        }}
+                        children={<Msg msg={msg} type={type} />}
+                    />
                 </div>
             </div>
         );
@@ -82,16 +104,44 @@ function MessagesGroup() {
     const data = chatState.studentsChat?.[String(listState.student)] || [];
     return (<>
         {data.map((v, i) => {
-            if (v.type === 'text')
-                return (
-                    <Message
-                        id={v.id}
-                        msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
-                        key={i}
-                    />
-                );
+            if (v.type === 'text') return (
+                <Message
+                    id={v.id}
+                    msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
+                    type={v.type}
+                    key={i}
+                />
+            );
+            else if (v.type === 'img') return (
+                <Message
+                    id={v.id}
+                    msg={<img src={v.msg} />}
+                    type={v.type}
+                    key={i}
+                />
+            );
         })}
     </>);
+}
+
+interface SenderState {
+    id: MessageData['id'];
+}
+
+function Sender({ id }: SenderState) {
+    const sendMessageFun = useContext(SendMessageFunContext);
+    return (
+        <img
+            src={`/api/icon/chat?fill=${getStuSenText(id, '4c5a6e', '4a89ca')}`}
+            alt={`${id} send icon`}
+            title={getStuSenText(id, '发送学生消息', '发送老师消息')}
+            onClick={() => sendMessageFun(id)}
+            onContextMenu={e => {
+                e.preventDefault();
+                sendMessageFun(id, 'img');
+            }}
+        />
+    );
 }
 
 interface LoaderState {
@@ -119,22 +169,6 @@ function Loader({ type }: LoaderState) {
             }}
         />
     )
-}
-
-interface SenderState {
-    id: MessageData['id'];
-}
-
-function Sender({ id }: SenderState) {
-    const sendMessageFun = useContext(SendMessageFunContext);
-    return (
-        <img
-            src='/api/icon/chat?fill=000'
-            alt={`${id} send icon`}
-            title={typeof id === 'number' ? '发送学生消息' : '发送老师消息'}
-            onClick={() => sendMessageFun(id)}
-        />
-    );
 }
 
 function ChatEditorBar() {
@@ -189,6 +223,7 @@ interface SendMessageArg {
     selId?: ListState['student'];
     studentsChat?: ChatState['studentsChat'];
     id: MessageData['id'];
+    type: MessageData['type'];
 }
 
 export default function Info() {
@@ -297,29 +332,35 @@ export default function Info() {
                 display={display}
             />
         ));
-        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id }, all) => (
+        const MsgInfoText = { 'text': '消息', 'img': '图片链接' };
+        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type }, all) => (
             <SendMessage.Component
-                title={typeof id === 'number' ? '发送学生消息' : '发送老师消息'}
+                title={getStuSenText(id, '发送学生消息', '发送老师消息')}
                 closeWindow={() => closeWindow(all, winId)}
-                element={close => (<>
-                    <p>请输入需要发送{typeof id === 'number' ? '的' : '给'}{
-                        getStudentInfo(
-                            studentsJson?.data || {},
-                            selId || 10000
-                        ).schale?.Name
-                    }的消息</p>
-                    <textarea onChange={e => sendMessageInputRef.current = e.target.value} />
-                    <button
-                        onClick={() => {
-                            if (!studentsChat) return;
-                            let messageData = studentsChat[String(selId)];
-                            let newData: MessageData = { type: 'text', id, msg: sendMessageInputRef.current };
-                            studentsChat[String(selId)] = messageData ? messageData.concat(newData) : [newData];
-                            setChatState({ studentsChat: studentsChat });
-                            close();
-                        }}
-                    >发送</button>
-                </>)}
+                element={close => {
+                    sendMessageInputRef.current = '';
+                    return (<>
+                        <p>请输入需要发送{getStuSenText(id, '的', '给')}{
+                            getStudentInfo(
+                                studentsJson?.data || {},
+                                selId || 10000
+                            ).schale?.Name
+                        }的{MsgInfoText[type]}</p>
+                        {type === 'text' && <textarea onChange={e => sendMessageInputRef.current = e.target.value} />}
+                        {type === 'img' && <input onChange={e => sendMessageInputRef.current = e.target.value} />}
+                        <button
+                            onClick={() => {
+                                if (!studentsChat) return;
+                                if (sendMessageInputRef.current.trim() === '') return;
+                                let messageData = studentsChat[String(selId)];
+                                let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
+                                studentsChat[String(selId)] = messageData ? messageData.concat(newData) : [newData];
+                                setChatState({ studentsChat: studentsChat });
+                                close();
+                            }}
+                        >发送</button>
+                    </>);
+                }}
                 zIndex={zIndex}
                 display={display}
             />
@@ -405,12 +446,13 @@ export default function Info() {
                     chatState,
                     setChatState,
                 }}>
-                    <SendMessageFunContext.Provider value={id => {
+                    <SendMessageFunContext.Provider value={(id, type = 'text') => {
                         openWindow(allWindow.all, SendMessage, {
                             studentsJson: listState.studentsJson,
                             selId: listState.student,
                             studentsChat: chatState.studentsChat,
                             id,
+                            type,
                         });
                     }}>
                         <Content />

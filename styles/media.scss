@@ -1,0 +1,24 @@
+@media screen and (min-width: 580px) {
+    #infoBar {
+        width: 50%;
+        #title {
+            width: calc((100% - 70px) / 2);
+        }
+    }
+    #contentBar {
+        width: 50%;
+        display: flex;
+    }
+}
+@media screen and (max-width: 580px) {
+    #infoBar {
+        width: 100%;
+        #title {
+            width: calc(100% - 70px);
+        }
+    }
+    #contentBar {
+        width: 100%;
+        display: none;
+    }
+}

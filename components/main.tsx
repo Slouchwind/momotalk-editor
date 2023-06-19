@@ -9,7 +9,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 function MomoTalkIcon() {
-    return <img src='/api/icon/' alt='MomoTalk Icon' />;
+    return (
+        <Link href='/'>
+            <div id={styles.icon}>
+                <img src='/api/icon/' alt='MomoTalk Icon' />
+            </div>
+        </Link>
+    );
 }
 
 function MTBarLink({ type }: { type: string }) {
@@ -52,12 +58,13 @@ export default function MainNode({ children }: { children: React.ReactNode }) {
             <MTStart />
             <div id={styles.MTBackground}>
                 <div id={styles.MTBar}>
-                    <Link href='/'>
-                        <div id={styles.icon}>
-                            <MomoTalkIcon />
-                        </div>
-                    </Link>
-                    <p className={styles.MTText}>MomoTalk</p>
+                    <div id={styles.left}>
+                        <MomoTalkIcon />
+                        <p className={styles.MTText}>MomoTalk</p>
+                    </div>
+                    <p id={styles.right} onClick={() => {
+
+                    }}>X</p>
                 </div>
                 <div id={styles.MTContents}>
                     <div id={styles.MTLeftBar}>

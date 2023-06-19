@@ -67,9 +67,9 @@ div #main {
 }
 
 p.MTText {
+  color: #fff;
   margin: 10px;
   font-size: 30px;
-  color: #fff;
 }
 
 #MTBackground {
@@ -86,21 +86,30 @@ p.MTText {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   user-select: none;
 
-  > a > div#icon {
-    width: 20px;
-    height: 100%;
-    margin-left: 10px;
-    display: grid;
-    align-content: center;
+  > div#left {
+    display: flex;
+
+    > a > div#icon {
+      width: 20px;
+      height: 100%;
+      margin-left: 10px;
+      display: grid;
+      align-content: center;
+    }
+
+    > p.MTText {
+      margin: 0;
+      margin-left: 5px;
+      font-size: 20px;
+    }
   }
 
-  > p.MTText {
-    margin: 0;
-    margin-left: 5px;
-    font-size: 20px;
+  p#right {
+    color: #fff;
+    margin: 0 15px;
   }
 }
 

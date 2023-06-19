@@ -1,6 +1,6 @@
-import { studentsJson } from './students/students';
-import { getStudentInfo } from './students/infoStudents';
-import ImgCol from './imgCol';
+import { studentsJson } from './students';
+import { getStudentInfo } from './studentsMethods';
+import ImgCol from '../imgCol';
 
 interface StudentProps {
     id: number,

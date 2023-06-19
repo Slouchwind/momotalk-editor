@@ -11,3 +11,11 @@ export function getStudentInfo({ fileJson, schaleJson }: studentsJson, studentId
     const schale = schaleJson && schaleJson.filter(info => (info.Id === studentId))[0];
     return { file, schale };
 }
+
+export function getStuSenText(
+    id: number | 'sensei',
+    stuText: string,
+    senText: string,
+) {
+    return typeof id === 'number' ? stuText : senText;
+}

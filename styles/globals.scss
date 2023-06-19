@@ -1,3 +1,35 @@
+@mixin img-col($width) {
+  div.imgCol {
+    overflow: hidden;
+    border-radius: 50%;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    user-select: none;
+    @content;
+
+    img.col {
+      width: $width;
+    }
+  }
+}
+
+@mixin text-inputer($h: auto) {
+  width: calc(100% - 10px);
+  height: $h;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px #bbb solid;
+  border-radius: 5px;
+
+  &:focus,
+  &:focus-visible {
+    outline: 0;
+    border: 1px #333 solid;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px 0;
+  }
+}
+
 @import url(https://cdn.jsdelivr.net/npm/misans/lib/misans-300-light.min.css);
 
 body {
@@ -16,37 +48,30 @@ body {
 
 #students {
   > div {
+    $bg-color: #f3f7f8;
     transition-duration: 0.2s;
     height: 80px;
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+    flex: {
+      wrap: wrap;
+      direction: row;
+    }
     justify-content: flex-start;
-    background-color: #f3f7f8;
+    background-color: $bg-color;
 
     &.select {
-      background-color: #dce5ec;
+      background-color: darken($bg-color, 7%);
     }
 
-    &:not([class="select"]):hover {
-      background-color: #ebeff1;
+    &:not(.select):hover {
+      background-color: darken($bg-color, 3%);
     }
 
-    > div.imgCol {
+    @include img-col(65px) {
       margin: 10px;
-      overflow: hidden;
       width: 60px;
       height: 60px;
-      border-radius: 50%;
-      display: grid;
-      justify-content: center;
-      align-content: center;
-      user-select: none;
       background-color: #00000038;
-
-      img.col {
-        width: 65px;
-      }
     }
 
     > div.p {
@@ -97,30 +122,33 @@ div.ask {
   div.element {
     padding: 10px;
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-    align-items: center;
+    flex: {
+      wrap: wrap;
+      direction: column;
+    }
+    align: {
+      content: center;
+      items: center;
+    }
 
     input {
-      width: calc(100% - 10px);
-    }
-
-    textarea::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-      background-color: #0000;
-    }
-
-    textarea::-webkit-scrollbar-thumb {
-      border-radius: 2.5px;
-      background-color: #ccc;
+      @include text-inputer;
     }
 
     textarea {
-      width: calc(100% - 10px);
-      height: 100px;
+      @include text-inputer(100px);
       resize: none;
+
+      &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: #0000;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 2.5px;
+        background-color: #ccc;
+      }
     }
 
     button {
@@ -150,15 +178,4 @@ div.back {
   backdrop-filter: blur(10px) saturate(1.2);
 }
 
-div.imgCol {
-  overflow: hidden;
-  border-radius: 50%;
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  user-select: none;
-
-  img.col {
-    width: 100%;
-  }
-}
+@include img-col(100%);

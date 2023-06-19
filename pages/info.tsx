@@ -1,7 +1,7 @@
 //Components
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/student';
+import Student, { AllStudentsIcon } from '@/components/students/student';
 
 //Styles
 import styles from '@/styles/Info.module.scss';
@@ -10,7 +10,7 @@ import styles from '@/styles/Info.module.scss';
 import { useEffect, useState } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
-import { getStudentInfo, getStudentsJson } from '@/components/students/infoStudents';
+import { getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import Repeat from '@/components/repeat';
 import { getClassState } from '@/components/extraReact';
 

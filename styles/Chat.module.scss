@@ -12,6 +12,7 @@
   color: #fff;
   background-color: $bgColor;
   border-radius: 7.5px;
+  width: fit-content;
 }
 
 @mixin message-p {
@@ -20,30 +21,29 @@
   word-break: break-all;
 }
 
-@media screen and (min-width: 580px) {
-  #infoBar {
-    width: 50%;
-    #title {
-      width: calc((100% - 70px) / 2);
+@mixin message-img {
+  width: auto;
+  height: 200px;
+}
+
+@mixin messge-mixin($color) {
+  > div#text {
+    @include message-box($color);
+
+    > p {
+      @include message-p();
     }
+
+    @content;
   }
-  #contentBar {
-    width: 50%;
-    display: flex;
+
+  > div#img > img {
+    @include message-img();
+    @content;
   }
 }
-@media screen and (max-width: 580px) {
-  #infoBar {
-    width: 100%;
-    #title {
-      width: calc(100% - 70px);
-    }
-  }
-  #contentBar {
-    width: 100%;
-    display: none;
-  }
-}
+
+@import "media";
 
 #title {
   position: fixed;
@@ -117,6 +117,7 @@
 }
 
 div.message {
+  $student-color: #4c5a6e;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -136,41 +137,29 @@ div.message {
 
     > div {
       > div#triangle {
-        @include triangle(#4c5a6e);
+        @include triangle($student-color);
         right: 0.5px;
       }
 
-      > div#text {
-        @include message-box(#4c5a6e);
-        width: fit-content;
-
-        > p {
-          @include message-p();
-        }
-      }
+      @include messge-mixin($student-color);
     }
   }
 }
 
 div.sensei {
+  $sensei-color: #4a89ca;
   float: right;
   width: calc(100% - 45px);
   text-align: start;
 
   > div#triangle {
-    @include triangle(#4a89ca, 5px);
+    @include triangle($sensei-color, 5px);
     left: calc(100% - 21px);
   }
 
-  > div#text {
-    @include message-box(#4a89ca);
+  @include messge-mixin($sensei-color) {
     float: right;
-    width: fit-content;
     margin: 5px 15px 5px 0;
-
-    > p {
-      @include message-p();
-    }
   }
 }
 
