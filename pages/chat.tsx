@@ -1,7 +1,10 @@
 //Components
 import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
 import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/students/student';
+import Repeat from '@/components/repeat';
+import ImgCol from '@/components/imgCol';
 
 //Styles
 import styles from '@/styles/Chat.module.scss';
@@ -12,10 +15,9 @@ import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
 import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
-import Repeat from '@/components/repeat';
 import { setStateFun, getClassState } from '@/components/extraReact';
-import ImgCol from '@/components/imgCol';
 import { downloadFile, uploadFile } from '@/components/loadFile';
+import { chat, fillBlank, i18nContents } from '@/components/i18n';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -33,6 +35,8 @@ const SendMessageFunContext = createContext<(
     id: MessageData['id'],
     type?: MessageData['type'],
 ) => void>(() => { });
+
+const loContext = createContext<string>('zh-CN');
 
 interface MsgProps {
     msg: MessageProps['msg'];
@@ -128,11 +132,12 @@ interface SenderState {
 
 function Sender({ id }: SenderState) {
     const sendMessageFun = useContext(SendMessageFunContext);
+    const lo = useContext(loContext);
     return (
         <img
             src={`/api/icon/chat?fill=${getStuSenText(id, '4c5a6e', '4a89ca')}`}
             alt={`${id} send icon`}
-            title={getStuSenText(id, '发送学生消息', '发送老师消息')}
+            title={getStuSenText(id, chat.sendMsgStudent[lo], chat.sendMsgSensei[lo])}
             onClick={() => sendMessageFun(id)}
             onContextMenu={e => {
                 e.preventDefault();
@@ -148,14 +153,12 @@ interface LoaderState {
 
 function Loader({ type }: LoaderState) {
     const { chatState, setChatState } = useContext(StatesContext);
+    const lo = useContext(loContext);
     return (
         <img
             src={`/api/icon/${type}load?fill=000`}
             alt={`${type}load icon`}
-            title={{
-                'up': '上传',
-                'down': '下载'
-            }[type] + 'JSON文件'}
+            title={chat[type][lo] + chat.jsonFile[lo]}
             onClick={() => {
                 if (type === 'up') uploadFile(e => {
                     const result = e.target?.result;
@@ -183,8 +186,9 @@ function ChatEditorBar() {
 
 function Content() {
     const { listState } = useContext(StatesContext);
+    const lo = useContext(loContext);
     if (!listState.studentsJson) return null;
-    if (listState.student === 0) return (<p>请选择学生。</p>);
+    if (listState.student === 0) return (<p>{chat.selectStudents[lo]}</p>);
     return (
         <div id={styles.content}>
             <MessagesGroup />
@@ -225,6 +229,8 @@ interface SendMessageArg {
 }
 
 export default function Info() {
+    const { locale, defaultLocale = 'zh-CN' } = useRouter();
+    const lo = locale || defaultLocale;
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
         studentsList: [10000, 10002],
@@ -252,10 +258,10 @@ export default function Info() {
         if (chat !== undefined) {
             setChatState({ studentsChat: JSON.parse(chat) });
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
-        getStudentsJson().then(r => setListState({ studentsJson: { data: r } }));
+        getStudentsJson(locale || defaultLocale).then(r => setListState({ studentsJson: { data: r } }));
     }, []);
 
     //Window
@@ -278,19 +284,18 @@ export default function Info() {
     const SendMessage = new Window<SendMessageArg>('SendMessage');
 
     useEffect(() => {
-        const IdPromptTypeText = { '+': '添加', '-': '去除' };
         addNewWindow(IdPrompt, (zIndex, id, display, { studentsList, type }, all) => (
             <IdPrompt.Component
-                title='输入Id'
+                title={chat.idPromptTitle[lo]}
                 closeWindow={() => closeWindow(all, id)}
                 element={close => (<>
-                    <p>请输入需要在列表{IdPromptTypeText[type || '+']}的学生的Id</p>
+                    <p>{fillBlank(chat.idPromptInfo[lo], chat[type || '+'][lo])}</p>
                     <input type='number' onChange={e => { idPromptInputRef.current = Number(e.target.value); }} />
                     <button
                         onClick={() => {
                             if (type === '+') {
                                 if (studentsList?.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: '错误', elem: '已有此学生' });
+                                    openWindow(all, TextAlert, { title: chat.error[lo], elem: chat.sameStudent[lo] });
                                 }
                                 else {
                                     studentsList = studentsList?.concat(idPromptInputRef.current);
@@ -301,7 +306,7 @@ export default function Info() {
                             }
                             else if (type === '-') {
                                 if (!studentsList?.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: '错误', elem: '列表中无此学生' });
+                                    openWindow(all, TextAlert, { title: chat.error[lo], elem: chat.withoutStudent[lo] });
                                 }
                                 else {
                                     const i = studentsList.indexOf(idPromptInputRef.current);
@@ -312,7 +317,7 @@ export default function Info() {
                                 }
                             }
                         }}
-                    >{IdPromptTypeText[type || '+']}</button>
+                    >{chat[type || '+'][lo]}</button>
                 </>)}
                 zIndex={zIndex}
                 display={display}
@@ -330,20 +335,28 @@ export default function Info() {
                 display={display}
             />
         ));
-        const MsgInfoText = { 'text': '消息', 'img': '图片链接' };
         addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type }, all) => (
             <SendMessage.Component
-                title={getStuSenText(id, '发送学生消息', '发送老师消息')}
+                title={getStuSenText(id, chat.sendMsgStudent[lo], chat.sendMsgSensei[lo])}
                 closeWindow={() => closeWindow(all, winId)}
                 element={close => {
                     sendMessageInputRef.current = '';
                     return (<>
-                        <p>请输入需要发送{getStuSenText(id, '的', '给')}{
-                            getStudentInfo(
-                                studentsJson?.data || {},
-                                selId || 10000
-                            ).schale?.Name
-                        }的{MsgInfoText[type]}</p>
+                        <p>
+                            {fillBlank(
+                                chat.sendMsgInfo[lo],
+                                getStuSenText(
+                                    id,
+                                    chat.sendMsgStudentInfo[lo],
+                                    chat.sendMsgSenseiInfo[lo]
+                                ),
+                                getStudentInfo(
+                                    studentsJson?.data || {},
+                                    selId || 10000
+                                ).schale?.Name,
+                                chat[type][lo]
+                            )}
+                        </p>
                         {type === 'text' && <textarea onChange={e => sendMessageInputRef.current = e.target.value} />}
                         {type === 'img' && <input onChange={e => sendMessageInputRef.current = e.target.value} />}
                         <button
@@ -370,8 +383,8 @@ export default function Info() {
             if (listState.studentsJson?.data.schaleJson === undefined) return;
             if (getStudentInfo(listState.studentsJson.data, id).schale?.CollectionTexture !== undefined) return;
             openWindow(allWindow.all, TextAlert, {
-                title: '错误',
-                elem: `${id}的学生Id不存在`,
+                title: chat.error[lo],
+                elem: fillBlank(chat.undefinedStudent[lo], String(id)),
                 fun() {
                     openWindow(allWindow.all, IdPrompt, {
                         studentsList: listState.studentsList,
@@ -388,12 +401,12 @@ export default function Info() {
     return (
         <MainNode>
             <NextSeo
-                title={getTitle('聊天编辑')}
+                title={getTitle(chat.title[lo])}
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
-                    <p id={styles.left}>学生({listState.studentsList?.length})</p>
+                    <p id={styles.left}>{chat.student[lo]}({listState.studentsList?.length})</p>
                     <div id={styles.right}>
                         <p onClick={_ => {
                             openWindow(allWindow.all, IdPrompt, {
@@ -412,7 +425,7 @@ export default function Info() {
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
                     <AllStudentsIcon />
-                    <p>所有学生</p>
+                    <p>{chat.allStudents[lo]}</p>
                 </div>
                 <div id='students'>
                     {listState.studentsJson && listState.studentsList &&
@@ -453,7 +466,9 @@ export default function Info() {
                             type,
                         });
                     }}>
-                        <Content />
+                        <loContext.Provider value={lo}>
+                            <Content />
+                        </loContext.Provider>
                     </SendMessageFunContext.Provider>
                 </StatesContext.Provider>
             </div>

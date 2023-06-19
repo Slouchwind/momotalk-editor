@@ -62,9 +62,7 @@ export default function MainNode({ children }: { children: React.ReactNode }) {
                         <MomoTalkIcon />
                         <p className={styles.MTText}>MomoTalk</p>
                     </div>
-                    <p id={styles.right} onClick={() => {
-
-                    }}>X</p>
+                    <p id={styles.right}>X</p>
                 </div>
                 <div id={styles.MTContents}>
                     <div id={styles.MTLeftBar}>

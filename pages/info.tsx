@@ -1,5 +1,6 @@
 //Components
 import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
 import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/students/student';
 
@@ -13,6 +14,7 @@ import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import Repeat from '@/components/repeat';
 import { getClassState } from '@/components/extraReact';
+import { info } from '@/components/i18n';
 
 interface ContentProps {
     id: number,
@@ -53,26 +55,30 @@ interface State {
 }
 
 export default function Info() {
+    const { locale, defaultLocale = 'zh-CN' } = useRouter();
+    const lo = locale || defaultLocale;
     const [state, setState] = getClassState(useState<State>({
         student: 0,
         studentsJson: { data: {} }
     }));
+
     useEffect(() => {
-        getStudentsJson().then(r => setState({ studentsJson: { data: r } }));
+        getStudentsJson(locale || defaultLocale).then(r => setState({ studentsJson: { data: r } }));
     }, []);
+
     return (
         <MainNode>
             <NextSeo
-                title={getTitle('学生信息')}
+                title={getTitle(info.title[lo])}
             />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
-                    <p>学生(123)</p>
+                    <p>{info.student[lo]}(123)</p>
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
                     <AllStudentsIcon />
-                    <p>所有学生</p>
+                    <p>{info.allStudents[lo]}</p>
                 </div>
                 <div id='students'>
                     {state.studentsJson &&
@@ -114,7 +120,7 @@ export default function Info() {
                 {state.student !== 0 ?
                     <Content id={state.student} allInfo={state.studentsJson.data} />
                     :
-                    <p>请选择学生。</p>
+                    <p>{info.selectStudents[lo]}</p>
                 }
             </div>
         </MainNode>

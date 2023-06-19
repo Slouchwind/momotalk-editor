@@ -1,8 +1,8 @@
 import { fileInfo, schaleInfo, studentsJson, studentInfo } from './students';
 
-export async function getStudentsJson(): Promise<studentsJson> {
+export async function getStudentsJson(locale:string): Promise<studentsJson> {
     const fileJson: fileInfo[] = await fetch('../students.json').then(r => r.json());
-    const schaleJson: schaleInfo[] = await fetch('https://schale.gg/data/cn/students.min.json').then(r => r.json());
+    const schaleJson: schaleInfo[] = await fetch(`https://schale.gg/data/${locale.slice(3).toLowerCase()}/students.min.json`).then(r => r.json());
     return { fileJson, schaleJson };
 }
 
