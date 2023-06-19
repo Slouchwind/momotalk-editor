@@ -57,12 +57,12 @@ export const chat: i18nContents = {
         'zh-TW': '去除',
     },
     idPromptTitle: {
-        'zh-CN': '输入Id',
-        'zh-TW': '輸入Id',
+        'zh-CN': '输入ID',
+        'zh-TW': '輸入ID',
     },
     idPromptInfo: {
-        'zh-CN': '请输入需要在列表$0的学生的Id',
-        'zh-TW': '請輸入需要在列表$0的學生的Id',
+        'zh-CN': '请输入需要在列表$0的学生的ID',
+        'zh-TW': '請輸入需要在列表$0的學生的ID',
     },
     error: {
         'zh-CN': '错误',
@@ -105,8 +105,8 @@ export const chat: i18nContents = {
         'zh-TW': '圖片鏈接',
     },
     undefinedStudent: {
-        'zh-CN': '$0的学生Id不存在',
-        'zh-TW': '$0的學生Id不存在',
+        'zh-CN': '$0的学生ID不存在',
+        'zh-TW': '$0的學生ID不存在',
     },
     up: {
         'zh-CN': '上传',
