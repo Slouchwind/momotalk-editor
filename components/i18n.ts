@@ -76,6 +76,10 @@ export const chat: i18nContents = {
         'zh-CN': '列表中无此学生',
         'zh-TW': '列表中無此學生',
     },
+    sendMsg: {
+        'zh-CN': '发送',
+        'zh-TW': '發送',
+    },
     sendMsgStudent: {
         'zh-CN': '发送学生消息',
         'zh-TW': '發送學生消息',

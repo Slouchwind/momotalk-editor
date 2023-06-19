@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<string>
+  req: NextApiRequest,
+  res: NextApiResponse<string>
 ) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'image/svg+xml');
-    let { fill = 'fff' } = req.query;
-    if (fill instanceof String) fill = fill.substring(0, 6);
-    res.status(200).send(`<?xml version="1.0" encoding="utf-8"?>
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'image/svg+xml');
+  let { fill = 'fff' } = req.query;
+  if (fill instanceof String) fill = fill.substring(0, 6);
+  res.status(200).send(`<?xml version="1.0" encoding="utf-8"?>
     <svg width="34.053787px" height="39.500008px" viewBox="0 0 34.053787 39.500008" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <path d="M6.52658 6.5C6.52658 2.91015 11.2276 0 17.0266 0C22.8256 0 27.5266 2.91015 27.5266 6.5C27.5266 10.0899 22.8256 13 17.0266 13C11.2276 13 6.52658 10.0899 6.52658 6.5Z" id="path_1" />

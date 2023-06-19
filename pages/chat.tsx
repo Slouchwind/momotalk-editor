@@ -369,7 +369,7 @@ export default function Info() {
                                 setChatState({ studentsChat: studentsChat });
                                 close();
                             }}
-                        >发送</button>
+                        >{chat.sendMsg[lo]}</button>
                     </>);
                 }}
                 zIndex={zIndex}

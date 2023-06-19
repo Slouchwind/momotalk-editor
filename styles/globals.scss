@@ -117,8 +117,11 @@ div.ask {
     h2 {
       margin: 10px;
     }
-    p {
+    img {
+      $h: 10px;
       cursor: pointer;
+      width: $h;
+      height: $h;
       @extend h2;
     }
   }

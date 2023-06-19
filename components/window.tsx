@@ -51,7 +51,7 @@ export default class Window<A> {
                 <div className='ask' style={{ zIndex }}>
                     <div className='up'>
                         <h2>{title}</h2>
-                        <p onClick={_ => closeWindow()}>x</p>
+                        <img src='/api/icon/close?fill=000' onClick={_ => closeWindow()} />
                     </div>
                     <div className='element'>{element(closeWindow)}</div>
                 </div>
