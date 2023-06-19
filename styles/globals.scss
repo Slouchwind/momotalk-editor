@@ -49,6 +49,7 @@ body {
 #students {
   > div {
     $bg-color: #f3f7f8;
+    cursor: pointer;
     transition-duration: 0.2s;
     height: 80px;
     display: flex;
