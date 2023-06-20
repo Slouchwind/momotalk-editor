@@ -1,2 +1,5 @@
 # <img src="https://momotalk.slouchwind.tk/api/icon" width="35px" /> MomoTalk Editor
-A Web MomoTalk Editor, still writing.
+一个网页端MomoTalk编辑器
+
+## 预览
+![preview](./img/preview.png)
