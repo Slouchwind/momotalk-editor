@@ -1,11 +1,14 @@
 //Components
 import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/students/student';
+import Student, { AllStudentsIcon } from '@/components/students';
 
 //Styles
 import styles from '@/styles/Info.module.scss';
+
+//i18n
+import { useLocale } from '@/components/i18n';
+import info from '@/components/i18n/config/info';
 
 //Methods
 import { useEffect, useState } from 'react';
@@ -14,7 +17,6 @@ import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import Repeat from '@/components/repeat';
 import { getClassState } from '@/components/extraReact';
-import { info } from '@/components/i18n';
 
 interface ContentProps {
     id: number,
@@ -55,30 +57,29 @@ interface State {
 }
 
 export default function Info() {
-    const { locale, defaultLocale = 'zh-CN' } = useRouter();
-    const lo = locale || defaultLocale;
+    const { lo, locale } = useLocale(info);
     const [state, setState] = getClassState(useState<State>({
         student: 0,
         studentsJson: { data: {} }
     }));
 
     useEffect(() => {
-        getStudentsJson(locale || defaultLocale).then(r => setState({ studentsJson: { data: r } }));
+        getStudentsJson(lo).then(r => setState({ studentsJson: { data: r } }));
     }, []);
 
     return (
         <MainNode>
             <NextSeo
-                title={getTitle(info.title[lo])}
+                title={getTitle(locale('title'))}
             />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
-                    <p>{info.student[lo]}(123)</p>
+                    <p>{locale('student')}(123)</p>
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
                     <AllStudentsIcon />
-                    <p>{info.allStudents[lo]}</p>
+                    <p>{locale('allStudents')}</p>
                 </div>
                 <div id='students'>
                     {state.studentsJson &&
@@ -120,7 +121,7 @@ export default function Info() {
                 {state.student !== 0 ?
                     <Content id={state.student} allInfo={state.studentsJson.data} />
                     :
-                    <p>{info.selectStudents[lo]}</p>
+                    <p>{locale('selectStudents')}</p>
                 }
             </div>
         </MainNode>

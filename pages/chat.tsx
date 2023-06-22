@@ -1,13 +1,16 @@
 //Components
 import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/students/student';
+import Student, { AllStudentsIcon } from '@/components/students';
 import Repeat from '@/components/repeat';
 import ImgCol from '@/components/imgCol';
 
-//Styles
+//Style
 import styles from '@/styles/Chat.module.scss';
+
+//i18n
+import { fillBlank, useLocale } from '@/components/i18n';
+import chat from '@/components/i18n/config/chat';
 
 //Methods
 import { useState, useEffect, useRef, createContext, useContext } from 'react';
@@ -17,7 +20,6 @@ import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/stu
 import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
 import { setStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
-import { chat, fillBlank, i18nContents } from '@/components/i18n';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -36,7 +38,7 @@ const SendMessageFunContext = createContext<(
     type?: MessageData['type'],
 ) => void>(() => { });
 
-const loContext = createContext<string>('zh-CN');
+const localeContext = createContext<(key: keyof typeof chat) => string>((key: keyof typeof chat) => key);
 
 interface MsgProps {
     msg: MessageProps['msg'];
@@ -56,18 +58,22 @@ interface MessageProps {
     id: MessageData['id'];
     msg: React.ReactNode;
     type: MessageData['type'];
+    key: number;
 }
 
-function Message({ id, msg, type }: MessageProps) {
+function Message({ id, msg, type, key }: MessageProps) {
     const { listState } = useContext(StatesContext);
     const allInfo = listState.studentsJson?.data || {};
+
+    function contextMenuHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        e.preventDefault();
+    }
+
     if (id === 'sensei') {
         return (
             <div
                 className={styles.sensei}
-                onContextMenu={e => {
-                    e.preventDefault();
-                }}
+                onContextMenu={contextMenuHandler}
             ><Msg msg={msg} type={type} /></div>
         );
     }
@@ -85,9 +91,7 @@ function Message({ id, msg, type }: MessageProps) {
                 <div id={styles.right}>
                     <p>{info.schale?.Name}</p>
                     <div
-                        onContextMenu={e => {
-                            e.preventDefault();
-                        }}
+                        onContextMenu={contextMenuHandler}
                     ><Msg msg={msg} type={type} /></div>
                 </div>
             </div>
@@ -132,12 +136,12 @@ interface SenderState {
 
 function Sender({ id }: SenderState) {
     const sendMessageFun = useContext(SendMessageFunContext);
-    const lo = useContext(loContext);
+    const locale = useContext(localeContext);
     return (
         <img
             src={`/api/icon/chat?fill=${getStuSenText(id, '4c5a6e', '4a89ca')}`}
             alt={`${id} send icon`}
-            title={getStuSenText(id, chat.sendMsgStudent[lo], chat.sendMsgSensei[lo])}
+            title={getStuSenText(id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
             onClick={() => sendMessageFun(id)}
             onContextMenu={e => {
                 e.preventDefault();
@@ -153,12 +157,12 @@ interface LoaderState {
 
 function Loader({ type }: LoaderState) {
     const { chatState, setChatState } = useContext(StatesContext);
-    const lo = useContext(loContext);
+    const locale = useContext(localeContext);
     return (
         <img
             src={`/api/icon/${type}load?fill=000`}
             alt={`${type}load icon`}
-            title={chat[type][lo] + chat.jsonFile[lo]}
+            title={locale(type) + locale('jsonFile')}
             onClick={() => {
                 if (type === 'up') uploadFile(e => {
                     const result = e.target?.result;
@@ -186,9 +190,9 @@ function ChatEditorBar() {
 
 function Content() {
     const { listState } = useContext(StatesContext);
-    const lo = useContext(loContext);
+    const locale = useContext(localeContext);
     if (!listState.studentsJson) return null;
-    if (listState.student === 0) return (<p>{chat.selectStudents[lo]}</p>);
+    if (listState.student === 0) return (<p>{locale('selectStudents')}</p>);
     return (
         <div id={styles.content}>
             <MessagesGroup />
@@ -229,11 +233,11 @@ interface SendMessageArg {
 }
 
 export default function Info() {
-    const { locale, defaultLocale = 'zh-CN' } = useRouter();
-    const lo = locale || defaultLocale;
+    const { lo, locale } = useLocale(chat);
+
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
-        studentsList: [10000, 10002],
+        studentsList: [10000, 10045],
         studentsJson: { data: {} },
     }));
     const [chatState, setChatState] = getClassState(useState<ChatState>({
@@ -261,7 +265,7 @@ export default function Info() {
     }, []);
 
     useEffect(() => {
-        getStudentsJson(locale || defaultLocale).then(r => setListState({ studentsJson: { data: r } }));
+        getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
     }, []);
 
     //Window
@@ -286,16 +290,16 @@ export default function Info() {
     useEffect(() => {
         addNewWindow(IdPrompt, (zIndex, id, display, { studentsList, type }, all) => (
             <IdPrompt.Component
-                title={chat.idPromptTitle[lo]}
+                title={locale('idPromptTitle')}
                 closeWindow={() => closeWindow(all, id)}
                 element={close => (<>
-                    <p>{fillBlank(chat.idPromptInfo[lo], chat[type || '+'][lo])}</p>
+                    <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
                     <input type='number' onChange={e => { idPromptInputRef.current = Number(e.target.value); }} />
                     <button
                         onClick={() => {
                             if (type === '+') {
                                 if (studentsList?.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: chat.error[lo], elem: chat.sameStudent[lo] });
+                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('sameStudent') });
                                 }
                                 else {
                                     studentsList = studentsList?.concat(idPromptInputRef.current);
@@ -306,7 +310,7 @@ export default function Info() {
                             }
                             else if (type === '-') {
                                 if (!studentsList?.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: chat.error[lo], elem: chat.withoutStudent[lo] });
+                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
                                 }
                                 else {
                                     const i = studentsList.indexOf(idPromptInputRef.current);
@@ -317,7 +321,7 @@ export default function Info() {
                                 }
                             }
                         }}
-                    >{chat[type || '+'][lo]}</button>
+                    >{locale(type || '+')}</button>
                 </>)}
                 zIndex={zIndex}
                 display={display}
@@ -337,24 +341,24 @@ export default function Info() {
         ));
         addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type }, all) => (
             <SendMessage.Component
-                title={getStuSenText(id, chat.sendMsgStudent[lo], chat.sendMsgSensei[lo])}
+                title={getStuSenText(id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
                 closeWindow={() => closeWindow(all, winId)}
                 element={close => {
                     sendMessageInputRef.current = '';
                     return (<>
                         <p>
                             {fillBlank(
-                                chat.sendMsgInfo[lo],
+                                locale('sendMsgInfo'),
                                 getStuSenText(
                                     id,
-                                    chat.sendMsgStudentInfo[lo],
-                                    chat.sendMsgSenseiInfo[lo]
+                                    locale('sendMsgStudentInfo'),
+                                    locale('sendMsgSenseiInfo')
                                 ),
                                 getStudentInfo(
                                     studentsJson?.data || {},
                                     selId || 10000
                                 ).schale?.Name,
-                                chat[type][lo]
+                                locale(type)
                             )}
                         </p>
                         {type === 'text' && <textarea onChange={e => sendMessageInputRef.current = e.target.value} />}
@@ -369,7 +373,7 @@ export default function Info() {
                                 setChatState({ studentsChat: studentsChat });
                                 close();
                             }}
-                        >{chat.sendMsg[lo]}</button>
+                        >{locale('sendMsg')}</button>
                     </>);
                 }}
                 zIndex={zIndex}
@@ -383,8 +387,8 @@ export default function Info() {
             if (listState.studentsJson?.data.schaleJson === undefined) return;
             if (getStudentInfo(listState.studentsJson.data, id).schale?.CollectionTexture !== undefined) return;
             openWindow(allWindow.all, TextAlert, {
-                title: chat.error[lo],
-                elem: fillBlank(chat.undefinedStudent[lo], String(id)),
+                title: locale('error'),
+                elem: fillBlank(locale('undefinedStudent'), String(id)),
                 fun() {
                     openWindow(allWindow.all, IdPrompt, {
                         studentsList: listState.studentsList,
@@ -394,6 +398,7 @@ export default function Info() {
             });
             const { studentsList } = listState;
             studentsList?.splice(studentsList?.indexOf(id), 1);
+            window.localStorage.studentsList = studentsList?.join();
             setListState({ studentsList });
         });
     }, [listState.studentsList]);
@@ -401,12 +406,12 @@ export default function Info() {
     return (
         <MainNode>
             <NextSeo
-                title={getTitle(chat.title[lo])}
+                title={getTitle(locale('title'))}
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
-                    <p id={styles.left}>{chat.student[lo]}({listState.studentsList?.length})</p>
+                    <p id={styles.left}>{locale('student')}({listState.studentsList?.length})</p>
                     <div id={styles.right}>
                         <p onClick={_ => {
                             openWindow(allWindow.all, IdPrompt, {
@@ -425,7 +430,7 @@ export default function Info() {
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
                     <AllStudentsIcon />
-                    <p>{chat.allStudents[lo]}</p>
+                    <p>{locale('allStudents')}</p>
                 </div>
                 <div id='students'>
                     {listState.studentsJson && listState.studentsList &&
@@ -466,9 +471,9 @@ export default function Info() {
                             type,
                         });
                     }}>
-                        <loContext.Provider value={lo}>
+                        <localeContext.Provider value={locale}>
                             <Content />
-                        </loContext.Provider>
+                        </localeContext.Provider>
                     </SendMessageFunContext.Provider>
                 </StatesContext.Provider>
             </div>

@@ -1,37 +1,4 @@
-export type i18nContents = {
-    [x: string]: {
-        'zh-CN': string,
-        'zh-TW': string,
-        [x: string]: string,
-    }
-}
-
-export function fillBlank(i18n: string, ...fills: (string | undefined)[]): string {
-    let text = i18n;
-    fills.forEach((v, i) => text = text.replace(`$${i}`, v || ''));
-    return text;
-}
-
-export const info: i18nContents = {
-    title: {
-        'zh-CN': '学生信息',
-        'zh-TW': '學生信息',
-    },
-    student: {
-        'zh-CN': '学生',
-        'zh-TW': '學生',
-    },
-    allStudents: {
-        'zh-CN': '所有学生',
-        'zh-TW': '所有學生',
-    },
-    selectStudents: {
-        'zh-CN': '请选择学生。',
-        'zh-TW': '請選擇學生。',
-    },
-}
-
-export const chat: i18nContents = {
+export const chat = {
     title: {
         'zh-CN': '聊天编辑',
         'zh-TW': '聊天編輯',
@@ -125,3 +92,4 @@ export const chat: i18nContents = {
         'zh-TW': 'JSON文件',
     },
 }
+export default chat;
