@@ -9,10 +9,10 @@ export function fillBlank(i18n: string, ...fills: (string | undefined)[]): strin
 }
 
 export function useLocale<T extends i18nContents, K extends keyof T>(i18n: T) {
-    const { locale: localeText, defaultLocale = 'zh-CN' } = useRouter();
+    const { locale: localeText, defaultLocale = 'zh-CN', ...other } = useRouter();
     const lo = localeText || defaultLocale;
     function locale(key: K) {
         return i18n[key][lo];
     }
-    return { lo, locale };
+    return { lo, locale, ...other };
 }

@@ -187,3 +187,29 @@ div.back {
 }
 
 @include img-col(100%);
+
+div#contentMenu {
+  backdrop-filter: blur(30px);
+  position: absolute;
+  width: 60px;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: rgb(0 0 0 / 30%) 0 0 20px;
+  z-index: 10000;
+
+  > div {
+    padding: 1px;
+    border-radius: 5px;
+    transition-duration: 0.2s;
+
+    &:hover {
+      background-color: rgb(0 0 0 / 10%);
+    }
+
+    > p {
+      margin: 0;
+      margin-left: 5px;
+      font-size: 14px;
+    }
+  }
+}

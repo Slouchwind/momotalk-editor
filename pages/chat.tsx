@@ -4,6 +4,7 @@ import MainNode from '@/components/main';
 import Student, { AllStudentsIcon } from '@/components/students';
 import Repeat from '@/components/repeat';
 import ImgCol from '@/components/imgCol';
+import ContentMenu from '@/components/contentMenu';
 
 //Style
 import styles from '@/styles/Chat.module.scss';
@@ -20,6 +21,7 @@ import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/stu
 import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
 import { setStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
+import { ContentMenuSet } from '@/components/contentMenu';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -40,6 +42,12 @@ const SendMessageFunContext = createContext<(
 
 const localeContext = createContext<(key: keyof typeof chat) => string>((key: keyof typeof chat) => key);
 
+const SetCMMessageFunContext = createContext<(
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    i: number
+) => void
+>(() => { });
+
 interface MsgProps {
     msg: MessageProps['msg'];
     type: MessageData['type'];
@@ -58,15 +66,17 @@ interface MessageProps {
     id: MessageData['id'];
     msg: React.ReactNode;
     type: MessageData['type'];
-    key: number;
+    i: number;
 }
 
-function Message({ id, msg, type, key }: MessageProps) {
+function Message({ id, msg, type, i }: MessageProps) {
     const { listState } = useContext(StatesContext);
+    const fun = useContext(SetCMMessageFunContext);
     const allInfo = listState.studentsJson?.data || {};
 
     function contextMenuHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.preventDefault();
+        fun(e, i);
     }
 
     if (id === 'sensei') {
@@ -115,6 +125,7 @@ function MessagesGroup() {
                     id={v.id}
                     msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
                     type={v.type}
+                    i={i}
                     key={i}
                 />
             );
@@ -123,6 +134,7 @@ function MessagesGroup() {
                     id={v.id}
                     msg={<img src={v.msg} />}
                     type={v.type}
+                    i={i}
                     key={i}
                 />
             );
@@ -230,6 +242,7 @@ interface SendMessageArg {
     studentsChat?: ChatState['studentsChat'];
     id: MessageData['id'];
     type: MessageData['type'];
+    i?: number;
 }
 
 export default function Info() {
@@ -251,6 +264,12 @@ export default function Info() {
                 { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
             ]
         }
+    }));
+    const [contentMenu, setContentMenu] = getClassState(useState<ContentMenuSet>({
+        x: 0,
+        y: 0,
+        content: [],
+        display: false,
     }));
 
     useEffect(() => {
@@ -339,7 +358,7 @@ export default function Info() {
                 display={display}
             />
         ));
-        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type }, all) => (
+        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type, i }, all) => (
             <SendMessage.Component
                 title={getStuSenText(id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
                 closeWindow={() => closeWindow(all, winId)}
@@ -366,10 +385,19 @@ export default function Info() {
                         <button
                             onClick={() => {
                                 if (!studentsChat) return;
+                                //Can't be empty message
                                 if (sendMessageInputRef.current.trim() === '') return;
+                                //Get selected student's messageGroup
                                 let messageData = studentsChat[String(selId)];
+                                //Create newMsgData by input text
                                 let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
-                                studentsChat[String(selId)] = messageData ? messageData.concat(newData) : [newData];
+                                //Concat or Change newMsgData
+                                if (i === undefined)
+                                    studentsChat[String(selId)] =
+                                        messageData ? messageData.concat(newData) : [newData];
+                                else
+                                    studentsChat[String(selId)][i] = newData;
+                                //Set
                                 setChatState({ studentsChat: studentsChat });
                                 close();
                             }}
@@ -404,11 +432,12 @@ export default function Info() {
     }, [listState.studentsList]);
 
     return (
-        <MainNode>
+        <MainNode onBodyClick={() => setContentMenu({ display: false })}>
             <NextSeo
                 title={getTitle(locale('title'))}
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
+            <ContentMenu set={contentMenu} />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
                     <p id={styles.left}>{locale('student')}({listState.studentsList?.length})</p>
@@ -472,7 +501,60 @@ export default function Info() {
                         });
                     }}>
                         <localeContext.Provider value={locale}>
-                            <Content />
+                            <SetCMMessageFunContext.Provider value={(e, i) => {
+                                const stu = listState.student || 10000;
+                                if (chatState.studentsChat === undefined) return;
+                                let msgDatas = chatState.studentsChat;
+                                const msgData = msgDatas[stu][i];
+                                setContentMenu({
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                    content: [
+                                        {
+                                            type: 'text', text: locale('copy'), onClick() {
+                                                if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
+                                                if (msgData.type === 'img') {
+                                                    (async () => {
+                                                        let img = await fetch(msgData.msg);
+                                                        let blob = await img.blob();
+                                                        let data = new ClipboardItem({
+                                                            [blob.type]: blob
+                                                        });
+                                                        await window.navigator.clipboard.write([data]);
+                                                    })().catch(reason => {
+                                                        openWindow(allWindow.all, TextAlert, {
+                                                            title: 'Error',
+                                                            elem: String(reason),
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                        },
+                                        {
+                                            type: 'text', text: locale('delete'), onClick() {
+                                                msgDatas[stu].splice(i, 1);
+                                                setChatState({ studentsChat: msgDatas });
+                                            }
+                                        },
+                                        {
+                                            type: 'text', text: locale('edit'), onClick() {
+                                                const { id, type } = msgData;
+                                                openWindow(allWindow.all, SendMessage, {
+                                                    studentsJson: listState.studentsJson,
+                                                    selId: listState.student,
+                                                    studentsChat: chatState.studentsChat,
+                                                    id,
+                                                    type,
+                                                    i,
+                                                });
+                                            }
+                                        },
+                                    ],
+                                    display: true,
+                                });
+                            }}>
+                                <Content />
+                            </SetCMMessageFunContext.Provider>
                         </localeContext.Provider>
                     </SendMessageFunContext.Provider>
                 </StatesContext.Provider>

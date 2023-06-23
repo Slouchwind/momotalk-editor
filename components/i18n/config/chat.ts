@@ -73,7 +73,7 @@ export const chat = {
     },
     img: {
         'zh-CN': '图片链接',
-        'zh-TW': '圖片鏈接',
+        'zh-TW': '圖片位址',
     },
     undefinedStudent: {
         'zh-CN': '$0的学生ID不存在',
@@ -90,6 +90,18 @@ export const chat = {
     jsonFile: {
         'zh-CN': 'JSON文件',
         'zh-TW': 'JSON文件',
+    },
+    copy: {
+        'zh-CN': '复制',
+        'zh-TW': '複製',
+    },
+    delete: {
+        'zh-CN': '删除',
+        'zh-TW': '刪除',
+    },
+    edit: {
+        'zh-CN': '编辑',
+        'zh-TW': '編輯',
     },
 }
 export default chat;

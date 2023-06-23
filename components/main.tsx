@@ -52,9 +52,12 @@ function MTStart() {
     )}</>;
 }
 
-export default function MainNode({ children }: { children: React.ReactNode }) {
+export default function MainNode({ children, onBodyClick }: {
+    children: React.ReactNode;
+    onBodyClick?: React.MouseEventHandler;
+}) {
     return (
-        <div id={styles.main}>
+        <div id={styles.main} onClick={onBodyClick}>
             <MTStart />
             <div id={styles.MTBackground}>
                 <div id={styles.MTBar}>
