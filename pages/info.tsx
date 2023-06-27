@@ -57,7 +57,7 @@ interface State {
 }
 
 export default function Info() {
-    const { lo, locale } = useLocale(info);
+    const { lo, locale, userLo } = useLocale(info);
     const [state, setState] = getClassState(useState<State>({
         student: 0,
         studentsJson: { data: {} }
@@ -65,7 +65,7 @@ export default function Info() {
 
     useEffect(() => {
         getStudentsJson(lo).then(r => setState({ studentsJson: { data: r } }));
-    }, []);
+    }, [userLo]);
 
     return (
         <MainNode>

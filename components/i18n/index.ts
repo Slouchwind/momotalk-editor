@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useSetting } from "../setting";
 
 export type Locales = 'zh-CN' | 'zh-TW';
@@ -11,14 +12,15 @@ export function fillBlank(i18n: string, ...fills: (string | undefined)[]): strin
 }
 
 export function useLocale<T extends i18nContents, K extends keyof T>(i18n: T) {
+    const [userLo, setUserLo] = useState('zh-CN');
+    useEffect(() => setUserLo(window.navigator.language), []);
     const { setting } = useSetting();
-    //const { locale: localeText, defaultLocale = 'zh-CN', ...other } = useRouter();
-    const lo = setting.locale || 'zh-CN';
+    const lo = setting.locale || userLo;
     function locale(key: K, loc?: string) {
         return (i18n as Record<K, Record<string, string>>)[key][loc || lo];
     }
     function localeType<Type extends string>(key: Type, loc?: string) {
         return (i18n as Record<Type, Record<string, string>>)[key][loc || lo];
     }
-    return { lo, locale, localeType };
+    return { lo, locale, localeType, userLo };
 }

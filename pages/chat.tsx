@@ -239,7 +239,7 @@ interface SendMessageArg {
 }
 
 export default function Chat() {
-    const { lo, locale } = useLocale(chat);
+    const { lo, locale, userLo } = useLocale(chat);
 
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
@@ -278,7 +278,7 @@ export default function Chat() {
 
     useEffect(() => {
         getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
-    }, []);
+    }, [userLo]);
 
     //Window
     const {
@@ -401,7 +401,7 @@ export default function Chat() {
                 display={display}
             />
         ));
-    }, []);
+    }, [userLo]);
 
     useEffect(() => {
         listState.studentsList?.forEach(id => {
