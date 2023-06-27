@@ -19,7 +19,7 @@ import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
 import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
-import { setStateFun, getClassState } from '@/components/extraReact';
+import { SetStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
 import { ContentMenuSet } from '@/components/contentMenu';
 
@@ -27,7 +27,7 @@ const StatesContext = createContext<{
     allWindow: AllWindow;
     listState: ListState;
     chatState: ChatState;
-    setChatState: setStateFun<ChatState>;
+    setChatState: SetStateFun<ChatState>;
 }>({
     allWindow: {},
     listState: {},
@@ -119,26 +119,19 @@ function MessagesGroup() {
     const { listState, chatState } = useContext(StatesContext);
     const data = chatState.studentsChat?.[String(listState.student)] || [];
     return (<>
-        {data.map((v, i) => {
-            if (v.type === 'text') return (
-                <Message
-                    id={v.id}
-                    msg={v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>))}
-                    type={v.type}
-                    i={i}
-                    key={i}
-                />
-            );
-            else if (v.type === 'img') return (
-                <Message
-                    id={v.id}
-                    msg={<img src={v.msg} />}
-                    type={v.type}
-                    i={i}
-                    key={i}
-                />
-            );
-        })}
+        {data.map((v, i) => (
+            <Message
+                id={v.id}
+                msg={(() => {
+                    if (v.type === 'text')
+                        return v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>));
+                    else if (v.type === 'img') return (<img src={v.msg} />);
+                })()}
+                type={v.type}
+                i={i}
+                key={i}
+            />
+        ))}
     </>);
 }
 
@@ -245,7 +238,7 @@ interface SendMessageArg {
     i?: number;
 }
 
-export default function Info() {
+export default function Chat() {
     const { lo, locale } = useLocale(chat);
 
     const [listState, setListState] = getClassState(useState<ListState>({
@@ -273,11 +266,11 @@ export default function Info() {
     }));
 
     useEffect(() => {
-        let list: string = window?.localStorage.studentsList;
+        let list: string = window.localStorage.studentsList;
         if (list !== undefined) {
             setListState({ studentsList: list.split(',').map(v => Number(v)) });
         }
-        let chat: string = window?.localStorage.studentsChat;
+        let chat: string = window.localStorage.studentsChat;
         if (chat !== undefined) {
             setChatState({ studentsChat: JSON.parse(chat) });
         }

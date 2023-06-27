@@ -14,8 +14,8 @@
   }
 }
 
-@mixin text-inputer($h: auto) {
-  width: calc(100% - 10px);
+@mixin text-inputer($w: calc(100% - 10px), $h: auto) {
+  width: $w;
   height: $h;
   padding: 5px;
   margin: 5px 0;
@@ -102,88 +102,109 @@ body {
     }
   }
 }
-
-div.ask {
-  position: absolute;
-  box-shadow: 0 0 10px 0px #00000080;
-  border-radius: 10px;
-  background-color: #fff;
-
-  div.up {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h2 {
-      margin: 10px;
-    }
-    img {
-      $h: 10px;
-      cursor: pointer;
-      width: $h;
-      height: $h;
-      @extend h2;
-    }
-  }
-
-  div.element {
-    padding: 10px;
-    display: flex;
-    flex: {
-      wrap: wrap;
-      direction: column;
-    }
-    align: {
-      content: center;
-      items: center;
-    }
-
-    input {
-      @include text-inputer;
-    }
-
-    textarea {
-      @include text-inputer(100px);
-      resize: none;
-
-      &::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-        background-color: #0000;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        border-radius: 2.5px;
-        background-color: #ccc;
-      }
-    }
-
-    button {
-      cursor: pointer;
-      background-color: #63adc6;
-      color: #fff;
-      border: 0;
-      border-radius: 5px;
-      margin: 5px;
-      height: 25px;
-    }
-
-    p {
-      margin: 0;
-    }
-  }
-}
-
-div.back {
+div.window {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: #0000004d;
-  backdrop-filter: blur(10px) saturate(1.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #0000004d;
+    backdrop-filter: blur(10px) saturate(1.2);
+  }
+
+  div.ask {
+    position: fixed;
+    box-shadow: 0 0 10px 0px #00000080;
+    border-radius: 10px;
+    background-color: #fff;
+
+    div.up {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h2 {
+        margin: 10px;
+      }
+      img {
+        $h: 10px;
+        cursor: pointer;
+        width: $h;
+        height: $h;
+        @extend h2;
+      }
+    }
+
+    div.element {
+      padding: 10px;
+      display: flex;
+      flex: {
+        wrap: wrap;
+        direction: column;
+      }
+      align: {
+        content: center;
+        items: center;
+      }
+
+      input {
+        @include text-inputer;
+      }
+
+      textarea {
+        @include text-inputer($h: 100px);
+        resize: none;
+
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+          background-color: #0000;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 2.5px;
+          background-color: #ccc;
+        }
+      }
+
+      button {
+        cursor: pointer;
+        background-color: #63adc6;
+        color: #fff;
+        border: 0;
+        border-radius: 5px;
+        margin: 5px;
+        height: 25px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      label {
+        margin: 2px 0;
+        select {
+          margin-left: 5px;
+        }
+      }
+
+      select {
+        @include text-inputer($w: auto);
+      }
+    }
+  }
 }
 
 @include img-col(100%);

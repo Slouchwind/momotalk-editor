@@ -43,7 +43,7 @@ div #main {
     align-items: center;
     opacity: 0;
 
-    > svg {
+    img {
       width: 50px;
     }
   }
@@ -107,9 +107,14 @@ p.MTText {
     }
   }
 
-  p#right {
-    color: #fff;
-    margin: 0 15px;
+  div#right {
+    cursor: pointer;
+    display: flex;
+
+    > img {
+      margin-right: 10px;
+      width: 30px;
+    }
   }
 }
 
@@ -152,4 +157,19 @@ p.MTText {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+form#settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+
+  label {
+    width: calc(100% - 20px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }

@@ -73,7 +73,7 @@ export function AllWindows({ zIndex, allWindow }: {
                 components={v => {
                     if (allWindow.component && allWindow.all)
                         return (
-                            <React.Fragment key={allWindow.all[v].id}>
+                            <div className='window'>
                                 <div className='back' style={{ zIndex: zIndex + (2 * v) }} />
                                 {allWindow.component[allWindow.all[v].name](
                                     zIndex + 1 + (2 * v),
@@ -82,7 +82,7 @@ export function AllWindows({ zIndex, allWindow }: {
                                     allWindow.all[v].arg,
                                     allWindow.all
                                 )}
-                            </React.Fragment>
+                            </div>
                         );
                 }}
             />

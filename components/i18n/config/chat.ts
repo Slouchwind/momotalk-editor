@@ -1,4 +1,4 @@
-export const chat = {
+const chat = {
     title: {
         'zh-CN': '聊天编辑',
         'zh-TW': '聊天編輯',
