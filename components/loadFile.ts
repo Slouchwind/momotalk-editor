@@ -12,16 +12,14 @@ export function downloadFile(json: object, filename: string) {
     URL.revokeObjectURL(url);
 }
 
-export function uploadFile(fileOnLoad: FileReader['onload']) {
+export function uploadFile(onload: (blob: Blob) => void) {
     const anchor = document.createElement('input');
     anchor.type = 'file';
     anchor.accept = 'application/json';
     document.body.appendChild(anchor);
     anchor.addEventListener('change', () => {
         if (!anchor.files?.[0]) return;
-        const reader = new FileReader();
-        reader.readAsText(anchor.files?.[0]);
-        reader.onload = fileOnLoad;
+        onload(anchor.files?.[0]);
     });
     anchor.click();
 }

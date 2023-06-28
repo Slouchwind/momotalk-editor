@@ -116,7 +116,6 @@ export default function MainNode({ children, onBodyClick }: {
                         }}
                         done={locale('done')}
                         onSubmit={data => {
-                            window.localStorage.set = JSON.stringify(data);
                             setSetting(data as SettingState);
                             close();
                         }}
@@ -141,7 +140,10 @@ export default function MainNode({ children, onBodyClick }: {
                     <div id={styles.right}>
                         <img
                             src='/api/icon/setting'
-                            onClick={() => openWindow(allWindow.all, Setting, { setting, setSetting })}
+                            onClick={() => openWindow(allWindow.all, Setting, {
+                                setting: JSON.parse(window.localStorage.set),
+                                setSetting,
+                            })}
                         />
                     </div>
                 </div>

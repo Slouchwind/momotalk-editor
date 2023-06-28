@@ -89,12 +89,20 @@ export interface SettingArg {
 }
 
 export function useSetting(state?: SettingState) {
-    const [setting, setSetting] = getClassState(useState<SettingState>(state || {}));
+    const [setting, setSetting] = getClassState(
+        useState<SettingState>(state || {}),
+        newSet => {
+            window.localStorage.set = JSON.stringify(newSet)
+        }
+    );
     useEffect(() => {
         let setting: string = window.localStorage.set;
         if (setting !== undefined) {
             setSetting(JSON.parse(setting));
         }
     }, []);
-    return { setting, setSetting };
+    function getSetting(): SettingState {
+        return JSON.parse(window.localStorage.set);
+    }
+    return { setting, setSetting, getSetting };
 }

@@ -22,7 +22,7 @@ import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window
 import { SetStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
 import { ContentMenuSet } from '@/components/contentMenu';
-import { useSetting } from '@/components/setting';
+import { SettingState, useSetting } from '@/components/setting';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -170,29 +170,33 @@ interface LoaderState {
 
 function Loader({ type }: LoaderState) {
     const {
-        chatState: {
-            studentsChat,
-            fileName
-        },
+        chatState: { studentsChat },
         setChatState,
     } = useContext(StatesContext);
     const locale = useContext(localeContext);
+    const { setSetting, getSetting } = useSetting();
+
     return (
         <img
             src={`/api/icon/${type}load?fill=000`}
             alt={`${type}load icon`}
             title={locale(type) + locale('jsonFile')}
             onClick={() => {
-                if (type === 'up') uploadFile(e => {
-                    const result = e.target?.result;
-                    if (typeof result !== 'string') return;
-                    const json = JSON.parse(result);
-                    setChatState({ studentsChat: json });
+                if (type === 'up') uploadFile(file => {
+                    const reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.onload = e => {
+                        const result = e.target?.result;
+                        if (typeof result !== 'string') return;
+                        const json = JSON.parse(result);
+                        setChatState({ studentsChat: json });
+                        setSetting({ fileName: file.name.split('.')[0] });
+                    }
                 });
-                if (type === 'down') downloadFile(studentsChat || {}, `${fileName}.json`);
+                if (type === 'down') downloadFile(studentsChat || {}, `${getSetting().fileName}.json`);
             }}
         />
-    )
+    );
 }
 
 function ChatEditorBar() {
@@ -230,7 +234,6 @@ interface ListState {
 
 interface ChatState {
     studentsChat?: { [x: string]: MessageData[] };
-    fileName?: string;
 }
 
 interface IdPromptArg {
@@ -256,7 +259,7 @@ interface SendMessageArg {
 export default function Chat() {
     const { lo, locale, userLo } = useLocale(chat);
 
-    const { setting: { fileName } } = useSetting();
+    const { setting, setSetting } = useSetting();
 
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
@@ -274,7 +277,6 @@ export default function Chat() {
                 { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
             ]
         },
-        fileName: 'untitled',
     }));
     const [contentMenu, setContentMenu] = getClassState(useState<ContentMenuSet>({
         x: 0,
@@ -296,10 +298,6 @@ export default function Chat() {
 
     useEffect(() => {
         getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
-    }, [userLo]);
-
-    useEffect(() => {
-        setChatState({ fileName });
     }, [userLo]);
 
     //Window
