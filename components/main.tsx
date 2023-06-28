@@ -67,7 +67,7 @@ export default function MainNode({ children, onBodyClick }: {
     children: React.ReactNode;
     onBodyClick?: React.MouseEventHandler;
 }) {
-    const { lo, locale, localeType, userLo } = useLocale(main);
+    const { lo, locale, localeType } = useLocale(main);
 
     const { setting, setSetting } = useSetting({
         locale: lo,
@@ -125,7 +125,7 @@ export default function MainNode({ children, onBodyClick }: {
                 display={display}
             />
         ));
-    }, [userLo]);
+    }, [lo]);
 
     return (
         <div id={styles.main} onClick={onBodyClick}>

@@ -27,11 +27,13 @@ import { SettingState, useSetting } from '@/components/setting';
 const StatesContext = createContext<{
     allWindow: AllWindow;
     listState: ListState;
+    setListState: SetStateFun<ListState>;
     chatState: ChatState;
     setChatState: SetStateFun<ChatState>;
 }>({
     allWindow: {},
     listState: {},
+    setListState: () => { },
     chatState: {},
     setChatState: () => { },
 });
@@ -170,6 +172,8 @@ interface LoaderState {
 
 function Loader({ type }: LoaderState) {
     const {
+        listState: { studentsList },
+        setListState,
         chatState: { studentsChat },
         setChatState,
     } = useContext(StatesContext);
@@ -188,12 +192,16 @@ function Loader({ type }: LoaderState) {
                     reader.onload = e => {
                         const result = e.target?.result;
                         if (typeof result !== 'string') return;
-                        const json = JSON.parse(result);
-                        setChatState({ studentsChat: json });
+                        const json: {
+                            studentsList: ListState['studentsList'];
+                            studentsChat: ChatState['studentsChat'];
+                        } = JSON.parse(result);
+                        setListState({ studentsList: json.studentsList })
+                        setChatState({ studentsChat: json.studentsChat });
                         setSetting({ fileName: file.name.split('.')[0] });
                     }
                 });
-                if (type === 'down') downloadFile(studentsChat || {}, `${getSetting().fileName}.json`);
+                if (type === 'down') downloadFile({ studentsList, studentsChat } || {}, `${getSetting().fileName}.json`);
             }}
         />
     );
@@ -257,9 +265,9 @@ interface SendMessageArg {
 }
 
 export default function Chat() {
-    const { lo, locale, userLo } = useLocale(chat);
+    const { lo, locale } = useLocale(chat);
 
-    const { setting, setSetting } = useSetting();
+    //const { getSetting } = useSetting();
 
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
@@ -298,7 +306,7 @@ export default function Chat() {
 
     useEffect(() => {
         getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
-    }, [userLo]);
+    }, [lo]);
 
     //Window
     const {
@@ -421,7 +429,7 @@ export default function Chat() {
                 display={display}
             />
         ));
-    }, [userLo]);
+    }, [lo]);
 
     useEffect(() => {
         listState.studentsList?.forEach(id => {
@@ -501,6 +509,7 @@ export default function Chat() {
                 <StatesContext.Provider value={{
                     allWindow,
                     listState,
+                    setListState,
                     chatState,
                     setChatState,
                 }}>
