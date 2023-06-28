@@ -5,20 +5,27 @@ import Repeat from './repeat';
 import { useForm } from 'react-hook-form';
 import { SetStateFun } from './extraReact';
 import { getClassState } from './extraReact';
+import { useRouter } from 'next/router';
 
 interface SettingOption {
     type: string;
     label: string;
+    page?: string;
 }
 
-interface OptionSO<T extends string = string> extends SettingOption {
+interface OptionSO<T = string> extends SettingOption {
     type: 'option';
     values?: T[];
     defaultValue?: T;
     getValue: (value: T, index: number, array: T[]) => React.ReactNode;
 }
 
-type OptionTypes = OptionSO;
+interface InputSO extends SettingOption {
+    type: 'input';
+    defaultValue?: string;
+}
+
+type OptionTypes = OptionSO | InputSO;
 
 interface SettingFormProps<N extends string> {
     option: Record<N, OptionTypes>;
@@ -28,15 +35,16 @@ interface SettingFormProps<N extends string> {
 
 export function SettingForm<N extends string>({ option, done, onSubmit }: SettingFormProps<N>) {
     const { register, handleSubmit } = useForm();
+    const { pathname } = useRouter();
+
     let optionArray: (OptionTypes & { name: N })[] = [];
     for (let o in option) {
-        let opt = option[o];
+        let opt: OptionTypes = option[o];
         optionArray.push(Object.assign(opt, { name: o }));
     }
     return (
         <form onSubmit={handleSubmit(data => {
-            const dataKeyAsN = data as Record<N, string>;
-            onSubmit(dataKeyAsN);
+            onSubmit(data as Record<N, string>);
         })} id={styles.settings}>
             <Repeat
                 variable={0}
@@ -44,6 +52,7 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
                 func={i => i + 1}
                 components={i => {
                     const o = optionArray[i];
+                    if (o.page !== undefined && o.page !== pathname) return;
                     return (
                         <label>
                             {o.label}
@@ -55,6 +64,9 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
                                         </React.Fragment>
                                     ))}
                                 </select>
+                            )}
+                            {o.type === 'input' && (
+                                <input {...register(o.name)} defaultValue={o.defaultValue} />
                             )}
                         </label>
                     );
@@ -68,6 +80,7 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
 export interface SettingState {
     locale?: string;
     animation?: 'none' | 'first' | 'every';
+    fileName?: string;
 }
 
 export interface SettingArg {

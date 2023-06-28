@@ -22,6 +22,7 @@ import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window
 import { SetStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
 import { ContentMenuSet } from '@/components/contentMenu';
+import { useSetting } from '@/components/setting';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -70,9 +71,9 @@ interface MessageProps {
 }
 
 function Message({ id, msg, type, i }: MessageProps) {
-    const { listState } = useContext(StatesContext);
+    const { listState: { studentsJson } } = useContext(StatesContext);
     const fun = useContext(SetCMMessageFunContext);
-    const allInfo = listState.studentsJson?.data || {};
+    const allInfo = studentsJson?.data || {};
 
     function contextMenuHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.preventDefault();
@@ -116,8 +117,15 @@ interface MessageData {
 }
 
 function MessagesGroup() {
-    const { listState, chatState } = useContext(StatesContext);
-    const data = chatState.studentsChat?.[String(listState.student)] || [];
+    const {
+        listState: {
+            student
+        },
+        chatState: {
+            studentsChat
+        },
+    } = useContext(StatesContext);
+    const data = studentsChat?.[String(student)] || [];
     return (<>
         {data.map((v, i) => (
             <Message
@@ -161,7 +169,13 @@ interface LoaderState {
 }
 
 function Loader({ type }: LoaderState) {
-    const { chatState, setChatState } = useContext(StatesContext);
+    const {
+        chatState: {
+            studentsChat,
+            fileName
+        },
+        setChatState,
+    } = useContext(StatesContext);
     const locale = useContext(localeContext);
     return (
         <img
@@ -175,7 +189,7 @@ function Loader({ type }: LoaderState) {
                     const json = JSON.parse(result);
                     setChatState({ studentsChat: json });
                 });
-                if (type === 'down') downloadFile(chatState.studentsChat || {}, 'untitled.json');
+                if (type === 'down') downloadFile(studentsChat || {}, `${fileName}.json`);
             }}
         />
     )
@@ -216,6 +230,7 @@ interface ListState {
 
 interface ChatState {
     studentsChat?: { [x: string]: MessageData[] };
+    fileName?: string;
 }
 
 interface IdPromptArg {
@@ -241,6 +256,8 @@ interface SendMessageArg {
 export default function Chat() {
     const { lo, locale, userLo } = useLocale(chat);
 
+    const { setting: { fileName } } = useSetting();
+
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
         studentsList: [10000, 10045],
@@ -256,7 +273,8 @@ export default function Chat() {
             "10045": [
                 { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
             ]
-        }
+        },
+        fileName: 'untitled',
     }));
     const [contentMenu, setContentMenu] = getClassState(useState<ContentMenuSet>({
         x: 0,
@@ -278,6 +296,10 @@ export default function Chat() {
 
     useEffect(() => {
         getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
+    }, [userLo]);
+
+    useEffect(() => {
+        setChatState({ fileName });
     }, [userLo]);
 
     //Window

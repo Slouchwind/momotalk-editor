@@ -9,7 +9,7 @@ import styles from '@/styles/MainNode.module.scss';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Window, { AllWindow, AllWindows, getWindowFun } from './window';
-import { Locales, useLocale } from './i18n';
+import { Locales, i18nContents, useLocale } from './i18n';
 import main from './i18n/config/main';
 import { SettingState, SettingArg } from '@/components/setting';
 
@@ -72,6 +72,7 @@ export default function MainNode({ children, onBodyClick }: {
     const { setting, setSetting } = useSetting({
         locale: lo,
         animation: 'first',
+        fileName: 'untitled',
     });
 
     const {
@@ -106,12 +107,17 @@ export default function MainNode({ children, onBodyClick }: {
                                 defaultValue: setting.animation,
                                 getValue: v => (<option value={v}>{localeType('animationT' + v)}</option>),
                             },
+                            fileName: {
+                                page: '/chat',
+                                type: 'input',
+                                label: locale('setFileName'),
+                                defaultValue: setting.fileName,
+                            }
                         }}
                         done={locale('done')}
                         onSubmit={data => {
-                            const dataAsSet = data as SettingState;
-                            window.localStorage.set = JSON.stringify(dataAsSet);
-                            setSetting(dataAsSet);
+                            window.localStorage.set = JSON.stringify(data);
+                            setSetting(data as SettingState);
                             close();
                         }}
                     />

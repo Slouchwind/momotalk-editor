@@ -73,7 +73,7 @@ const chat = {
     },
     img: {
         'zh-CN': '图片链接',
-        'zh-TW': '圖片位址',
+        'zh-TW': '圖片鏈接',
     },
     undefinedStudent: {
         'zh-CN': '$0的学生ID不存在',

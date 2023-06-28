@@ -1,6 +1,4 @@
-import { i18nContents } from "..";
-
-const main: i18nContents = {
+const main = {
     setting: {
         'zh-CN': '设置',
         'zh-TW': '設定',
@@ -14,8 +12,8 @@ const main: i18nContents = {
         'zh-TW': '中文（繁體）',
     },
     setAnimation: {
-        'zh-CN': '设置开屏动画模式',
-        'zh-TW': '設定開屏動畫模式',
+        'zh-CN': '启动动画模式',
+        'zh-TW': '啟動動畫模式',
     },
     animationTnone: {
         'zh-CN': '从不',
@@ -32,6 +30,10 @@ const main: i18nContents = {
     done: {
         'zh-CN': '确定',
         'zh-TW': '確定',
+    },
+    setFileName: {
+        'zh-CN': '文件名称',
+        'zh-TW': '文件名稱',
     },
 }
 export default main;

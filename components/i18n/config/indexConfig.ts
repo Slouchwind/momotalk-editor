@@ -1,6 +1,4 @@
-import { i18nContents } from "..";
-
-const index: i18nContents = {
+const index = {
     selectingText: {
         'zh-CN': '请选择栏目。',
         'zh-TW': '請選擇欄目。'

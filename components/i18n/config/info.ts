@@ -1,6 +1,4 @@
-import { i18nContents } from "..";
-
-const info: i18nContents = {
+const info = {
     title: {
         'zh-CN': '学生信息',
         'zh-TW': '學生信息',
