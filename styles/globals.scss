@@ -187,6 +187,11 @@ div.window {
         border-radius: 5px;
         margin: 5px;
         height: 25px;
+
+        &.cancel {
+          background-color: #bbb;
+          color: #fff;
+        }
       }
 
       p {
@@ -212,13 +217,14 @@ div.window {
 div#contentMenu {
   backdrop-filter: blur(30px);
   position: absolute;
-  width: 60px;
+  width: max-content;
+  min-width: 60px;
   padding: 5px;
   border-radius: 5px;
   box-shadow: rgb(0 0 0 / 30%) 0 0 20px;
   z-index: 10000;
 
-  > div {
+  > div.text {
     padding: 1px;
     border-radius: 5px;
     transition-duration: 0.2s;
@@ -232,5 +238,15 @@ div#contentMenu {
       margin-left: 5px;
       font-size: 14px;
     }
+  }
+
+  > div.separator {
+    margin: 5px;
+  }
+
+  > p {
+    user-select: none;
+    margin: 0 5px;
+    font-size: 14px;
   }
 }

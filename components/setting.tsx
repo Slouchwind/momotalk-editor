@@ -77,32 +77,28 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
     )
 }
 
-export interface SettingState {
+export interface Settings {
     locale?: string;
     animation?: 'none' | 'first' | 'every';
     fileName?: string;
 }
 
 export interface SettingArg {
-    setting: SettingState;
-    setSetting: SetStateFun<SettingState>;
+    setting: Settings;
+    setSetting: SetStateFun<Settings>;
 }
 
-export function useSetting(state?: SettingState) {
-    const [setting, setSetting] = getClassState(
-        useState<SettingState>(state || {}),
-        newSet => {
-            window.localStorage.set = JSON.stringify(newSet)
-        }
-    );
-    useEffect(() => {
-        let setting: string = window.localStorage.set;
-        if (setting !== undefined) {
-            setSetting(JSON.parse(setting));
-        }
-    }, []);
-    function getSetting(): SettingState {
-        return JSON.parse(window.localStorage.set);
+export function getSettingFun(defaultSet?: Settings) {
+    function getSetting(): Settings {
+        return JSON.parse(window.localStorage.set as string);
     }
-    return { setting, setSetting, getSetting };
+    function setSetting(newSet: Partial<Settings>, first?: boolean): void {
+        const preSet = first ? {} : getSetting();
+        //console.log({ preSet, newSet, localStorage: JSON.parse(localStorage.set) });
+        window.localStorage.set = JSON.stringify({ ...preSet, ...newSet });
+    }
+    function windowOnload() {
+        if (window.localStorage.set === undefined && defaultSet !== undefined) setSetting(defaultSet, true);
+    }
+    return { getSetting, setSetting, windowOnload };
 }

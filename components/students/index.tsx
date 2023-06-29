@@ -3,16 +3,25 @@ import { getStudentInfo } from './studentsMethods';
 import ImgCol from '../imgCol';
 
 interface StudentProps {
-    id: number,
-    allInfo: studentsJson,
-    onClick: React.MouseEventHandler<HTMLDivElement>,
-    select: boolean,
+    id: number;
+    allInfo: studentsJson;
+    onClick: React.MouseEventHandler<HTMLDivElement>;
+    select: boolean;
+    onContentMenu?: React.MouseEventHandler<HTMLDivElement>;
 }
 
-export default function Student({ id, allInfo, onClick, select }: StudentProps) {
+export default function Student({ id, allInfo, onClick, select, onContentMenu }: StudentProps) {
     const info = getStudentInfo(allInfo, id);
     return (
-        <div onClick={onClick} className={select ? 'select' : ''} title={`id:${id}`}>
+        <div
+            onClick={onClick}
+            onContextMenu={e => {
+                e.preventDefault();
+                onContentMenu?.(e);
+            }}
+            className={select ? 'select' : ''}
+            title={`id:${id}`}
+        >
             <ImgCol
                 style='student'
                 size={60}

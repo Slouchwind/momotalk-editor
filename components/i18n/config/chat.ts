@@ -103,5 +103,21 @@ const chat = {
         'zh-CN': '编辑',
         'zh-TW': '編輯',
     },
+    idConfirmTitle: {
+        'zh-CN': '确定删除',
+        'zh-TW': '確定刪除',
+    },
+    idConfirmInfo: {
+        'zh-CN': '确定删除与$0的聊天吗',
+        'zh-TW': '確定刪除於$0的聊天嗎',
+    },
+    confirm: {
+        'zh-CN': '确定',
+        'zh-TW': '確定',
+    },
+    cancel: {
+        'zh-CN': '取消',
+        'zh-TW': '取消',
+    },
 }
 export default chat;

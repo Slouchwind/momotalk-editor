@@ -1,6 +1,6 @@
 //Components
 import Link from 'next/link';
-import { SettingForm, useSetting } from '@/components/setting';
+import { SettingForm, getSettingFun } from '@/components/setting';
 
 //Styles
 import styles from '@/styles/MainNode.module.scss';
@@ -9,9 +9,9 @@ import styles from '@/styles/MainNode.module.scss';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Window, { AllWindow, AllWindows, getWindowFun } from './window';
-import { Locales, i18nContents, useLocale } from './i18n';
+import { Locales, useLocale } from './i18n';
 import main from './i18n/config/main';
-import { SettingState, SettingArg } from '@/components/setting';
+import { Settings, SettingArg } from '@/components/setting';
 
 function MomoTalkIcon() {
     return (
@@ -37,7 +37,7 @@ function MTBarLink({ type }: { type: string }) {
     );
 }
 
-function MTStart({ animation }: { animation: SettingState['animation'] }) {
+function MTStart() {
     const [ani, setAni] = useState<'true' | 'false'>('false');
     useEffect(() => {
         const { animation } = window.sessionStorage;
@@ -46,6 +46,12 @@ function MTStart({ animation }: { animation: SettingState['animation'] }) {
             window.sessionStorage.animation = 'false';
             setAni('true');
         }
+    }, []);
+
+    const [animation, setAnimation] = useState<Settings['animation']>();
+    const { getSetting } = getSettingFun();
+    useEffect(() => {
+        setAnimation(getSetting().animation);
     }, []);
 
     const userAni = (() => {
@@ -69,18 +75,13 @@ export default function MainNode({ children, onBodyClick }: {
 }) {
     const { lo, locale, localeType } = useLocale(main);
 
-    const { setting, setSetting } = useSetting({
-        locale: lo,
-        animation: 'first',
-        fileName: 'untitled',
-    });
+    const { setSetting, windowOnload } = getSettingFun();
+    useEffect(windowOnload, []);
 
-    const {
-        allWindow,
-        addNewWindow,
-        openWindow,
-        closeWindow,
-    } = getWindowFun(useState<AllWindow>({ all: [], component: {} }));
+    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun(useState<AllWindow>({
+        all: [],
+        component: {},
+    }));
 
     const Setting = new Window<SettingArg>('Setting');
 
@@ -116,7 +117,7 @@ export default function MainNode({ children, onBodyClick }: {
                         }}
                         done={locale('done')}
                         onSubmit={data => {
-                            setSetting(data as SettingState);
+                            setSetting(data as Settings);
                             close();
                         }}
                     />
@@ -130,7 +131,7 @@ export default function MainNode({ children, onBodyClick }: {
     return (
         <div id={styles.main} onClick={onBodyClick}>
             <AllWindows zIndex={1099} allWindow={allWindow} />
-            <MTStart animation={setting.animation} />
+            <MTStart />
             <div id={styles.MTBackground}>
                 <div id={styles.MTBar}>
                     <div id={styles.left}>

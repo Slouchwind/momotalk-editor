@@ -22,7 +22,7 @@ import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window
 import { SetStateFun, getClassState } from '@/components/extraReact';
 import { downloadFile, uploadFile } from '@/components/loadFile';
 import { ContentMenuSet } from '@/components/contentMenu';
-import { SettingState, useSetting } from '@/components/setting';
+import { getSettingFun } from '@/components/setting';
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -178,7 +178,7 @@ function Loader({ type }: LoaderState) {
         setChatState,
     } = useContext(StatesContext);
     const locale = useContext(localeContext);
-    const { setSetting, getSetting } = useSetting();
+    const { setSetting, getSetting } = getSettingFun();
 
     return (
         <img
@@ -264,10 +264,14 @@ interface SendMessageArg {
     i?: number;
 }
 
+interface IdConfirmArg {
+    student: number;
+    textInfo: string;
+    studentsList?: ListState['studentsList'];
+}
+
 export default function Chat() {
     const { lo, locale } = useLocale(chat);
-
-    //const { getSetting } = useSetting();
 
     const [listState, setListState] = getClassState(useState<ListState>({
         student: 0,
@@ -326,6 +330,9 @@ export default function Chat() {
     //Message
     const sendMessageInputRef = useRef('');
     const SendMessage = new Window<SendMessageArg>('SendMessage');
+
+    //Confirm
+    const IdConfirm = new Window<IdConfirmArg>('IdConfirm');
 
     useEffect(() => {
         addNewWindow(IdPrompt, (zIndex, id, display, { studentsList, type }, all) => (
@@ -429,6 +436,34 @@ export default function Chat() {
                 display={display}
             />
         ));
+        addNewWindow(IdConfirm, (zIndex, id, display, { student, textInfo, studentsList }, all) => (
+            <IdConfirm.Component
+                title={locale('idConfirmTitle')}
+                closeWindow={() => closeWindow(all, id)}
+                element={close => (<>
+                    <p>{fillBlank(locale('idConfirmInfo'), textInfo)}</p>
+                    <div>
+                        <button
+                            onClick={() => {
+                                if (!studentsList?.includes(student)) {
+                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
+                                }
+                                else {
+                                    const i = studentsList.indexOf(student);
+                                    studentsList.splice(i, 1);
+                                    window.localStorage.studentsList = studentsList?.join();
+                                    setListState({ studentsList });
+                                    close();
+                                }
+                            }}
+                        >{locale('confirm')}</button>
+                        <button className='cancel' onClick={() => close()}>{locale('cancel')}</button>
+                    </div>
+                </>)}
+                zIndex={zIndex}
+                display={display}
+            />
+        ));
     }, [lo]);
 
     useEffect(() => {
@@ -463,18 +498,14 @@ export default function Chat() {
                 <div id={styles.title}>
                     <p id={styles.left}>{locale('student')}({listState.studentsList?.length})</p>
                     <div id={styles.right}>
-                        <p onClick={_ => {
-                            openWindow(allWindow.all, IdPrompt, {
-                                studentsList: listState.studentsList,
-                                type: '+'
-                            });
-                        }}>+</p>
-                        <p onClick={_ => {
-                            openWindow(allWindow.all, IdPrompt, {
-                                studentsList: listState.studentsList,
-                                type: '-'
-                            });
-                        }}>-</p>
+                        {(['+', '-'] as ('+' | '-')[]).map(v => (
+                            <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
+                                openWindow(allWindow.all, IdPrompt, {
+                                    studentsList: listState.studentsList,
+                                    type: v,
+                                });
+                            }}>{v}</p>
+                        ))}
                     </div>
                 </div>
                 <div style={{ height: 70 }} />
@@ -487,17 +518,37 @@ export default function Chat() {
                         <Repeat
                             variable={0}
                             repeat={listState.studentsList?.length}
-                            func={v => v + 1}
-                            components={v => {
+                            func={i => i + 1}
+                            components={i => {
                                 if (!listState.studentsJson || !listState.studentsList) return;
-                                const id = listState.studentsList[v];
+                                const id = listState.studentsList[i];
                                 return (
                                     <Student
                                         id={id}
                                         allInfo={listState.studentsJson.data}
-                                        key={id}
                                         onClick={() => setListState({ student: id })}
                                         select={listState.student === id}
+                                        onContentMenu={e => {
+                                            const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
+                                            setContentMenu({
+                                                x: e.clientX,
+                                                y: e.clientY,
+                                                content: [
+                                                    { type: 'title', text: `${info.schale?.Name} id: ${id}` },
+                                                    { type: 'separator', color: '#ccc', height: 1 },
+                                                    {
+                                                        type: 'text', text: locale('delete'), onClick() {
+                                                            openWindow(allWindow.all, IdConfirm, {
+                                                                student: id,
+                                                                textInfo: info.schale?.Name as string,
+                                                                studentsList: listState.studentsList,
+                                                            });
+                                                        }
+                                                    },
+                                                ],
+                                                display: true,
+                                            });
+                                        }}
                                     />
                                 );
                             }}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSetting } from "../setting";
+import { getSettingFun } from "../setting";
 
 export type Locales = 'zh-CN' | 'zh-TW';
 
@@ -13,7 +13,7 @@ export function fillBlank(i18n: string, ...fills: (string | undefined)[]): strin
 
 export function useLocale<T extends i18nContents, K extends keyof T>(i18n: T) {
     const [lo, setLo] = useState('');
-    const { getSetting } = useSetting();
+    const { getSetting } = getSettingFun();
     useEffect(() => setLo(getSetting().locale || window.navigator.language), []);
     function locale(key: K, loc?: string) {
         return (i18n as Record<K, Record<string, string>>)[key][loc || lo];
