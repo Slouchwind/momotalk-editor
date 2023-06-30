@@ -14,7 +14,7 @@ import info from '@/components/i18n/config/info';
 import { useEffect, useState } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
-import { getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
+import { getAllStudentsList, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import Repeat from '@/components/repeat';
 import { getClassState } from '@/components/extraReact';
 
@@ -63,8 +63,13 @@ export default function Info() {
         studentsJson: { data: {} }
     }));
 
+    const [allStuList, setAllStuList] = useState<number[]>([]);
+
     useEffect(() => {
-        getStudentsJson(lo).then(r => setState({ studentsJson: { data: r } }));
+        getStudentsJson(lo).then(r => {
+            setAllStuList(getAllStudentsList(r));
+            setState({ studentsJson: { data: r } });
+        });
     }, [lo]);
 
     return (
@@ -74,7 +79,7 @@ export default function Info() {
             />
             <div id={styles.infoBar}>
                 <div id={styles.title}>
-                    <p>{locale('student')}(123)</p>
+                    <p>{locale('student')}({allStuList.length})</p>
                 </div>
                 <div style={{ height: 70 }} />
                 <div id={styles.all}>
@@ -82,39 +87,25 @@ export default function Info() {
                     <p>{locale('allStudents')}</p>
                 </div>
                 <div id='students'>
-                    {state.studentsJson &&
+                    {state.studentsJson && (
                         <Repeat
                             variable={0}
-                            repeat={5}
-                            func={v => v + 1}
-                            components={v => {
-                                const { num, i } = [
-                                    { num: 10000, i: 63 },
-                                    { num: 13000, i: 13 },
-                                    { num: 16000, i: 13 },
-                                    { num: 20000, i: 25 },
-                                    { num: 26000, i: 9 },
-                                ][v];
+                            repeat={allStuList.length}
+                            func={i => i + 1}
+                            components={i => {
+                                const v = allStuList[i];
                                 return (
-                                    <Repeat
-                                        variable={num}
-                                        repeat={i}
-                                        func={v => v + 1}
-                                        components={v => (
-                                            <Student
-                                                id={v}
-                                                allInfo={state.studentsJson.data}
-                                                key={v}
-                                                onClick={_ => setState({ student: v, })}
-                                                select={state.student === v}
-                                            />
-                                        )}
+                                    <Student
+                                        id={v}
+                                        allInfo={state.studentsJson.data}
                                         key={v}
+                                        onClick={_ => setState({ student: v })}
+                                        select={state.student === v}
                                     />
                                 );
                             }}
                         />
-                    }
+                    )}
                 </div>
             </div>
             <div id={styles.contentBar}>

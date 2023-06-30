@@ -30,7 +30,7 @@
   }
 }
 
-@import url(https://cdn.jsdelivr.net/npm/misans/lib/misans-300-light.min.css);
+@import url(https://cdn.jsdelivr.net/npm/misans@3.1.1/index.min.css);
 
 body {
   margin: 0;
@@ -39,6 +39,7 @@ body {
 
 * {
   font-family: MiSans;
+  font-style: normal;
 }
 
 ::selection {
@@ -215,13 +216,13 @@ div.window {
 @include img-col(100%);
 
 div#contentMenu {
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px) contrast(120%);
   position: absolute;
   width: max-content;
   min-width: 60px;
   padding: 5px;
   border-radius: 5px;
-  box-shadow: rgb(0 0 0 / 30%) 0 0 20px;
+  box-shadow: rgb(0 0 0 / 10%) 0 0 20px;
   z-index: 10000;
 
   > div.text {

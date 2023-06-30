@@ -1,23 +1,23 @@
 import styles from '@/styles/MainNode.module.scss';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Repeat from './repeat';
 import { useForm } from 'react-hook-form';
 import { SetStateFun } from './extraReact';
-import { getClassState } from './extraReact';
 import { useRouter } from 'next/router';
 
 interface SettingOption {
     type: string;
     label: string;
     page?: string;
+    title?: string;
 }
 
 interface OptionSO<T = string> extends SettingOption {
     type: 'option';
     values?: T[];
     defaultValue?: T;
-    getValue: (value: T, index: number, array: T[]) => React.ReactNode;
+    getValue: (value: T, index: number, array: T[]) => string;
 }
 
 interface InputSO extends SettingOption {
@@ -29,11 +29,12 @@ type OptionTypes = OptionSO | InputSO;
 
 interface SettingFormProps<N extends string> {
     option: Record<N, OptionTypes>;
-    done: string;
+    confirm: string;
     onSubmit: (data: Record<N, string>) => any;
+    otherButtons?: React.ReactElement;
 }
 
-export function SettingForm<N extends string>({ option, done, onSubmit }: SettingFormProps<N>) {
+export function SettingForm<N extends string>({ option, confirm, onSubmit, otherButtons }: SettingFormProps<N>) {
     const { register, handleSubmit } = useForm();
     const { pathname } = useRouter();
 
@@ -54,14 +55,14 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
                     const o = optionArray[i];
                     if (o.page !== undefined && o.page !== pathname) return;
                     return (
-                        <label>
+                        <label title={o.title}>
                             {o.label}
                             {o.type === 'option' && (
                                 <select {...register(o.name)} defaultValue={o.defaultValue}>
                                     {o.values?.map((v, i, a) => (
-                                        <React.Fragment key={i}>
+                                        <option value={v} key={i}>
                                             {o.getValue(v, i, a)}
-                                        </React.Fragment>
+                                        </option>
                                     ))}
                                 </select>
                             )}
@@ -72,7 +73,10 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
                     );
                 }}
             />
-            <button type='submit'>{done}</button>
+            <div>
+                <button type='submit'>{confirm}</button>
+                {otherButtons}
+            </div>
         </form>
     )
 }
@@ -80,6 +84,17 @@ export function SettingForm<N extends string>({ option, done, onSubmit }: Settin
 export interface Settings {
     locale?: string;
     animation?: 'none' | 'first' | 'every';
+    fontWeight?:
+    'thin' |
+    'extralight' |
+    'light' |
+    'normal' |
+    'regular' |
+    'medium' |
+    'demibold' |
+    'semibold' |
+    'bold' |
+    'heavy';
     fileName?: string;
 }
 

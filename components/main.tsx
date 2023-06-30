@@ -9,9 +9,10 @@ import styles from '@/styles/MainNode.module.scss';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Window, { AllWindow, AllWindows, getWindowFun } from './window';
-import { Locales, useLocale } from './i18n';
+import { Locales, fillBlank, useLocale } from './i18n';
 import main from './i18n/config/main';
 import { Settings, SettingArg } from '@/components/setting';
+import setFontWeight, { fontWeightNames } from './setFontWeight';
 
 function MomoTalkIcon() {
     return (
@@ -75,8 +76,14 @@ export default function MainNode({ children, onBodyClick }: {
 }) {
     const { lo, locale, localeType } = useLocale(main);
 
-    const { setSetting, windowOnload } = getSettingFun();
-    useEffect(windowOnload, []);
+    const { getSetting, setSetting, windowOnload } = getSettingFun({
+        locale: 'zh-CN',
+        animation: 'first',
+    });
+    useEffect(() => {
+        windowOnload();
+        setFontWeight(getSetting().fontWeight);
+    }, []);
 
     const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun(useState<AllWindow>({
         all: [],
@@ -86,7 +93,6 @@ export default function MainNode({ children, onBodyClick }: {
     const Setting = new Window<SettingArg>('Setting');
 
     useEffect(() => {
-        const animations = ['none', 'first', 'every'];
         addNewWindow(Setting, (zIndex, id, display, { setting, setSetting }, all) => (
             <Setting.Component
                 title={locale('setting')}
@@ -97,29 +103,43 @@ export default function MainNode({ children, onBodyClick }: {
                             locale: {
                                 type: 'option',
                                 label: locale('setLocale'),
-                                values: ['zh-CN', 'zh-TW'] as Locales[],
+                                title: fillBlank(locale('requiredReload'), locale('setLocaleTitle')),
+                                values: ['zh-CN', 'zh-TW', 'en-US'],
                                 defaultValue: setting.locale,
-                                getValue: v => (<option value={v}>{locale('locales', v)}</option>),
+                                getValue: v => locale('locales', v),
                             },
                             animation: {
                                 type: 'option',
                                 label: locale('setAnimation'),
-                                values: animations,
+                                title: fillBlank(locale('requiredReload'), locale('setAnimationTitle')),
+                                values: ['none', 'first', 'every'],
                                 defaultValue: setting.animation,
-                                getValue: v => (<option value={v}>{localeType('animationT' + v)}</option>),
+                                getValue: v => localeType('animationT' + v),
+                            },
+                            fontWeight: {
+                                type: 'option',
+                                label: locale('setFontWeight'),
+                                values: fontWeightNames,
+                                defaultValue: setting.fontWeight,
+                                getValue: v => localeType('fontT' + v),
                             },
                             fileName: {
                                 page: '/chat',
                                 type: 'input',
                                 label: locale('setFileName'),
                                 defaultValue: setting.fileName,
-                            }
+                            },
                         }}
-                        done={locale('done')}
+                        confirm={locale('confirm')}
                         onSubmit={data => {
+                            setFontWeight(data.fontWeight as Settings['fontWeight']);
                             setSetting(data as Settings);
                             close();
                         }}
+                        otherButtons={<>
+                            <button onClick={() => window.location.reload()}>{locale('reload')}</button>
+                            <button onClick={() => close()} className='cancel'>{locale('cancel')}</button>
+                        </>}
                     />
                 )}
                 zIndex={zIndex}
@@ -142,7 +162,7 @@ export default function MainNode({ children, onBodyClick }: {
                         <img
                             src='/api/icon/setting'
                             onClick={() => openWindow(allWindow.all, Setting, {
-                                setting: JSON.parse(window.localStorage.set),
+                                setting: getSetting(),
                                 setSetting,
                             })}
                         />

@@ -313,12 +313,10 @@ export default function Chat() {
     }, [lo]);
 
     //Window
-    const {
-        allWindow,
-        addNewWindow,
-        openWindow,
-        closeWindow,
-    } = getWindowFun(useState<AllWindow>({ all: [], component: {} }));
+    const { allWindow, addNewWindow, openWindow, closeWindow, } = getWindowFun(useState<AllWindow>({
+        all: [],
+        component: {}
+    }));
 
     //IdPrompt
     const idPromptInputRef = useRef(0);
@@ -548,6 +546,10 @@ export default function Chat() {
                                                 ],
                                                 display: true,
                                             });
+                                        }}
+                                        infoText={() => {
+                                            const chat = chatState.studentsChat?.[String(id)] || [];
+                                            return chat[chat?.length - 1]?.msg || ' ';
                                         }}
                                     />
                                 );
