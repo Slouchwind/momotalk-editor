@@ -260,9 +260,10 @@ interface SendMessageArg {
 }
 
 interface IdConfirmArg {
+    studentsList?: ListState['studentsList'];
+    studentsChat?: ChatState['studentsChat'];
     student: number;
     textInfo: string;
-    studentsList?: ListState['studentsList'];
 }
 
 export default function Chat() {
@@ -304,7 +305,13 @@ export default function Chat() {
     }, []);
 
     useEffect(() => {
-        getStudentsJson(lo).then(r => setListState({ studentsJson: { data: r } }));
+        getStudentsJson(lo).then(
+            r => setListState({ studentsJson: { data: r } }),
+            r => openWindow(allWindow.all, TextAlert, {
+                title: locale('error'),
+                elem: r
+            })
+        );
     }, [lo]);
 
     //Window
@@ -356,7 +363,10 @@ export default function Chat() {
                                     const i = studentsList.indexOf(idPromptInputRef.current);
                                     studentsList.splice(i, 1);
                                     window.localStorage.studentsList = studentsList?.join();
-                                    setListState({ studentsList });
+                                    setListState({
+                                        student: 0,
+                                        studentsList,
+                                    });
                                     close();
                                 }
                             }
@@ -436,7 +446,7 @@ export default function Chat() {
                 display={display}
             />
         ));
-        addNewWindow(IdConfirm, (zIndex, id, display, { student, textInfo, studentsList }, all) => (
+        addNewWindow(IdConfirm, (zIndex, id, display, { studentsList, studentsChat, student, textInfo }, all) => (
             <IdConfirm.Component
                 title={locale('idConfirmTitle')}
                 closeWindow={() => closeWindow(all, id)}
@@ -451,8 +461,14 @@ export default function Chat() {
                                 else {
                                     const i = studentsList.indexOf(student);
                                     studentsList.splice(i, 1);
+                                    const datas = studentsChat;
+                                    delete datas?.[String(student)];
                                     window.localStorage.studentsList = studentsList?.join();
-                                    setListState({ studentsList });
+                                    setListState({
+                                        student: 0,
+                                        studentsList,
+                                    });
+                                    setChatState({ studentsChat: datas });
                                     close();
                                 }
                             }}
@@ -534,7 +550,7 @@ export default function Chat() {
                                                 x: e.clientX,
                                                 y: e.clientY,
                                                 content: [
-                                                    { type: 'title', text: `${info.schale?.Name} id: ${id}` },
+                                                    { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
                                                     { type: 'separator', color: '#ccc', height: 1 },
                                                     {
                                                         type: 'text', text: locale('delete'), onClick() {
