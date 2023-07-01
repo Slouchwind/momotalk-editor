@@ -14,7 +14,7 @@ import { fillBlank, useLocale } from '@/components/i18n';
 import chat from '@/components/i18n/config/chat';
 
 //Methods
-import { useState, useEffect, useRef, createContext, useContext } from 'react';
+import { useState, useEffect, useRef, createContext, useContext, createElement, ChangeEvent, ChangeEventHandler } from 'react';
 import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
@@ -186,22 +186,17 @@ function Loader({ type }: LoaderState) {
             alt={`${type}load icon`}
             title={locale(type) + locale('jsonFile')}
             onClick={() => {
-                if (type === 'up') uploadFile(file => {
-                    const reader = new FileReader();
-                    reader.readAsText(file);
-                    reader.onload = e => {
-                        const result = e.target?.result;
-                        if (typeof result !== 'string') return;
-                        const json: {
-                            studentsList: ListState['studentsList'];
-                            studentsChat: ChatState['studentsChat'];
-                        } = JSON.parse(result);
+                if (type === 'up')
+                    uploadFile(async (asyncFile, name) => {
+                        const { files } = await asyncFile;
+                        const jsonFile = await files['messageData.json'].async('string');
+                        const json = JSON.parse(jsonFile);
                         setListState({ studentsList: json.studentsList })
                         setChatState({ studentsChat: json.studentsChat });
-                        setSetting({ fileName: file.name.split('.')[0] });
-                    }
-                });
-                if (type === 'down') downloadFile({ studentsList, studentsChat } || {}, `${getSetting().fileName}.json`);
+                        setSetting({ fileName: name.split('.')[0] });
+                    });
+                else if (type === 'down')
+                    downloadFile({ studentsList, studentsChat } || {}, `${getSetting().fileName}.mte`);
             }}
         />
     );
@@ -390,6 +385,13 @@ export default function Chat() {
                 closeWindow={() => closeWindow(all, winId)}
                 element={close => {
                     sendMessageInputRef.current = '';
+                    const props: {
+                        defaultValue?: string;
+                        onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+                    } = {
+                        defaultValue: i !== undefined ? studentsChat?.[String(selId)][i].msg : undefined,
+                        onChange(e) { sendMessageInputRef.current = e.target.value },
+                    };
                     return (<>
                         <p>
                             {fillBlank(
@@ -406,8 +408,8 @@ export default function Chat() {
                                 locale(type)
                             )}
                         </p>
-                        {type === 'text' && <textarea onChange={e => sendMessageInputRef.current = e.target.value} />}
-                        {type === 'img' && <input onChange={e => sendMessageInputRef.current = e.target.value} />}
+                        {type === 'text' && <textarea {...props} />}
+                        {type === 'img' && <input {...props} />}
                         <button
                             onClick={() => {
                                 if (!studentsChat) return;
@@ -424,7 +426,7 @@ export default function Chat() {
                                 else
                                     studentsChat[String(selId)][i] = newData;
                                 //Set
-                                setChatState({ studentsChat: studentsChat });
+                                setChatState({ studentsChat });
                                 close();
                             }}
                         >{locale('sendMsg')}</button>

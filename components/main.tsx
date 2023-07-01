@@ -74,11 +74,12 @@ export default function MainNode({ children, onBodyClick }: {
     children: React.ReactNode;
     onBodyClick?: React.MouseEventHandler;
 }) {
-    const { lo, locale, localeType } = useLocale(main);
+    const { lo, locale, localeString } = useLocale(main);
 
     const { getSetting, setSetting, windowOnload } = getSettingFun({
         locale: 'zh-CN',
         animation: 'first',
+        fontWeight: 'normal',
     });
     useEffect(() => {
         windowOnload();
@@ -114,14 +115,14 @@ export default function MainNode({ children, onBodyClick }: {
                                 title: fillBlank(locale('requiredReload'), locale('setAnimationTitle')),
                                 values: ['none', 'first', 'every'],
                                 defaultValue: setting.animation,
-                                getValue: v => localeType('animationT' + v),
+                                getValue: v => localeString('animationT' + v),
                             },
                             fontWeight: {
                                 type: 'option',
                                 label: locale('setFontWeight'),
                                 values: fontWeightNames,
                                 defaultValue: setting.fontWeight,
-                                getValue: v => localeType('fontT' + v),
+                                getValue: v => localeString('fontT' + v),
                             },
                             fileName: {
                                 page: '/chat',

@@ -109,7 +109,6 @@ export function getSettingFun(defaultSet?: Settings) {
     }
     function setSetting(newSet: Partial<Settings>, first?: boolean): void {
         const preSet = first ? {} : getSetting();
-        //console.log({ preSet, newSet, localStorage: JSON.parse(localStorage.set) });
         window.localStorage.set = JSON.stringify({ ...preSet, ...newSet });
     }
     function windowOnload() {

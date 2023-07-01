@@ -22,11 +22,11 @@ export function useLocale<T extends i18nContents, K extends keyof T>(i18n: T) {
         const localeText = (i18nAs)[key][loc || lo];
         return localeText || (i18nAs)[key]['zh-CN'];
     }
-    function localeType<Type extends string>(key: Type, loc?: string) {
-        const i18nAs = i18n as Record<Type, Record<string, string>>;
+    function localeString(key: string, loc?: string) {
+        const i18nAs = i18n as Record<string, Record<string, string>>;
         const localeText = (i18nAs)[key][loc || lo];
         return localeText || (i18nAs)[key]['zh-CN'];
     }
 
-    return { lo, locale, localeType };
+    return { lo, locale, localeString };
 }
