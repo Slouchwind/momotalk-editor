@@ -13,6 +13,7 @@ import { Locales, fillBlank, useLocale } from './i18n';
 import main from './i18n/config/main';
 import { Settings, SettingArg } from '@/components/setting';
 import setFontWeight, { fontWeightNames } from './setFontWeight';
+import { useClassState } from './extraReact';
 
 function MomoTalkIcon() {
     return (
@@ -82,10 +83,12 @@ export default function MainNode({ children, onBodyClick }: {
         setFontWeight(getSetting().fontWeight);
     }, []);
 
-    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun({
-        all: [],
-        component: {},
-    });
+    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun(
+        useClassState<AllWindow>({
+            all: [],
+            component: {},
+        })
+    );
 
     const Setting = new Window<SettingArg>('Setting');
 

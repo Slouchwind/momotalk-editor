@@ -344,10 +344,12 @@ export default function Chat() {
     }, [lo]);
 
     //Window
-    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun({
-        all: [],
-        component: {}
-    });
+    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun(
+        useClassState<AllWindow>({
+            all: [],
+            component: {},
+        })
+    );
 
     //IdPrompt
     const idPromptInputRef = useRef(0);
