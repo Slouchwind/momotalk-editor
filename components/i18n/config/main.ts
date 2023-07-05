@@ -124,5 +124,10 @@ const main = {
         'zh-TW': '文件名稱',
         'en-US': 'File Name',
     },
+    setSVGWidth: {
+        'zh-CN': 'SVG 文件宽度',
+        'zh-TW': 'SVG 文件寬度',
+        'en-US': 'SVG File Width',
+    },
 }
 export default main;

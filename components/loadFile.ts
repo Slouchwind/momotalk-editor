@@ -25,3 +25,14 @@ export async function downloadFile(json: object, filename: string) {
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
 }
+
+export function downloadSVG(blob: string, filename: string) {
+    const url = URL.createObjectURL(new Blob([blob]));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename + '.svg';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+}

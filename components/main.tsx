@@ -76,20 +76,16 @@ export default function MainNode({ children, onBodyClick }: {
 }) {
     const { lo, locale, localeString } = useLocale(main);
 
-    const { getSetting, setSetting, windowOnload } = getSettingFun({
-        locale: 'zh-CN',
-        animation: 'first',
-        fontWeight: 'normal',
-    });
+    const { getSetting, setSetting, windowOnload } = getSettingFun();
     useEffect(() => {
         windowOnload();
         setFontWeight(getSetting().fontWeight);
     }, []);
 
-    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun(useState<AllWindow>({
+    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun({
         all: [],
         component: {},
-    }));
+    });
 
     const Setting = new Window<SettingArg>('Setting');
 
@@ -130,6 +126,12 @@ export default function MainNode({ children, onBodyClick }: {
                                 label: locale('setFileName'),
                                 defaultValue: setting.fileName,
                             },
+                            SVGWidth: {
+                                page: '/chat',
+                                type: 'number',
+                                label: locale('setSVGWidth'),
+                                defaultValue: setting.SVGWidth,
+                            }
                         }}
                         confirm={locale('confirm')}
                         onSubmit={data => {

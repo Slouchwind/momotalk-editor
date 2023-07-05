@@ -1,6 +1,6 @@
 import React from "react";
 import Repeat from "./repeat";
-import { getClassState } from './extraReact';
+import { useClassState } from './extraReact';
 import randomId from "./randomId";
 
 interface WindowProps<C> {
@@ -91,9 +91,9 @@ export function AllWindows({ zIndex, allWindow }: {
 }
 
 export function getWindowFun(
-    useState: [AllWindow, React.Dispatch<React.SetStateAction<AllWindow>>]
+    useState: AllWindow
 ) {
-    const [allWindow, setAllWindow] = getClassState(useState);
+    const [allWindow, setAllWindow] = useClassState(useState);
     function addNewWindow<A>(
         window: Window<A>,
         Component: WindowTypeComArg<A>

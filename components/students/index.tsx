@@ -2,7 +2,7 @@ import { studentsJson } from './students';
 import { getStudentInfo } from './studentsMethods';
 import ImgCol from '../imgCol';
 
-interface MessageData {
+export interface MessageData {
     type: 'text' | 'img';
     id: number | 'sensei';
     msg: string;

@@ -100,19 +100,19 @@ const chat = {
         'en-US': 'The $0 of student\'s ID is undefined',
     },
     up: {
-        'zh-CN': '上传',
-        'zh-TW': '上傳',
-        'en-US': 'Upload ',
+        'zh-CN': '上传 MTE 文件',
+        'zh-TW': '上傳 MTE 文件',
+        'en-US': 'Upload MTE File',
     },
     down: {
-        'zh-CN': '下载',
-        'zh-TW': '下載',
-        'en-US': 'Download ',
+        'zh-CN': '下载 MTE 文件',
+        'zh-TW': '下載 MTE 文件',
+        'en-US': 'Download MTE File',
     },
-    jsonFile: {
-        'zh-CN': 'JSON文件',
-        'zh-TW': 'JSON文件',
-        'en-US': 'JSON File',
+    svg: {
+        'zh-CN': '下载 SVG 文件',
+        'zh-TW': '下載 SVG 文件',
+        'en-US': 'Download SVG File',
     },
     copy: {
         'zh-CN': '复制',

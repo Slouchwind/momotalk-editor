@@ -5,6 +5,7 @@ import Repeat from './repeat';
 import { useForm } from 'react-hook-form';
 import { SetStateFun } from './extraReact';
 import { useRouter } from 'next/router';
+import dayjs from 'dayjs';
 
 interface SettingOption {
     type: string;
@@ -25,7 +26,12 @@ interface InputSO extends SettingOption {
     defaultValue?: string;
 }
 
-type OptionTypes = OptionSO | InputSO;
+interface NumberSO extends SettingOption {
+    type: 'number';
+    defaultValue?: string;
+}
+
+type OptionTypes = OptionSO | InputSO | NumberSO;
 
 interface SettingFormProps<N extends string> {
     option: Record<N, OptionTypes>;
@@ -67,7 +73,10 @@ export function SettingForm<N extends string>({ option, confirm, onSubmit, other
                                 </select>
                             )}
                             {o.type === 'input' && (
-                                <input {...register(o.name)} defaultValue={o.defaultValue} />
+                                <input {...register(o.name)} type='text' defaultValue={o.defaultValue} />
+                            )}
+                            {o.type === 'number' && (
+                                <input {...register(o.name)} type='number' defaultValue={o.defaultValue} />
                             )}
                         </label>
                     );
@@ -96,6 +105,7 @@ export interface Settings {
     'bold' |
     'heavy';
     fileName?: string;
+    SVGWidth?: string;
 }
 
 export interface SettingArg {
@@ -103,16 +113,24 @@ export interface SettingArg {
     setSetting: SetStateFun<Settings>;
 }
 
-export function getSettingFun(defaultSet?: Settings) {
+export function getSettingFun() {
+    const defaultSet: Settings = {
+        locale: 'zh-CN',
+        animation: 'first',
+        fontWeight: 'normal',
+        fileName: `MomoTalk ${dayjs().format('YYYY-MM-DD')}`,
+        SVGWidth: '800',
+    };
     function getSetting(): Settings {
-        return JSON.parse(window.localStorage.set as string);
+        const localSet: string | undefined = window.localStorage.set;
+        return localSet ? JSON.parse(localSet) : defaultSet;
     }
     function setSetting(newSet: Partial<Settings>, first?: boolean): void {
         const preSet = first ? {} : getSetting();
         window.localStorage.set = JSON.stringify({ ...preSet, ...newSet });
     }
     function windowOnload() {
-        if (window.localStorage.set === undefined && defaultSet !== undefined) setSetting(defaultSet, true);
+        if (window.localStorage.set === undefined) setSetting(defaultSet, true);
     }
     return { getSetting, setSetting, windowOnload };
 }

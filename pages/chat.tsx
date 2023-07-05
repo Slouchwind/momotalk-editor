@@ -1,10 +1,17 @@
 //Components
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/students';
-import Repeat from '@/components/repeat';
+import Student from '@/components/students';
 import ImgCol from '@/components/imgCol';
 import ContentMenu from '@/components/contentMenu';
+import InfoBar from '@/components/infoBar';
+
+//Types
+import type { RefObject } from 'react';
+import type { MessageData } from '@/components/students';
+import type { studentsJson } from '@/components/students/students';
+import type { AllWindow } from '@/components/window';
+import type { ContentMenuSet } from '@/components/contentMenu';
 
 //Style
 import styles from '@/styles/Chat.module.scss';
@@ -14,15 +21,17 @@ import { fillBlank, useLocale } from '@/components/i18n';
 import chat from '@/components/i18n/config/chat';
 
 //Methods
-import { useState, useEffect, useRef, createContext, useContext, createElement, ChangeEvent, ChangeEventHandler } from 'react';
+import axios from 'axios';
+import MinusCode from 'minus-code';
+import { useEffect, useRef, createContext, useContext, ChangeEventHandler } from 'react';
 import getTitle from '@/components/title';
-import { studentsJson } from '@/components/students/students';
 import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
-import Window, { AllWindows, AllWindow, getWindowFun } from '@/components/window';
-import { SetStateFun, getClassState } from '@/components/extraReact';
-import { downloadFile, uploadFile } from '@/components/loadFile';
-import { ContentMenuSet } from '@/components/contentMenu';
+import Window, { AllWindows, getWindowFun } from '@/components/window';
+import { SetStateFun, useClassState } from '@/components/extraReact';
+import { downloadFile, downloadSVG, uploadFile } from '@/components/loadFile';
 import { getSettingFun } from '@/components/setting';
+
+const mccode = new MinusCode();
 
 const StatesContext = createContext<{
     allWindow: AllWindow;
@@ -32,12 +41,21 @@ const StatesContext = createContext<{
     setChatState: SetStateFun<ChatState>;
 }>({
     allWindow: {},
-    listState: {},
+    listState: {
+        student: 0,
+        studentsList: [],
+        studentsJson: {
+            data: {}
+        },
+    },
     setListState: () => { },
-    chatState: {},
+    chatState: {
+        studentsChat: {},
+    },
     setChatState: () => { },
 });
 
+/**發送消息的函數 */
 const SendMessageFunContext = createContext<(
     id: MessageData['id'],
     type?: MessageData['type'],
@@ -45,11 +63,14 @@ const SendMessageFunContext = createContext<(
 
 const localeContext = createContext<(key: keyof typeof chat) => string>((key: keyof typeof chat) => key);
 
+/**顯示消息的右鍵菜單的函數 */
 const SetCMMessageFunContext = createContext<(
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     i: number
 ) => void
 >(() => { });
+
+const ContentContext = createContext<RefObject<HTMLDivElement>>({ current: null });
 
 interface MsgProps {
     msg: MessageProps['msg'];
@@ -75,7 +96,7 @@ interface MessageProps {
 function Message({ id, msg, type, i }: MessageProps) {
     const { listState: { studentsJson } } = useContext(StatesContext);
     const fun = useContext(SetCMMessageFunContext);
-    const allInfo = studentsJson?.data || {};
+    const allInfo = studentsJson.data;
 
     function contextMenuHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.preventDefault();
@@ -112,30 +133,17 @@ function Message({ id, msg, type, i }: MessageProps) {
     }
 }
 
-interface MessageData {
-    type: 'text' | 'img';
-    id: number | 'sensei';
-    msg: string;
-}
-
 function MessagesGroup() {
-    const {
-        listState: {
-            student
-        },
-        chatState: {
-            studentsChat
-        },
-    } = useContext(StatesContext);
-    const data = studentsChat?.[String(student)] || [];
+    const { listState: { student }, chatState: { studentsChat } } = useContext(StatesContext);
+    const data = studentsChat[String(student)];
     return (<>
-        {data.map((v, i) => (
+        {data?.map((v, i) => (
             <Message
                 id={v.id}
                 msg={(() => {
                     if (v.type === 'text')
                         return v.msg.split('\n').map((value, index) => (<p key={index}>{value}</p>));
-                    else if (v.type === 'img') return (<img src={v.msg} />);
+                    else if (v.type === 'img') return (<img src={v.msg} alt={`${v.type} message image ${i}`} />);
                 })()}
                 type={v.type}
                 i={i}
@@ -167,24 +175,26 @@ function Sender({ id }: SenderState) {
 }
 
 interface LoaderState {
-    type: 'up' | 'down';
+    type: 'up' | 'down' | 'svg';
 }
 
 function Loader({ type }: LoaderState) {
+    const { setSetting, getSetting } = getSettingFun();
+
     const {
-        listState: { studentsList },
+        listState: { student, studentsList },
         setListState,
         chatState: { studentsChat },
         setChatState,
     } = useContext(StatesContext);
     const locale = useContext(localeContext);
-    const { setSetting, getSetting } = getSettingFun();
+    const contentRef = useContext(ContentContext);
 
     return (
         <img
             src={`/api/icon/${type}load?fill=000`}
             alt={`${type}load icon`}
-            title={locale(type) + locale('jsonFile')}
+            title={locale(type)}
             onClick={() => {
                 if (type === 'up')
                     uploadFile(async (asyncFile, name) => {
@@ -196,7 +206,20 @@ function Loader({ type }: LoaderState) {
                         setSetting({ fileName: name.split('.')[0] });
                     });
                 else if (type === 'down')
-                    downloadFile({ studentsList, studentsChat } || {}, `${getSetting().fileName}.mte`);
+                    downloadFile({ studentsList, studentsChat }, `${getSetting().fileName}.mte`);
+                else if (type === 'svg')
+                    (async () => {
+                        const contentEle = contentRef.current;
+                        if (!contentEle) return;
+                        const data = mccode.encode(
+                            contentEle.innerHTML
+                                .replace(/Chat_([\w]+)__\w{5}/g, '$1')
+                                .replace(/<div id="editor".*>/g, '')
+                                .replace(/<img.*image"/g, '$&/') as string
+                        );
+                        const img = await axios.post<string>(`/api/msg?w=${getSetting().SVGWidth}&h=${contentEle.scrollHeight}`, { data });
+                        downloadSVG(img.data, getSetting().fileName + '-' + student);
+                    })();
             }}
         />
     );
@@ -206,10 +229,13 @@ function ChatEditorBar() {
     const { listState } = useContext(StatesContext);
     return (
         <div id={styles.editor}>
-            <Sender id={listState.student || 10000} />
-            <Sender id='sensei' />
+            {listState.student !== 0 && (<>
+                <Sender id={listState.student} />
+                <Sender id='sensei' />
+            </>)}
             <Loader type='up' />
             <Loader type='down' />
+            <Loader type='svg' />
         </div>
     );
 }
@@ -217,30 +243,33 @@ function ChatEditorBar() {
 function Content() {
     const { listState } = useContext(StatesContext);
     const locale = useContext(localeContext);
-    if (!listState.studentsJson) return null;
-    if (listState.student === 0) return (<p>{locale('selectStudents')}</p>);
+
+    const contentRef = useRef<HTMLDivElement>(null);
     return (
-        <div id={styles.content}>
-            <MessagesGroup />
-            <ChatEditorBar />
+        <div id={styles.content} ref={contentRef}>
+            {listState.student === 0 && (<div id={styles.center}><p>{locale('selectStudents')}</p></div>)}
+            {listState.student !== 0 && (<MessagesGroup />)}
+            <ContentContext.Provider value={contentRef}>
+                <ChatEditorBar />
+            </ContentContext.Provider>
         </div>
     );
 }
 
 interface ListState {
-    student?: number;
-    studentsList?: number[];
-    studentsJson?: {
+    student: number;
+    studentsList: number[];
+    studentsJson: {
         data: studentsJson;
     };
 }
 
 interface ChatState {
-    studentsChat?: { [x: string]: MessageData[] };
+    studentsChat: { [x: string]: MessageData[] };
 }
 
 interface IdPromptArg {
-    studentsList?: ListState['studentsList'];
+    studentsList: ListState['studentsList'];
     type?: '+' | '-';
 }
 
@@ -251,17 +280,17 @@ interface TextAlertArg {
 }
 
 interface SendMessageArg {
-    studentsJson?: ListState['studentsJson'];
-    selId?: ListState['student'];
-    studentsChat?: ChatState['studentsChat'];
+    studentsJson: ListState['studentsJson'];
+    selId: ListState['student'];
+    studentsChat: ChatState['studentsChat'];
     id: MessageData['id'];
     type: MessageData['type'];
     i?: number;
 }
 
 interface IdConfirmArg {
-    studentsList?: ListState['studentsList'];
-    studentsChat?: ChatState['studentsChat'];
+    studentsList: ListState['studentsList'];
+    studentsChat: ChatState['studentsChat'];
     student: number;
     textInfo: string;
 }
@@ -269,12 +298,12 @@ interface IdConfirmArg {
 export default function Chat() {
     const { lo, locale } = useLocale(chat);
 
-    const [listState, setListState] = getClassState(useState<ListState>({
+    const [listState, setListState] = useClassState<ListState>({
         student: 0,
         studentsList: [10000, 10045],
         studentsJson: { data: {} },
-    }));
-    const [chatState, setChatState] = getClassState(useState<ChatState>({
+    });
+    const [chatState, setChatState] = useClassState<ChatState>({
         studentsChat: {
             "10000": [
                 { type: 'text', id: 10000, msg: '这是什么？' },
@@ -285,13 +314,13 @@ export default function Chat() {
                 { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
             ]
         },
-    }));
-    const [contentMenu, setContentMenu] = getClassState(useState<ContentMenuSet>({
+    });
+    const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
         x: 0,
         y: 0,
         content: [],
         display: false,
-    }));
+    });
 
     useEffect(() => {
         let list: string = window.localStorage.studentsList;
@@ -315,10 +344,10 @@ export default function Chat() {
     }, [lo]);
 
     //Window
-    const { allWindow, addNewWindow, openWindow, closeWindow, } = getWindowFun(useState<AllWindow>({
+    const { allWindow, addNewWindow, openWindow, closeWindow } = getWindowFun({
         all: [],
         component: {}
-    }));
+    });
 
     //IdPrompt
     const idPromptInputRef = useRef(0);
@@ -345,24 +374,24 @@ export default function Chat() {
                     <button
                         onClick={() => {
                             if (type === '+') {
-                                if (studentsList?.includes(idPromptInputRef.current)) {
+                                if (studentsList.includes(idPromptInputRef.current)) {
                                     openWindow(all, TextAlert, { title: locale('error'), elem: locale('sameStudent') });
                                 }
                                 else {
-                                    studentsList = studentsList?.concat(idPromptInputRef.current);
+                                    studentsList = studentsList.concat(idPromptInputRef.current);
                                     window.localStorage.studentsList = studentsList?.join();
                                     setListState({ studentsList });
                                     close();
                                 }
                             }
                             else if (type === '-') {
-                                if (!studentsList?.includes(idPromptInputRef.current)) {
+                                if (!studentsList.includes(idPromptInputRef.current)) {
                                     openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
                                 }
                                 else {
                                     const i = studentsList.indexOf(idPromptInputRef.current);
                                     studentsList.splice(i, 1);
-                                    window.localStorage.studentsList = studentsList?.join();
+                                    window.localStorage.studentsList = studentsList.join();
                                     setListState({
                                         student: 0,
                                         studentsList,
@@ -399,7 +428,7 @@ export default function Chat() {
                         defaultValue?: string;
                         onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
                     } = {
-                        defaultValue: i !== undefined ? studentsChat?.[String(selId)][i].msg : undefined,
+                        defaultValue: i !== undefined ? studentsChat[String(selId)][i].msg : undefined,
                         onChange(e) { sendMessageInputRef.current = e.target.value },
                     };
                     return (<>
@@ -412,8 +441,8 @@ export default function Chat() {
                                     locale('sendMsgSenseiInfo')
                                 ),
                                 getStudentInfo(
-                                    studentsJson?.data || {},
-                                    selId || 10000
+                                    studentsJson.data,
+                                    selId
                                 ).schale?.Name,
                                 locale(type)
                             )}
@@ -462,7 +491,7 @@ export default function Chat() {
                                     const i = studentsList.indexOf(student);
                                     studentsList.splice(i, 1);
                                     const datas = studentsChat;
-                                    delete datas?.[String(student)];
+                                    delete datas[String(student)];
                                     window.localStorage.studentsList = studentsList?.join();
                                     setListState({
                                         student: 0,
@@ -483,8 +512,8 @@ export default function Chat() {
     }, [lo]);
 
     useEffect(() => {
-        listState.studentsList?.forEach(id => {
-            if (listState.studentsJson?.data.schaleJson === undefined) return;
+        listState.studentsList.forEach(id => {
+            if (listState.studentsJson.data.schaleJson === undefined) return;
             if (getStudentInfo(listState.studentsJson.data, id).schale?.CollectionTexture !== undefined) return;
             openWindow(allWindow.all, TextAlert, {
                 title: locale('error'),
@@ -497,8 +526,8 @@ export default function Chat() {
                 },
             });
             const { studentsList } = listState;
-            studentsList?.splice(studentsList?.indexOf(id), 1);
-            window.localStorage.studentsList = studentsList?.join();
+            studentsList.splice(studentsList.indexOf(id), 1);
+            window.localStorage.studentsList = studentsList.join();
             setListState({ studentsList });
         });
     }, [listState.studentsList]);
@@ -510,87 +539,63 @@ export default function Chat() {
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
             <ContentMenu set={contentMenu} />
-            <div id={styles.infoBar}>
-                <div id={styles.title}>
-                    <p id={styles.left}>{locale('student')}({listState.studentsList?.length})</p>
-                    <div id={styles.right}>
-                        {(['+', '-'] as ('+' | '-')[]).map(v => (
-                            <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
-                                openWindow(allWindow.all, IdPrompt, {
-                                    studentsList: listState.studentsList,
-                                    type: v,
-                                });
-                            }}>{v}</p>
-                        ))}
-                    </div>
-                </div>
-                <div style={{ height: 70 }} />
-                <div id={styles.all}>
-                    <AllStudentsIcon />
-                    <p>{locale('allStudents')}</p>
-                </div>
-                <div id='students'>
-                    {listState.studentsJson && listState.studentsList &&
-                        <Repeat
-                            variable={0}
-                            repeat={listState.studentsList?.length}
-                            func={i => i + 1}
-                            components={i => {
-                                if (!listState.studentsJson || !listState.studentsList) return;
-                                const id = listState.studentsList[i];
-                                return (
-                                    <Student
-                                        id={id}
-                                        allInfo={listState.studentsJson.data}
-                                        onClick={() => setListState({ student: id })}
-                                        select={listState.student === id}
-                                        onContentMenu={e => {
-                                            const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
-                                            setContentMenu({
-                                                x: e.clientX,
-                                                y: e.clientY,
-                                                content: [
-                                                    { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
-                                                    { type: 'separator', color: '#ccc', height: 1 },
-                                                    {
-                                                        type: 'text', text: locale('delete'), onClick() {
-                                                            openWindow(allWindow.all, IdConfirm, {
-                                                                student: id,
-                                                                textInfo: info.schale?.Name as string,
-                                                                studentsList: listState.studentsList,
-                                                            });
-                                                        }
-                                                    },
-                                                ],
-                                                display: true,
+            <InfoBar
+                styles={styles}
+                locale={locale}
+                studentsList={listState.studentsList}
+                right={(['+', '-'] as ('+' | '-')[]).map(v => (
+                    <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
+                        openWindow(allWindow.all, IdPrompt, {
+                            studentsList: listState.studentsList,
+                            type: v,
+                        });
+                    }}>{v}</p>
+                ))}
+                students={id => (
+                    <Student
+                        id={id}
+                        allInfo={listState.studentsJson.data}
+                        onClick={() => setListState({ student: id })}
+                        select={listState.student === id}
+                        onContentMenu={e => {
+                            const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
+                            setContentMenu({
+                                x: e.clientX,
+                                y: e.clientY,
+                                content: [
+                                    { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
+                                    { type: 'separator', color: '#ccc', height: 1 },
+                                    {
+                                        type: 'text', text: locale('delete'), onClick() {
+                                            openWindow(allWindow.all, IdConfirm, {
+                                                student: id,
+                                                textInfo: info.schale?.Name as string,
+                                                studentsList: listState.studentsList,
+                                                studentsChat: chatState.studentsChat,
                                             });
-                                        }}
-                                        infoText={() => {
-                                            const chat = chatState.studentsChat?.[String(id)] || [];
-                                            return chat[chat?.length - 1]?.msg || ' ';
-                                        }}
-                                    />
-                                );
-                            }}
-                        />
-                    }
-                </div>
-            </div>
-            <div id={styles.contentBar} style={listState.student === 0 ? { 'alignItems': 'center' } : {}}>
-                <StatesContext.Provider value={{
-                    allWindow,
-                    listState,
-                    setListState,
-                    chatState,
-                    setChatState,
-                }}>
+                                        }
+                                    },
+                                ],
+                                display: true,
+                            });
+                        }}
+                        infoText={() => {
+                            const chat = chatState.studentsChat[String(id)];
+                            if (chat === undefined) return ' ';
+                            if (chat.length === 0) return ' ';
+                            return chat[chat.length - 1].msg || ' ';
+                        }}
+                    />
+                )}
+            />
+            <div id={styles.contentBar}>
+                <StatesContext.Provider value={{ allWindow, listState, setListState, chatState, setChatState }}>
                     <SendMessageFunContext.Provider value={(id, type = 'text') => {
                         openWindow(allWindow.all, SendMessage, {
                             studentsJson: listState.studentsJson,
                             selId: listState.student,
                             studentsChat: chatState.studentsChat,
-                            id,
-                            type,
+                            id, type
                         });
                     }}>
                         <localeContext.Provider value={locale}>
@@ -608,11 +613,9 @@ export default function Chat() {
                                                 if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
                                                 if (msgData.type === 'img') {
                                                     (async () => {
-                                                        let img = await fetch(msgData.msg);
-                                                        let blob = await img.blob();
-                                                        let data = new ClipboardItem({
-                                                            [blob.type]: blob
-                                                        });
+                                                        let img = await axios.get<Response>(msgData.msg);
+                                                        let blob = await img.data.blob();
+                                                        let data = new ClipboardItem({ [blob.type]: blob });
                                                         await window.navigator.clipboard.write([data]);
                                                     })().catch(reason => {
                                                         openWindow(allWindow.all, TextAlert, {
@@ -636,9 +639,7 @@ export default function Chat() {
                                                     studentsJson: listState.studentsJson,
                                                     selId: listState.student,
                                                     studentsChat: chatState.studentsChat,
-                                                    id,
-                                                    type,
-                                                    i,
+                                                    id, type, i
                                                 });
                                             }
                                         },

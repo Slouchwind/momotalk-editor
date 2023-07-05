@@ -80,6 +80,7 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      width: calc(100% - 120px);
 
       > p {
         margin: 0;
@@ -92,6 +93,10 @@ body {
 
       > p.info {
         color: #707070;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
@@ -103,6 +108,7 @@ body {
     }
   }
 }
+
 div.window {
   position: absolute;
   width: 100%;

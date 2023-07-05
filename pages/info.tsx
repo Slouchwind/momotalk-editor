@@ -16,7 +16,8 @@ import getTitle from '@/components/title';
 import { studentsJson } from '@/components/students/students';
 import { getAllStudentsList, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import Repeat from '@/components/repeat';
-import { getClassState } from '@/components/extraReact';
+import { useClassState } from '@/components/extraReact';
+import InfoBar from '@/components/infoBar';
 
 interface ContentProps {
     id: number,
@@ -58,10 +59,10 @@ interface State {
 
 export default function Info() {
     const { lo, locale } = useLocale(info);
-    const [state, setState] = getClassState(useState<State>({
+    const [state, setState] = useClassState<State>({
         student: 0,
         studentsJson: { data: {} }
-    }));
+    });
 
     const [allStuList, setAllStuList] = useState<number[]>([]);
 
@@ -77,37 +78,20 @@ export default function Info() {
             <NextSeo
                 title={getTitle(locale('title'))}
             />
-            <div id={styles.infoBar}>
-                <div id={styles.title}>
-                    <p>{locale('student')}({allStuList.length})</p>
-                </div>
-                <div style={{ height: 70 }} />
-                <div id={styles.all}>
-                    <AllStudentsIcon />
-                    <p>{locale('allStudents')}</p>
-                </div>
-                <div id='students'>
-                    {state.studentsJson && (
-                        <Repeat
-                            variable={0}
-                            repeat={allStuList.length}
-                            func={i => i + 1}
-                            components={i => {
-                                const v = allStuList[i];
-                                return (
-                                    <Student
-                                        id={v}
-                                        allInfo={state.studentsJson.data}
-                                        key={v}
-                                        onClick={_ => setState({ student: v })}
-                                        select={state.student === v}
-                                    />
-                                );
-                            }}
-                        />
-                    )}
-                </div>
-            </div>
+            <InfoBar
+                styles={styles}
+                locale={locale}
+                studentsList={allStuList}
+                students={id => (
+                    <Student
+                        id={id}
+                        allInfo={state.studentsJson.data}
+                        key={id}
+                        onClick={_ => setState({ student: id })}
+                        select={state.student === id}
+                    />
+                )}
+            />
             <div id={styles.contentBar}>
                 {state.student !== 0 ?
                     <Content id={state.student} allInfo={state.studentsJson.data} />
