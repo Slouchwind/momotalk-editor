@@ -9,17 +9,16 @@ export default function handler(
   let { fill = 'fff' } = req.query;
   if (fill instanceof String) fill = fill.substring(0, 6);
   res.status(200).send(`<?xml version="1.0" encoding="utf-8"?>
-  <svg width="90px" height="90px" viewBox="0 0 90 90" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-    <g id="download">
-      <path d="M0 90L90 90L90 0L0 0L0 90Z" transform="matrix(1 0 0 -1 0 90)" id="Rectangle-2" fill="#FFFFFF" fill-opacity="0" fill-rule="evenodd" stroke="none" />
-      <g id="Group-2" transform="translate(12.5 12)">
-        <g id="Group" transform="matrix(1 0 0 -1 21.5 51)">
-          <path d="M12 0L12 51" id="Line-3" fill="none" fill-rule="evenodd" stroke="#${fill}" stroke-width="6" stroke-linecap="round" />
-          <path d="M12 0.5L0 13" id="Line-4" fill="none" fill-rule="evenodd" stroke="#${fill}" stroke-width="6" stroke-linecap="round" />
-          <path d="M12 0.5L24 12.5" id="Line-5" fill="none" fill-rule="evenodd" stroke="#${fill}" stroke-width="6" stroke-linecap="round" />
-        </g>
-        <path d="M12.5 22L9 22C9 22 5 22.25 3 24C1 25.75 0 30 0 30L1.19209e-07 60.5C1.19209e-07 60.5 0.125 62.875 1.5 64.5C2.875 66.125 5.5 67 5.5 67L60.5 67C60.5 67 63.5 66.125 65 64.5C66.5 62.875 66.5 60.5 66.5 60.5L66.5 28C66.5 28 66.5 25.5 65 24C63.5 22.5 60.5 22 60.5 22L54.5 22" id="Line-2" fill="none" fill-rule="evenodd" stroke="#${fill}" stroke-width="6" stroke-linecap="round" />
-      </g>
+  <svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path d="M48 0L48 0L48 48L0 48L0 0L48 0Z" id="path_1" />
+      <clipPath id="clip_1">
+        <use xlink:href="#path_1" />
+      </clipPath>
+    </defs>
+    <g id="Picture" clip-path="url(#clip_1)">
+      <path d="M48 0L48 0L48 48L0 48L0 0L48 0Z" id="Picture" fill="none" stroke="none" />
+      <path d="M11.5 6C8.48023 6 6 8.48023 6 11.5L6 36.5C6 39.5198 8.48023 42 11.5 42L36.5 42C39.5198 42 42 39.5198 42 36.5L42 11.5C42 8.48023 39.5198 6 36.5 6L11.5 6L11.5 6ZM11.5 9L36.5 9C37.8982 9 39 10.1018 39 11.5L39 36.5C39 36.6326 38.9801 36.7601 38.9609 36.8867L26.8145 25.1348C26.0359 24.3814 25.0175 24.0059 24 24.0059C22.9825 24.0059 21.9661 24.3814 21.1875 25.1348L9.03906 36.8867C9.01993 36.7601 9 36.6326 9 36.5L9 11.5C9 10.1018 10.1018 9 11.5 9L11.5 9ZM30.5 13C29.125 13 27.9038 13.5696 27.1289 14.4414C26.354 15.3132 26 16.4167 26 17.5C26 18.5833 26.354 19.6868 27.1289 20.5586C27.9038 21.4304 29.125 22 30.5 22C31.875 22 33.0962 21.4304 33.8711 20.5586C34.646 19.6868 35 18.5833 35 17.5C35 16.4167 34.646 15.3132 33.8711 14.4414C33.0962 13.5696 31.875 13 30.5 13L30.5 13ZM30.5 16C31.125 16 31.4038 16.1804 31.6289 16.4336C31.854 16.6868 32 17.0833 32 17.5C32 17.9167 31.854 18.3132 31.6289 18.5664C31.4038 18.8196 31.125 19 30.5 19C29.875 19 29.5962 18.8196 29.3711 18.5664C29.146 18.3132 29 17.9167 29 17.5C29 17.0833 29.146 16.6868 29.3711 16.4336C29.5962 16.1804 29.875 16 30.5 16L30.5 16ZM24.002 26.9883C24.2615 26.9883 24.5201 27.0894 24.7285 27.291L36.8008 38.9707C36.7012 38.9824 36.6031 39 36.5 39L11.5 39C11.3969 39 11.2988 38.9824 11.1992 38.9707L23.2734 27.291C23.4818 27.0894 23.7424 26.9883 24.002 26.9883L24.002 26.9883Z" id="Shape" fill="#${fill}" fill-rule="evenodd" stroke="none" />
     </g>
   </svg>`);
 }

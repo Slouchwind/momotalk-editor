@@ -36,7 +36,7 @@ export default function Student({ id, allInfo, onClick, select, onContentMenu, i
             />
             <div className='p'>
                 <p className='name'>{info.schale?.Name}</p>
-                <p className='info'>{infoText?.() || info.file?.info}</p>
+                <p className='info'>{infoText?.() || info.file?.bio}</p>
             </div>
             <div className='line' />
         </div>

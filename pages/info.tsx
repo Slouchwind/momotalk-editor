@@ -1,7 +1,10 @@
 //Components
 import { NextSeo } from 'next-seo';
 import MainNode from '@/components/main';
-import Student, { AllStudentsIcon } from '@/components/students';
+import Student from '@/components/students';
+
+//Types
+import type { studentsJson } from '@/components/students/students';
 
 //Styles
 import styles from '@/styles/Info.module.scss';
@@ -13,9 +16,7 @@ import info from '@/components/i18n/config/info';
 //Methods
 import { useEffect, useState } from 'react';
 import getTitle from '@/components/title';
-import { studentsJson } from '@/components/students/students';
 import { getAllStudentsList, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
-import Repeat from '@/components/repeat';
 import { useClassState } from '@/components/extraReact';
 import InfoBar from '@/components/infoBar';
 
@@ -37,7 +38,7 @@ function Content({ id, allInfo }: ContentProps) {
             </div>
             <div className={styles.p}>
                 <p className={styles.name}>{info.schale?.Name}</p>
-                <p className={styles.info}>{info.file?.info}</p>
+                <p className={styles.info}>{info.file?.bio}</p>
             </div>
             <div className={styles.birthday}>
                 <img

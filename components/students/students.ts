@@ -1,6 +1,6 @@
 export interface fileInfo {
-    id?: number;
-    info?: string;
+    id: number;
+    bio: string;
 }
 
 export interface schaleInfo {
