@@ -120,7 +120,7 @@ function Message({ id, msg, type, i }: MessageProps) {
                         margin: 10
                     }}
                     size={60}
-                    info={info}
+                    id={id}
                 />
                 <div id={styles.right}>
                     <p>{info.schale?.Name}</p>
@@ -516,7 +516,7 @@ export default function Chat() {
     useEffect(() => {
         listState.studentsList.forEach(id => {
             if (listState.studentsJson.data.schaleJson === undefined) return;
-            if (getStudentInfo(listState.studentsJson.data, id).schale?.CollectionTexture !== undefined) return;
+            if (getStudentInfo(listState.studentsJson.data, id).schale?.Name !== undefined) return;
             openWindow(allWindow.all, TextAlert, {
                 title: locale('error'),
                 elem: fillBlank(locale('undefinedStudent'), String(id)),

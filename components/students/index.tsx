@@ -32,7 +32,7 @@ export default function Student({ id, allInfo, onClick, select, onContentMenu, i
             <ImgCol
                 style='student'
                 size={60}
-                info={info}
+                id={id}
             />
             <div className='p'>
                 <p className='name'>{info.schale?.Name}</p>

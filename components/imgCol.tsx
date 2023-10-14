@@ -15,10 +15,10 @@ const DefaultStyle: { [K in keyofDefaultStyle]: React.CSSProperties } = {
 interface ImgColProps {
     style: React.CSSProperties | keyofDefaultStyle;
     size: number;
-    info: studentInfo;
+    id: number;
 }
 
-export default function ImgCol({ style, size, info }: ImgColProps) {
+export default function ImgCol({ style, size, id }: ImgColProps) {
     if (typeof style === 'string') style = DefaultStyle[style];
     const imgStyle: React.CSSProperties = {
         width: size,
@@ -28,11 +28,8 @@ export default function ImgCol({ style, size, info }: ImgColProps) {
     return (<div className='imgCol' style={imgStyle}>
         <img
             className='col'
-            src={
-                info.schale?.CollectionTexture &&
-                `https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`
-            }
-            alt={`${info.schale?.Name || ''} collection image`}
+            src={`https://schale.gg/images/student/collection/${id}.webp`}
+            alt={`${id || ''} collection image`}
         />
     </div>);
 }
