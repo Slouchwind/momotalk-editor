@@ -22,7 +22,7 @@ export function getStudentInfo({ fileJson, schaleJson }: studentsJson, studentId
 
 export function getAllStudentsList({ schaleJson }: studentsJson): number[] {
     if (!schaleJson) return [];
-    return schaleJson?.map(v => v.Id).sort();
+    return schaleJson.map(v => v.Id).sort();
 }
 
 export function getStuSenText(

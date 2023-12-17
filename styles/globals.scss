@@ -215,6 +215,17 @@ div.window {
       select {
         @include text-inputer($w: auto);
       }
+
+      div.selector {
+        overflow: overlay;
+        width: 600px;
+        height: 200px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
     }
   }
 }

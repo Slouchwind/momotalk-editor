@@ -32,8 +32,8 @@ function Content({ id, allInfo }: ContentProps) {
             <div className={styles.img}>
                 <img
                     className={styles.col}
-                    src={`https://schale.gg/images/student/collection/${info.schale?.CollectionTexture}.webp`}
-                    alt={`${info.schale?.Name} collection image`}
+                    src={`https://schale.gg/images/student/collection/${id}.webp`}
+                    alt={`${id} collection image`}
                 />
             </div>
             <div className={styles.p}>

@@ -256,6 +256,35 @@ function Content() {
     );
 }
 
+interface StudentsSelectorProps {
+    schaleJson: ListState['studentsJson']['data']['schaleJson'];
+    studentsList: number[] | false;
+    onSelect: (id: number) => void;
+    selectId: number;
+}
+
+function StudentsSelector({ schaleJson, studentsList, onSelect, selectId }: StudentsSelectorProps) {
+    let selector = schaleJson?.map(({ Id: id }) => {
+        if (studentsList && !studentsList.includes(id)) return;
+        return (
+            <ImgCol
+                style={{
+                    cursor: 'pointer',
+                    margin: 7.5,
+                    ...(selectId === id && {
+                        boxShadow: '0 0 10px 0px #000000A4'
+                    })
+                }}
+                size={60}
+                id={id}
+                key={id}
+                onClick={() => onSelect(id)}
+            />
+        );
+    });
+    return (<div className='selector'>{selector}</div>);
+}
+
 interface ListState {
     student: number;
     studentsList: number[];
@@ -269,6 +298,7 @@ interface ChatState {
 }
 
 interface IdPromptArg {
+    schaleJson: ListState['studentsJson']['data']['schaleJson'];
     studentsList: ListState['studentsList'];
     type?: '+' | '-';
 }
@@ -366,13 +396,18 @@ export default function Chat() {
     const IdConfirm = new Window<IdConfirmArg>('IdConfirm');
 
     useEffect(() => {
-        addNewWindow(IdPrompt, (zIndex, id, display, { studentsList, type }, all) => (
+        addNewWindow(IdPrompt, (zIndex, id, display, { schaleJson, studentsList, type }, all) => (
             <IdPrompt.Component
                 title={locale('idPromptTitle')}
                 closeWindow={() => closeWindow(all, id)}
                 element={close => (<>
                     <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
-                    <input type='number' onChange={e => { idPromptInputRef.current = Number(e.target.value); }} />
+                    <StudentsSelector
+                        schaleJson={schaleJson}
+                        studentsList={type === '-' && studentsList}
+                        onSelect={(id) => { idPromptInputRef.current = id; }}
+                        selectId={idPromptInputRef.current}
+                    />
                     <button
                         onClick={() => {
                             if (type === '+') {
@@ -522,6 +557,7 @@ export default function Chat() {
                 elem: fillBlank(locale('undefinedStudent'), String(id)),
                 fun() {
                     openWindow(allWindow.all, IdPrompt, {
+                        schaleJson: listState.studentsJson.data.schaleJson,
                         studentsList: listState.studentsList,
                         type: '+'
                     });
@@ -548,6 +584,7 @@ export default function Chat() {
                 right={(['+', '-'] as ('+' | '-')[]).map(v => (
                     <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
                         openWindow(allWindow.all, IdPrompt, {
+                            schaleJson: listState.studentsJson.data.schaleJson,
                             studentsList: listState.studentsList,
                             type: v,
                         });

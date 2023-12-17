@@ -30,14 +30,14 @@ const chat = {
         'en-US': 'DELETE ',
     },
     idPromptTitle: {
-        'zh-CN': '输入ID',
-        'zh-TW': '輸入ID',
-        'en-US': 'Input the ID',
+        'zh-CN': '选择学生',
+        'zh-TW': '選擇學生',
+        'en-US': 'Select the student',
     },
     idPromptInfo: {
-        'zh-CN': '请输入需要在列表$0的学生的ID',
-        'zh-TW': '請輸入需要在列表$0的學生的ID',
-        'en-US': 'Please input the ID of student that need to $0',
+        'zh-CN': '请选择需要在列表$0的学生的ID',
+        'zh-TW': '請選擇需要在列表$0的學生的ID',
+        'en-US': 'Please Select the student that need to $0',
     },
     error: {
         'zh-CN': '错误',

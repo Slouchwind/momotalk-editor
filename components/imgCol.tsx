@@ -1,5 +1,3 @@
-import { studentInfo } from "./students/students";
-
 type keyofDefaultStyle = 'content' | 'student';
 const DefaultStyle: { [K in keyofDefaultStyle]: React.CSSProperties } = {
     content: {
@@ -18,18 +16,23 @@ interface ImgColProps {
     id: number;
 }
 
-export default function ImgCol({ style, size, id }: ImgColProps) {
+export default function ImgCol(
+    { style, size, id, ...other }:
+        ImgColProps & Omit<React.HTMLAttributes<HTMLDivElement>, keyof ImgColProps>
+) {
     if (typeof style === 'string') style = DefaultStyle[style];
     const imgStyle: React.CSSProperties = {
         width: size,
         height: size,
         ...style,
     }
-    return (<div className='imgCol' style={imgStyle}>
-        <img
-            className='col'
-            src={`https://schale.gg/images/student/collection/${id}.webp`}
-            alt={`${id || ''} collection image`}
-        />
-    </div>);
+    return (
+        <div className='imgCol' style={imgStyle} {...other}>
+            <img
+                className='col'
+                src={`https://schale.gg/images/student/collection/${id}.webp`}
+                alt={`${id || ''} collection image`}
+            />
+        </div>
+    );
 }
