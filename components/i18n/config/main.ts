@@ -52,17 +52,17 @@ const main = {
     animationTnone: {
         'zh-CN': '从不',
         'zh-TW': '從不',
-        'en-US': 'never',
+        'en-US': 'Never',
     },
     animationTfirst: {
         'zh-CN': '首次',
         'zh-TW': '首次',
-        'en-US': 'first',
+        'en-US': 'First',
     },
     animationTevery: {
         'zh-CN': '每次',
         'zh-TW': '每次',
-        'en-US': 'every',
+        'en-US': 'Every',
     },
     setFontWeight: {
         'zh-CN': '字重',

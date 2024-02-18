@@ -8,7 +8,7 @@
 }
 
 @mixin message-box($bgColor) {
-  padding: 2.5px 10px;
+  padding: 5px 10px;
   color: #fff;
   background-color: $bgColor;
   border-radius: 7.5px;
@@ -26,7 +26,9 @@
   height: 200px;
 }
 
-@mixin messge-mixin($color) {
+@mixin message-mixin($color) {
+  font-size: 16px;
+
   > div#text {
     @include message-box($color);
 
@@ -40,6 +42,11 @@
   > div#img > img {
     @include message-img();
     @content;
+  }
+
+  > div#time > p {
+    @include message-p();
+    margin: auto;
   }
 }
 
@@ -139,10 +146,10 @@
         flex-direction: column;
         flex-wrap: nowrap;
         width: calc(100% - 105px);
+        font-size: 14px;
 
         > p {
           margin: 0;
-          margin-bottom: 2px;
         }
 
         > div {
@@ -151,7 +158,7 @@
             right: 0.5px;
           }
 
-          @include messge-mixin($student-color);
+          @include message-mixin($student-color);
         }
       }
     }
@@ -167,7 +174,7 @@
         left: calc(100% - 21px);
       }
 
-      @include messge-mixin($sensei-color) {
+      @include message-mixin($sensei-color) {
         float: right;
         margin: 5px 15px 5px 0;
       }

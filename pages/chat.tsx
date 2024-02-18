@@ -5,6 +5,12 @@ import Student from '@/components/students';
 import ImgCol from '@/components/imgCol';
 import ContentMenu from '@/components/contentMenu';
 import InfoBar from '@/components/infoBar';
+import getTitle from '@/components/title';
+import { getAllStudentsList, getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
+import Window, { AllWindows, getWindowFun } from '@/components/window';
+import { SetStateFun, useClassState } from '@/components/extraReact';
+import { downloadPNG, downloadFile, downloadSVG, uploadFile } from '@/components/loadFile';
+import { getSettingFun } from '@/components/setting';
 
 //Types
 import type { RefObject } from 'react';
@@ -23,13 +29,10 @@ import chat from '@/components/i18n/config/chat';
 //Methods
 import axios from 'axios';
 import MinusCode from 'minus-code';
-import { useEffect, useRef, createContext, useContext, ChangeEventHandler } from 'react';
-import getTitle from '@/components/title';
-import { getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
-import Window, { AllWindows, getWindowFun } from '@/components/window';
-import { SetStateFun, useClassState } from '@/components/extraReact';
-import { downloadFile, downloadSVG, uploadFile } from '@/components/loadFile';
-import { getSettingFun } from '@/components/setting';
+import { useEffect, useRef, createContext, useContext, ChangeEventHandler, Fragment, useState } from 'react';
+import domToImage from 'dom-to-image';
+import Providers from '@/components/providers';
+import { filterObject } from '@/components/extraObject';
 
 const mccode = new MinusCode();
 
@@ -83,7 +86,8 @@ function Msg({ msg, type }: MsgProps) {
         <div id={styles.text}>{msg}</div>
     </>);
     else if (type === 'img') return (<div id={styles.img}>{msg}</div>);
-    else return (<></>);
+    else if (type === 'time') return (<div id={styles.time}>{msg}</div>);
+    else return (<Fragment />);
 }
 
 interface MessageProps {
@@ -108,7 +112,9 @@ function Message({ id, msg, type, i }: MessageProps) {
             <div
                 className={styles.sensei}
                 onContextMenu={contextMenuHandler}
-            ><Msg msg={msg} type={type} /></div>
+            >
+                <Msg msg={msg} type={type} />
+            </div>
         );
     }
     else {
@@ -124,9 +130,9 @@ function Message({ id, msg, type, i }: MessageProps) {
                 />
                 <div id={styles.right}>
                     <p>{info.schale?.Name}</p>
-                    <div
-                        onContextMenu={contextMenuHandler}
-                    ><Msg msg={msg} type={type} /></div>
+                    <div onContextMenu={contextMenuHandler}>
+                        <Msg msg={msg} type={type} />
+                    </div>
                 </div>
             </div>
         );
@@ -175,7 +181,7 @@ function Sender({ id }: SenderState) {
 }
 
 interface LoaderState {
-    type: 'up' | 'down' | 'svg';
+    type: 'up' | 'down' | 'svg' | 'png';
 }
 
 function Loader({ type }: LoaderState) {
@@ -198,27 +204,47 @@ function Loader({ type }: LoaderState) {
             onClick={() => {
                 if (type === 'up')
                     uploadFile(async (asyncFile, name) => {
-                        const { files } = await asyncFile;
-                        const jsonFile = await files['messageData.json'].async('string');
-                        const json = JSON.parse(jsonFile);
+                        let { files } = await asyncFile;
+                        let jsonFile = await files['messageData.json'].async('string');
+                        let json = JSON.parse(jsonFile);
                         setListState({ studentsList: json.studentsList })
                         setChatState({ studentsChat: json.studentsChat });
                         setSetting({ fileName: name.split('.')[0] });
                     });
                 else if (type === 'down')
-                    downloadFile({ studentsList, studentsChat }, `${getSetting().fileName}.mte`);
+                    downloadFile({
+                        studentsList,
+                        studentsChat: filterObject(studentsChat, k => studentsList.includes(Number(k))),
+                    }, `${getSetting().fileName}.mte`);
                 else if (type === 'svg')
                     (async () => {
-                        const contentEle = contentRef.current;
+                        let contentEle = contentRef.current;
                         if (!contentEle) return;
-                        const data = mccode.encode(
+                        let data = mccode.encode(
                             contentEle.innerHTML
                                 .replace(/Chat_([\w]+)__\w{5}/g, '$1')
                                 .replace(/<div id="editor".*>/g, '')
-                                .replace(/<img.*image"/g, '$&/') as string
+                                .replace(/<img(.*?)>/g, '<img$1/>') as string
                         );
-                        const img = await axios.post<string>(`/api/msg?w=${getSetting().SVGWidth}&h=${contentEle.scrollHeight}`, { data });
+                        let w = getSetting().SVGWidth;
+                        let h = contentEle.scrollHeight;
+                        let img = await axios.post<string>(`/api/msg?w=${w}&h=${h}`, { data });
                         downloadSVG(img.data, getSetting().fileName + '-' + student);
+                    })();
+                else if (type === 'png')
+                    (async () => {
+                        let node = contentRef.current;
+                        if (!node) return;
+                        let editorNode = node.childNodes[node.childNodes.length - 1];
+                        let w = getSetting().SVGWidth;
+                        let h = node.scrollHeight;
+                        let url = await domToImage.toPng(node, {
+                            bgcolor: '#fff',
+                            filter: (n) => editorNode !== n,
+                            width: Number(w),
+                            height: h,
+                        });
+                        downloadPNG(url, getSetting().fileName + '-' + student);
                     })();
             }}
         />
@@ -236,6 +262,7 @@ function ChatEditorBar() {
             <Loader type='up' />
             <Loader type='down' />
             <Loader type='svg' />
+            <Loader type='png' />
         </div>
     );
 }
@@ -258,27 +285,28 @@ function Content() {
 
 interface StudentsSelectorProps {
     schaleJson: ListState['studentsJson']['data']['schaleJson'];
-    studentsList: number[] | false;
-    onSelect: (id: number) => void;
-    selectId: number;
+    studentsList: number[];
+    onClick: (id: number) => void;
+    selectStudents: { [id: string]: boolean };
 }
 
-function StudentsSelector({ schaleJson, studentsList, onSelect, selectId }: StudentsSelectorProps) {
+function StudentsSelector({ schaleJson, studentsList, onClick, selectStudents }: StudentsSelectorProps) {
+    let chooseStudentsList = Object.entries(selectStudents).filter(v => v[1]).map(v => Number(v[0]));
     let selector = schaleJson?.map(({ Id: id }) => {
-        if (studentsList && !studentsList.includes(id)) return;
+        if (!studentsList.includes(id)) return;
         return (
             <ImgCol
                 style={{
                     cursor: 'pointer',
                     margin: 7.5,
-                    ...(selectId === id && {
+                    ...(chooseStudentsList.includes(id) && {
                         boxShadow: '0 0 10px 0px #000000A4'
-                    })
+                    }),
                 }}
                 size={60}
                 id={id}
                 key={id}
-                onClick={() => onSelect(id)}
+                onClick={() => onClick(id)}
             />
         );
     });
@@ -337,7 +365,6 @@ export default function Chat() {
         studentsChat: {
             "10000": [
                 { type: 'text', id: 10000, msg: '这是什么？' },
-                { type: 'text', id: 10000, msg: '00000000000000000000000000000000000000000000000000000000000' },
                 { type: 'text', id: 'sensei', msg: '这是什么？' },
             ],
             "10045": [
@@ -382,7 +409,7 @@ export default function Chat() {
     );
 
     //IdPrompt
-    const idPromptInputRef = useRef(0);
+    const idPromptInputRef = useRef<{ [id: string]: boolean }>({});
     const IdPrompt = new Window<IdPromptArg>('IdPrompt');
 
     //Alert
@@ -400,45 +427,48 @@ export default function Chat() {
             <IdPrompt.Component
                 title={locale('idPromptTitle')}
                 closeWindow={() => closeWindow(all, id)}
-                element={close => (<>
-                    <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
-                    <StudentsSelector
-                        schaleJson={schaleJson}
-                        studentsList={type === '-' && studentsList}
-                        onSelect={(id) => { idPromptInputRef.current = id; }}
-                        selectId={idPromptInputRef.current}
-                    />
-                    <button
-                        onClick={() => {
-                            if (type === '+') {
-                                if (studentsList.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('sameStudent') });
-                                }
-                                else {
-                                    studentsList = studentsList.concat(idPromptInputRef.current);
-                                    window.localStorage.studentsList = studentsList?.join();
-                                    setListState({ studentsList });
-                                    close();
-                                }
-                            }
-                            else if (type === '-') {
-                                if (!studentsList.includes(idPromptInputRef.current)) {
-                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
-                                }
-                                else {
-                                    const i = studentsList.indexOf(idPromptInputRef.current);
-                                    studentsList.splice(i, 1);
-                                    window.localStorage.studentsList = studentsList.join();
-                                    setListState({
-                                        student: 0,
-                                        studentsList,
-                                    });
-                                    close();
-                                }
-                            }
-                        }}
-                    >{locale(type || '+')}</button>
-                </>)}
+                element={close => {
+                    return (
+                        <>
+                            <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
+                            <StudentsSelector
+                                schaleJson={schaleJson}
+                                studentsList={type === '+' ?
+                                    getAllStudentsList({ schaleJson }).filter(v => !studentsList.includes(v)) :
+                                    studentsList}
+                                onClick={(id) => {
+                                    let selectStudent = idPromptInputRef.current[String(id)];
+                                    idPromptInputRef.current[String(id)] = !selectStudent;
+                                }}
+                                selectStudents={idPromptInputRef.current}
+                            />
+                            <button
+                                onClick={() => {
+                                    let chooseStudentsList = Object.entries(idPromptInputRef.current).filter(v => v[1]).map(v => Number(v[0]));
+                                    if (type === '+') {
+                                        studentsList.push(...chooseStudentsList);
+                                        window.localStorage.studentsList = studentsList?.join();
+                                        setListState({ studentsList });
+                                        close();
+                                    }
+                                    else if (type === '-') {
+                                        chooseStudentsList.forEach(id => {
+                                            const i = studentsList.indexOf(id);
+                                            studentsList.splice(i, 1);
+                                        });
+                                        window.localStorage.studentsList = studentsList.join();
+                                        setListState({
+                                            student: 0,
+                                            studentsList,
+                                        });
+                                        close();
+                                    }
+                                    idPromptInputRef.current = {};
+                                }}
+                            >{locale(type || '+')}</button>
+                        </>
+                    );
+                }}
                 zIndex={zIndex}
                 display={display}
             />
@@ -472,36 +502,32 @@ export default function Chat() {
                         <p>
                             {fillBlank(
                                 locale('sendMsgInfo'),
-                                getStuSenText(
+                                type === 'time' ? '' : locale('sendMsgSenseiInfo'),
+                                type === 'time' ? '' : getStuSenText(
                                     id,
-                                    locale('sendMsgStudentInfo'),
-                                    locale('sendMsgSenseiInfo')
+                                    locale('sensei'),
+                                    getStudentInfo(
+                                        studentsJson.data,
+                                        selId
+                                    ).schale?.Name || String(selId)
                                 ),
-                                getStudentInfo(
-                                    studentsJson.data,
-                                    selId
-                                ).schale?.Name,
                                 locale(type)
                             )}
                         </p>
                         {type === 'text' && <textarea {...props} />}
                         {type === 'img' && <input {...props} />}
+                        {type === 'time' && <textarea {...props} />}
                         <button
                             onClick={() => {
                                 if (!studentsChat) return;
-                                //Can't be empty message
                                 if (sendMessageInputRef.current.trim() === '') return;
-                                //Get selected student's messageGroup
                                 let messageData = studentsChat[String(selId)];
-                                //Create newMsgData by input text
                                 let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
-                                //Concat or Change newMsgData
                                 if (i === undefined)
                                     studentsChat[String(selId)] =
                                         messageData ? messageData.concat(newData) : [newData];
                                 else
                                     studentsChat[String(selId)][i] = newData;
-                                //Set
                                 setChatState({ studentsChat });
                                 close();
                             }}
@@ -628,69 +654,70 @@ export default function Chat() {
                 )}
             />
             <div id={styles.contentBar}>
-                <StatesContext.Provider value={{ allWindow, listState, setListState, chatState, setChatState }}>
-                    <SendMessageFunContext.Provider value={(id, type = 'text') => {
-                        openWindow(allWindow.all, SendMessage, {
-                            studentsJson: listState.studentsJson,
-                            selId: listState.student,
-                            studentsChat: chatState.studentsChat,
-                            id, type
-                        });
-                    }}>
-                        <localeContext.Provider value={locale}>
-                            <SetCMMessageFunContext.Provider value={(e, i) => {
-                                const stu = listState.student || 10000;
-                                if (chatState.studentsChat === undefined) return;
-                                let msgDatas = chatState.studentsChat;
-                                const msgData = msgDatas[stu][i];
-                                setContentMenu({
-                                    x: e.clientX,
-                                    y: e.clientY,
-                                    content: [
-                                        {
-                                            type: 'text', text: locale('copy'), onClick() {
-                                                if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
-                                                if (msgData.type === 'img') {
-                                                    (async () => {
-                                                        let img = await axios.get<Response>(msgData.msg);
-                                                        let blob = await img.data.blob();
-                                                        let data = new ClipboardItem({ [blob.type]: blob });
-                                                        await window.navigator.clipboard.write([data]);
-                                                    })().catch(reason => {
-                                                        openWindow(allWindow.all, TextAlert, {
-                                                            title: 'Error',
-                                                            elem: String(reason),
-                                                        });
+                <Providers
+                    providers={[
+                        <StatesContext.Provider value={{ allWindow, listState, setListState, chatState, setChatState }} />,
+                        <SendMessageFunContext.Provider value={(id, type = 'text') => {
+                            openWindow(allWindow.all, SendMessage, {
+                                studentsJson: listState.studentsJson,
+                                selId: listState.student,
+                                studentsChat: chatState.studentsChat,
+                                id, type
+                            });
+                        }} />,
+                        <localeContext.Provider value={locale} />,
+                        <SetCMMessageFunContext.Provider value={(e, i) => {
+                            const stu = listState.student || 10000;
+                            if (chatState.studentsChat === undefined) return;
+                            let msgDatas = chatState.studentsChat;
+                            const msgData = msgDatas[stu][i];
+                            setContentMenu({
+                                x: e.clientX,
+                                y: e.clientY,
+                                content: [
+                                    {
+                                        type: 'text', text: locale('copy'), onClick() {
+                                            if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
+                                            else if (msgData.type === 'img') {
+                                                (async () => {
+                                                    let img = await axios.get<Response>(msgData.msg);
+                                                    let blob = await img.data.blob();
+                                                    let data = new ClipboardItem({ [blob.type]: blob });
+                                                    await window.navigator.clipboard.write([data]);
+                                                })().catch(reason => {
+                                                    openWindow(allWindow.all, TextAlert, {
+                                                        title: 'Error',
+                                                        elem: String(reason),
                                                     });
-                                                }
-                                            }
-                                        },
-                                        {
-                                            type: 'text', text: locale('delete'), onClick() {
-                                                msgDatas[stu].splice(i, 1);
-                                                setChatState({ studentsChat: msgDatas });
-                                            }
-                                        },
-                                        {
-                                            type: 'text', text: locale('edit'), onClick() {
-                                                const { id, type } = msgData;
-                                                openWindow(allWindow.all, SendMessage, {
-                                                    studentsJson: listState.studentsJson,
-                                                    selId: listState.student,
-                                                    studentsChat: chatState.studentsChat,
-                                                    id, type, i
                                                 });
                                             }
-                                        },
-                                    ],
-                                    display: true,
-                                });
-                            }}>
-                                <Content />
-                            </SetCMMessageFunContext.Provider>
-                        </localeContext.Provider>
-                    </SendMessageFunContext.Provider>
-                </StatesContext.Provider>
+                                        }
+                                    },
+                                    {
+                                        type: 'text', text: locale('delete'), onClick() {
+                                            msgDatas[stu].splice(i, 1);
+                                            setChatState({ studentsChat: msgDatas });
+                                        }
+                                    },
+                                    {
+                                        type: 'text', text: locale('edit'), onClick() {
+                                            const { id, type } = msgData;
+                                            openWindow(allWindow.all, SendMessage, {
+                                                studentsJson: listState.studentsJson,
+                                                selId: listState.student,
+                                                studentsChat: chatState.studentsChat,
+                                                id, type, i
+                                            });
+                                        }
+                                    },
+                                ],
+                                display: true,
+                            });
+                        }} />,
+                    ]}
+                >
+                    <Content />
+                </Providers>
             </div>
         </MainNode>
     );

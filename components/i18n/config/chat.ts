@@ -35,8 +35,8 @@ const chat = {
         'en-US': 'Select the student',
     },
     idPromptInfo: {
-        'zh-CN': '请选择需要在列表$0的学生的ID',
-        'zh-TW': '請選擇需要在列表$0的學生的ID',
+        'zh-CN': '请选择需要在列表$0的学生',
+        'zh-TW': '請選擇需要在列表$0的學生',
         'en-US': 'Please Select the student that need to $0',
     },
     error: {
@@ -61,38 +61,43 @@ const chat = {
     },
     sendMsgStudent: {
         'zh-CN': '发送学生消息',
-        'zh-TW': '發送學生消息',
+        'zh-TW': '發送學生訊息',
         'en-US': 'Send Message of student',
     },
     sendMsgSensei: {
         'zh-CN': '发送老师消息',
-        'zh-TW': '發送老師消息',
+        'zh-TW': '發送老師訊息',
         'en-US': 'Send Message of sensei',
     },
     sendMsgInfo: {
         'zh-CN': '请输入需要发送$0$1的$2',
         'zh-TW': '請輸入需要發送$0$1的$2',
-        'en-US': 'Please input the $2 message $0 $1',
-    },
-    sendMsgStudentInfo: {
-        'zh-CN': '的',
-        'zh-TW': '的',
-        'en-US': 'from',
+        'en-US': 'Please input the $2 $0 $1',
     },
     sendMsgSenseiInfo: {
         'zh-CN': '给',
         'zh-TW': '給',
         'en-US': 'to',
     },
+    sensei: {
+        'zh-CN': '老师',
+        'zh-TW': '老師',
+        'en-US': 'teacher',
+    },
     text: {
         'zh-CN': '消息',
-        'zh-TW': '消息',
-        'en-US': 'text',
+        'zh-TW': '讯息',
+        'en-US': 'message',
     },
     img: {
         'zh-CN': '图片链接',
-        'zh-TW': '圖片鏈接',
+        'zh-TW': '圖片連接',
         'en-US': 'link of image',
+    },
+    time: {
+        'zh-CN': '时间消息',
+        'zh-TW': '時間讯息',
+        'en-US': 'text of time',
     },
     undefinedStudent: {
         'zh-CN': '$0的学生ID不存在',
@@ -113,6 +118,11 @@ const chat = {
         'zh-CN': '下载 SVG 文件',
         'zh-TW': '下載 SVG 文件',
         'en-US': 'Download SVG File',
+    },
+    png: {
+        'zh-CN': '下载 PNG 文件',
+        'zh-TW': '下載 PNG 文件',
+        'en-US': 'Download PNG File',
     },
     copy: {
         'zh-CN': '复制',
@@ -136,8 +146,8 @@ const chat = {
     },
     idConfirmInfo: {
         'zh-CN': '确定删除与$0的聊天吗',
-        'zh-TW': '確定刪除於$0的聊天嗎',
-        'en-US': 'Are you sure to delete the chatting with $0?',
+        'zh-TW': '確定刪除與$0的聊天嗎',
+        'en-US': 'Sure to delete the chatting with $0?',
     },
     confirm: {
         'zh-CN': '确定',

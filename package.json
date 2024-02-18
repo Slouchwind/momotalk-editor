@@ -15,6 +15,7 @@
     "@types/react-dom": "18.0.10",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "dom-to-image": "^2.6.0",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "jszip": "^3.10.1",
@@ -26,5 +27,9 @@
     "react-hook-form": "^7.45.0",
     "sass": "^1.58.3",
     "typescript": "4.9.5"
+  },
+  "devDependencies": {
+    "@types/dom-to-image": "^2.6.7",
+    "@types/svg2png": "^4.1.5"
   }
 }

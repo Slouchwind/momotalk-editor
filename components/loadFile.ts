@@ -26,11 +26,21 @@ export async function downloadFile(json: object, filename: string) {
     URL.revokeObjectURL(url);
 }
 
-export function downloadSVG(blob: string, filename: string) {
-    const url = URL.createObjectURL(new Blob([blob]));
+export function downloadSVG(source: string, filename: string) {
+    const url = URL.createObjectURL(new Blob([source]));
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = filename + '.svg';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+}
+
+export function downloadPNG(url: string, filename: string) {
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename + '.png';
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);

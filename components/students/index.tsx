@@ -3,7 +3,7 @@ import { getStudentInfo } from './studentsMethods';
 import ImgCol from '../imgCol';
 
 export interface MessageData {
-    type: 'text' | 'img';
+    type: 'text' | 'img' | 'time';
     id: number | 'sensei';
     msg: string;
 }
