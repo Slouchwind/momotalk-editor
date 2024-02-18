@@ -4,11 +4,11 @@ import { Context } from "react";
 type ProviderData = ReactElement<any, Provider<any>>;
 interface ProvidersProps {
     providers: ProviderData[];
-    children: React.ReactNode;
+    element: React.ReactNode;
 }
 
-export default function Providers({ providers, children }: ProvidersProps) {
-    let result = children;
+export default function Providers({ providers, element }: ProvidersProps) {
+    let result = element;
     providers.forEach(v => {
         result = React.createElement(v.type, {
             value: v.props.value,

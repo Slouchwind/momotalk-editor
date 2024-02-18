@@ -656,7 +656,7 @@ export default function Chat() {
             <div id={styles.contentBar}>
                 <Providers
                     providers={[
-                        <StatesContext.Provider value={{ allWindow, listState, setListState, chatState, setChatState }} />,
+                        <StatesContext.Provider key='states' value={{ allWindow, listState, setListState, chatState, setChatState }} />,
                         <SendMessageFunContext.Provider value={(id, type = 'text') => {
                             openWindow(allWindow.all, SendMessage, {
                                 studentsJson: listState.studentsJson,
@@ -665,8 +665,8 @@ export default function Chat() {
                                 id, type
                             });
                         }} />,
-                        <localeContext.Provider value={locale} />,
-                        <SetCMMessageFunContext.Provider value={(e, i) => {
+                        <localeContext.Provider key='locale' value={locale} />,
+                        <SetCMMessageFunContext.Provider key='setCMMessageFun' value={(e, i) => {
                             const stu = listState.student || 10000;
                             if (chatState.studentsChat === undefined) return;
                             let msgDatas = chatState.studentsChat;
@@ -715,9 +715,8 @@ export default function Chat() {
                             });
                         }} />,
                     ]}
-                >
-                    <Content />
-                </Providers>
+                    element={<Content />}
+                />
             </div>
         </MainNode>
     );
