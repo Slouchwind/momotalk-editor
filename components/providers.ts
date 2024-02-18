@@ -10,10 +10,13 @@ interface ProvidersProps {
 export default function Providers({ providers, element }: ProvidersProps) {
     let result = element;
     providers.forEach(v => {
-        result = React.createElement(v.type, {
-            value: v.props.value,
-            children: result,
-        });
+        result = React.createElement(
+            v.type,
+            {
+                value: v.props.value,
+            },
+            result
+        );
     });
     return result;
 }

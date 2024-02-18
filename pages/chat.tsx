@@ -657,7 +657,7 @@ export default function Chat() {
                 <Providers
                     providers={[
                         <StatesContext.Provider key='states' value={{ allWindow, listState, setListState, chatState, setChatState }} />,
-                        <SendMessageFunContext.Provider value={(id, type = 'text') => {
+                        <SendMessageFunContext.Provider key='sendMessageFun' value={(id, type = 'text') => {
                             openWindow(allWindow.all, SendMessage, {
                                 studentsJson: listState.studentsJson,
                                 selId: listState.student,
