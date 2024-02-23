@@ -1,5 +1,4 @@
 import React, { Provider, ReactElement } from "react";
-import { Context } from "react";
 
 type ProviderData = ReactElement<any, Provider<any>>;
 interface ProvidersProps {
@@ -18,5 +17,5 @@ export default function Providers({ providers, element }: ProvidersProps) {
             result
         );
     });
-    return result;
+    return (<>result</>);
 }
