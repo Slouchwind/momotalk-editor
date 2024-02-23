@@ -17,5 +17,5 @@ export default function Providers({ providers, element }: ProvidersProps) {
             result
         );
     });
-    return (<>result</>);
+    return (<>{result}</>);
 }
