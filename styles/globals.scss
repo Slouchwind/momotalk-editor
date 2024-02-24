@@ -1,5 +1,9 @@
+@import "keyframe";
+
 @mixin img-col($width) {
   div.imgCol {
+    animation-name: fadeIn;
+    animation-duration: 0.55s;
     overflow: hidden;
     border-radius: 50%;
     display: grid;
@@ -132,6 +136,8 @@ div.window {
   }
 
   div.ask {
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
     position: fixed;
     box-shadow: 0 0 10px 0px #00000080;
     border-radius: 10px;
@@ -233,6 +239,11 @@ div.window {
 @include img-col(100%);
 
 div#contentMenu {
+  animation-name: fadeIn;
+  animation-duration: 0.35s;
+  animation-fill-mode: forwards;
+  transition-timing-function: cubic-bezier(0, 0, 0, 1.54);
+  transition-duration: 0.35s;
   backdrop-filter: blur(30px) contrast(120%);
   position: absolute;
   width: max-content;

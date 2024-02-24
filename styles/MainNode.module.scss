@@ -23,7 +23,7 @@ div #main {
   height: 0;
   width: 100%;
   position: absolute;
-  animation-duration: 800ms;
+  animation-duration: 0.8s;
   animation-name: start;
   animation-timing-function: cubic-bezier(1, 0, 0, 1);
   z-index: 1000;
@@ -36,7 +36,7 @@ div #main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation-duration: 500ms;
+    animation-duration: 0.5s;
     animation-name: iconstart;
     display: flex;
     flex-direction: column;

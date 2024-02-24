@@ -1,3 +1,5 @@
+@import "keyframe";
+
 @mixin triangle($bgColor, $y: 0px) {
   background-color: $bgColor;
   width: 7.5px;
@@ -27,6 +29,10 @@
 }
 
 @mixin message-mixin($color) {
+  animation-name: moveUp;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
   font-size: 16px;
 
   > div#text {

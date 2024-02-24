@@ -1,7 +1,7 @@
-import React from "react";
-import Repeat from "./repeat";
-import { SetStateFun, useClassState } from './extraReact';
-import randomId from "./randomId";
+import React from 'react';
+import Repeat from './repeat';
+import { SetStateFun } from './extraReact';
+import randomId from './randomId';
 
 interface WindowProps<C> {
     /**标题 */
@@ -108,8 +108,15 @@ export function getWindowFun(
         setAllWindow({ all });
     };
     const closeWindow = (all: AllWindow['all'], id: string) => {
-        all = all?.filter(v => v.id !== id);
-        setAllWindow({ all });
+        const windows = document.getElementsByClassName('ask');
+        const window = windows[windows.length - 1] as HTMLDivElement;
+        if (!window) return;
+        window.style.animationFillMode = 'forwards';
+        window.style.animationName = 'fadeOut';
+        window.addEventListener('animationend', () => {
+            all = all?.filter(v => v.id !== id);
+            setAllWindow({ all });
+        });
     };
     return { allWindow, setAllWindow, addNewWindow, openWindow, closeWindow };
 }
