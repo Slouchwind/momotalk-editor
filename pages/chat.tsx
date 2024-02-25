@@ -597,12 +597,7 @@ export default function Chat() {
     }, [listState.studentsList]);
 
     return (
-        <MainNode onBodyClick={() => {
-            const contentMenu = document.getElementById('contentMenu') as HTMLDivElement | undefined;
-            if (!contentMenu) return;
-            contentMenu.style.animationName = 'fadeOut';
-            contentMenu.addEventListener('animationend', () => setContentMenu({ display: false }));
-        }}>
+        <MainNode onBodyClick={() => setContentMenu({ display: false })}>
             <NextSeo
                 title={getTitle(locale('title'))}
             />
