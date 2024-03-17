@@ -1,4 +1,5 @@
 @import "media";
+@import "keyframe";
 
 #title {
   position: fixed;
@@ -55,6 +56,9 @@
     height: 100%;
 
     > div.img {
+      animation-name: fadeIn;
+      animation-duration: 0.55s;
+      overflow: hidden;
       margin: auto;
       margin-top: 20px;
       margin-bottom: 5px;
