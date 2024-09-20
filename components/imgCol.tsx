@@ -30,7 +30,7 @@ export default function ImgCol(
         <div className='imgCol' style={imgStyle} {...other}>
             <img
                 className='col'
-                src={`https://schale.gg/images/student/collection/${id}.webp`}
+                src={`https://schaledb.com/images/student/collection/${id}.webp`}
                 alt={`${id || ''} collection image`}
             />
         </div>

@@ -10,19 +10,20 @@ export async function getStudentsJson(locale: string): Promise<studentsJson> {
         'en-US': 'en'
     };
     const fileJson: fileInfo[] = await fetch('../students.json').then(r => r.json());
-    const schaleJson: schaleInfo[] = await fetch(`https://schale.gg/data/${localeCodes[locale as Locales]}/students.min.json`).then(r => r.json());
+    const schaleJson: schaleInfo[] = await fetch(`https://schaledb.com/data/${localeCodes[locale as Locales]}/students.min.json`).then(r => r.json());
     return { fileJson, schaleJson };
 }
 
 export function getStudentInfo({ fileJson, schaleJson }: studentsJson, studentId: number): studentInfo {
-    const file = fileJson && fileJson.filter(info => (info.id === studentId))[0];
-    const schale = schaleJson && schaleJson.filter(info => (info.Id === studentId))[0];
+    console.log({ fileJson, schaleJson });
+    const file = fileJson?.filter(info => (info.id === studentId))[0];
+    const schale = schaleJson?.[studentId];
     return { file, schale };
 }
 
 export function getAllStudentsList({ schaleJson }: studentsJson): number[] {
     if (!schaleJson) return [];
-    return schaleJson.map(v => v.Id).sort();
+    return Object.keys(schaleJson).map(k => Number(k));
 }
 
 export function getStuSenText(

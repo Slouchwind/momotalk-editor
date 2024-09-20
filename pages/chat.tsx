@@ -292,7 +292,7 @@ interface StudentsSelectorProps {
 
 function StudentsSelector({ schaleJson, studentsList, onClick, selectStudents }: StudentsSelectorProps) {
     let chooseStudentsList = Object.entries(selectStudents).filter(v => v[1]).map(v => Number(v[0]));
-    let selector = schaleJson?.map(({ Id: id }) => {
+    let selector = getAllStudentsList({ schaleJson })?.map(id => {
         if (!studentsList.includes(id)) return;
         return (
             <ImgCol

@@ -66,7 +66,7 @@ export interface schaleInfo {
 
 export interface studentsJson {
     fileJson?: fileInfo[];
-    schaleJson?: schaleInfo[];
+    schaleJson?: { [id: number]: schaleInfo };
 }
 
 export interface studentInfo {
