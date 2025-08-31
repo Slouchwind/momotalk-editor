@@ -1,586 +1,1170 @@
 [
   {
     "id": 10000,
-    "bio": "什么都能解决哦！"
+    "bio": {
+      "zh-CN": "什么都能解决哦！",
+      "zh-TW": "什麼都能解決哦！",
+      "en-US": "I can solve anything!"
+    }
   },
   {
     "id": 10001,
-    "bio": "在此输入状态信息"
+    "bio": {
+      "zh-CN": "在此输入状态信息",
+      "zh-TW": "在此輸入狀態資訊",
+      "en-US": "Enter status message here"
+    }
   },
   {
     "id": 10002,
-    "bio": "EAT OR DIE"
+    "bio": {
+      "zh-CN": "EAT OR DIE",
+      "zh-TW": "EAT OR DIE",
+      "en-US": "EAT OR DIE"
+    }
   },
   {
     "id": 10003,
-    "bio": "有人要一起去佩洛洛庆典吗？"
+    "bio": {
+      "zh-CN": "有人要一起去佩洛洛庆典吗？",
+      "zh-TW": "有人要一起去佩洛洛慶典嗎？",
+      "en-US": "Does anyone want to go to the Peroro Festival together?"
+    }
   },
   {
     "id": 10004,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10005,
-    "bio": "午睡中 别吵醒我"
+    "bio": {
+      "zh-CN": "午睡中 别吵醒我",
+      "zh-TW": "午睡中 別吵醒我",
+      "en-US": "Napping. Don't wake me up."
+    }
   },
   {
     "id": 10006,
-    "bio": "看到可疑的人请立刻联络"
+    "bio": {
+      "zh-CN": "看到可疑的人请立刻联络",
+      "zh-TW": "看到可疑的人請立刻聯絡",
+      "en-US": "If you see anyone suspicious, please contact me immediately."
+    }
   },
   {
     "id": 10007,
-    "bio": "最爱街头涂鸦！"
+    "bio": {
+      "zh-CN": "最爱街头涂鸦！",
+      "zh-TW": "最愛街頭塗鴉！",
+      "en-US": "I love street graffiti!"
+    }
   },
   {
     "id": 10008,
-    "bio": "啊啊！？"
+    "bio": {
+      "zh-CN": "啊啊！？",
+      "zh-TW": "啊啊！？",
+      "en-US": "Aah!?"
+    }
   },
   {
     "id": 10009,
-    "bio": "肚子饿了~"
+    "bio": {
+      "zh-CN": "肚子饿了~",
+      "zh-TW": "肚子餓了~",
+      "en-US": "I'm hungry~"
+    }
   },
   {
     "id": 10010,
-    "bio": "自行车伙伴招募中……(1/5)"
+    "bio": {
+      "zh-CN": "自行车伙伴招募中……(1/5)",
+      "zh-TW": "自行車夥伴招募中……(1/5)",
+      "en-US": "Recruiting bicycle buddies... (1/5)"
+    }
   },
   {
     "id": 10011,
-    "bio": "和天使们一起"
+    "bio": {
+      "zh-CN": "和天使们一起",
+      "zh-TW": "和天使們一起",
+      "en-US": "With the angels"
+    }
   },
   {
     "id": 10012,
-    "bio": "健全的精神寓于健康的身体"
+    "bio": {
+      "zh-CN": "健全的精神寓于健康的身体",
+      "zh-TW": "健全的精神寓於健康的身體",
+      "en-US": "A sound mind in a sound body"
+    }
   },
   {
     "id": 10013,
-    "bio": "……"
+    "bio": {
+      "zh-CN": "……",
+      "zh-TW": "……",
+      "en-US": "..."
+    }
   },
   {
     "id": 10014,
-    "bio": "泉奈会加油的！忍忍！"
+    "bio": {
+      "zh-CN": "泉奈会加油的！忍忍！",
+      "zh-TW": "泉奈會加油的！忍忍！",
+      "en-US": "Izuna will do her best! Nin-nin!"
+    }
   },
   {
     "id": 10015,
-    "bio": "千年游戏开发部的爱丽丝"
+    "bio": {
+      "zh-CN": "千年游戏开发部的爱丽丝",
+      "zh-TW": "千年遊戲開發部的愛麗絲",
+      "en-US": "Aris from the Millennium Game Development Department"
+    }
   },
   {
     "id": 10016,
-    "bio": "请向我推荐游戏"
+    "bio": {
+      "zh-CN": "请向我推荐游戏",
+      "zh-TW": "請向我推薦遊戲",
+      "en-US": "Please recommend a game to me"
+    }
   },
   {
     "id": 10017,
-    "bio": "看看我的胡子吧！！"
+    "bio": {
+      "zh-CN": "看看我的胡子吧！！",
+      "zh-TW": "看看我的鬍子吧！！",
+      "en-US": "Look at my beard!!"
+    }
   },
   {
     "id": 10018,
-    "bio": "404 Not Found"
+    "bio": {
+      "zh-CN": "404 Not Found",
+      "zh-TW": "404 Not Found",
+      "en-US": "404 Not Found"
+    }
   },
   {
     "id": 10019,
-    "bio": "et omnia vanitas"
+    "bio": {
+      "zh-CN": "et omnia vanitas",
+      "zh-TW": "et omnia vanitas",
+      "en-US": "et omnia vanitas"
+    }
   },
   {
     "id": 10020,
-    "bio": "色色的东西不行就是不行！"
+    "bio": {
+      "zh-CN": "色色的东西不行就是不行！",
+      "zh-TW": "色色的東西不行就是不行！",
+      "en-US": "Lewd things are not allowed!"
+    }
   },
   {
     "id": 10021,
-    "bio": "A brevis paradisum"
+    "bio": {
+      "zh-CN": "A brevis paradisum",
+      "zh-TW": "A brevis paradisum",
+      "en-US": "A brevis paradisum"
+    }
   },
   {
     "id": 10022,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10023,
-    "bio": "夏季合宿训练中"
+    "bio": {
+      "zh-CN": "夏季合宿训练中",
+      "zh-TW": "夏季合宿訓練中",
+      "en-US": "In summer training camp"
+    }
   },
   {
     "id": 10024,
-    "bio": "正在纵贯基沃托斯"
+    "bio": {
+      "zh-CN": "正在纵贯基沃托斯",
+      "zh-TW": "正在縱貫基沃托斯",
+      "en-US": "Crossing Kivotos"
+    }
   },
   {
     "id": 10025,
-    "bio": "想吃糖葫芦的心情！"
+    "bio": {
+      "zh-CN": "想吃糖葫芦的心情！",
+      "zh-TW": "想吃糖葫蘆的心情！",
+      "en-US": "Feeling like eating tanghulu!"
+    }
   },
   {
     "id": 10026,
-    "bio": "看什么看"
+    "bio": {
+      "zh-CN": "看什么看",
+      "zh-TW": "看什麼看",
+      "en-US": "What are you looking at?"
+    }
   },
   {
     "id": 10027,
-    "bio": "任务中"
+    "bio": {
+      "zh-CN": "任务中",
+      "zh-TW": "任務中",
+      "en-US": "On a mission"
+    }
   },
   {
     "id": 10028,
-    "bio": "带给主人最棒的快乐！"
+    "bio": {
+      "zh-CN": "带给主人最棒的快乐！",
+      "zh-TW": "帶給主人最棒的快樂！",
+      "en-US": "Bringing the best joy to Master!"
+    }
   },
   {
     "id": 10029,
-    "bio": "人生是巧克力蝴蝶饼"
+    "bio": {
+      "zh-CN": "人生是巧克力蝴蝶饼",
+      "zh-TW": "人生是巧克力蝴蝶餅",
+      "en-US": "Life is a chocolate pretzel"
+    }
   },
   {
     "id": 10030,
-    "bio": "寻求未知的视野"
+    "bio": {
+      "zh-CN": "寻求未知的视野",
+      "zh-TW": "尋求未知的視野",
+      "en-US": "Seeking an unknown view"
+    }
   },
   {
     "id": 10031,
-    "bio": "今年也请多多指教"
+    "bio": {
+      "zh-CN": "今年也请多多指教",
+      "zh-TW": "今年也請多多指教",
+      "en-US": "Please take care of me again this year"
+    }
   },
   {
     "id": 10032,
-    "bio": "让今年变成快乐的一年吧♪"
+    "bio": {
+      "zh-CN": "让今年变成快乐的一年吧♪",
+      "zh-TW": "讓今年變成快樂的一年吧♪",
+      "en-US": "Let's make this a happy year♪"
+    }
   },
   {
     "id": 10033,
-    "bio": "我会永远陪伴在阁下的身旁……♡"
+    "bio": {
+      "zh-CN": "我会永远陪伴在阁下的身旁……♡",
+      "zh-TW": "我會永遠陪伴在閣下的身旁……♡",
+      "en-US": "I will always be by your side...♡"
+    }
   },
   {
     "id": 10034,
-    "bio": "每天踏实，一步一步"
+    "bio": {
+      "zh-CN": "每天踏实，一步一步",
+      "zh-TW": "每天踏實，一步一步",
+      "en-US": "Steady every day, step by step"
+    }
   },
   {
     "id": 10035,
-    "bio": "正在办其他事"
+    "bio": {
+      "zh-CN": "正在办其他事",
+      "zh-TW": "正在辦其他事",
+      "en-US": "Busy with other things"
+    }
   },
   {
     "id": 10036,
-    "bio": "有困难时，请随时联系我"
+    "bio": {
+      "zh-CN": "有困难时，请随时联系我",
+      "zh-TW": "有困難時，請隨時聯繫我",
+      "en-US": "If you have any difficulties, please feel free to contact me"
+    }
   },
   {
     "id": 10037,
-    "bio": "叛逆者统统肃清！"
+    "bio": {
+      "zh-CN": "叛逆者统统肃清！",
+      "zh-TW": "叛逆者統統肅清！",
+      "en-US": "Purge all rebels!"
+    }
   },
   {
     "id": 10038,
-    "bio": "为了鸡窝托斯的和平"
+    "bio": {
+      "zh-CN": "为了鸡窝托斯的和平",
+      "zh-TW": "為了奇普托斯的和平",
+      "en-US": "For the peace of Kivotos"
+    }
   },
   {
     "id": 10039,
-    "bio": "眼前一片黑……"
+    "bio": {
+      "zh-CN": "眼前一片黑……",
+      "zh-TW": "眼前一片黑……",
+      "en-US": "It's all dark before my eyes..."
+    }
   },
   {
     "id": 10040,
-    "bio": "未来要成为，独当一面的忍者……"
+    "bio": {
+      "zh-CN": "未来要成为，独当一面的忍者……",
+      "zh-TW": "未來要成為，獨當一面的忍者……",
+      "en-US": "In the future, I want to become a full-fledged ninja..."
+    }
   },
   {
     "id": 10041,
-    "bio": "希望可以下点雨……"
+    "bio": {
+      "zh-CN": "希望可以下点雨……",
+      "zh-TW": "希望可以下點雨……",
+      "en-US": "I hope it rains a little..."
+    }
   },
   {
     "id": 10042,
-    "bio": "最近正在学习花语"
+    "bio": {
+      "zh-CN": "最近正在学习花语",
+      "zh-TW": "最近正在學習花語",
+      "en-US": "Recently learning the language of flowers"
+    }
   },
   {
     "id": 10043,
-    "bio": "比夏日还热情的心意♡"
+    "bio": {
+      "zh-CN": "比夏日还热情的心意♡",
+      "zh-TW": "比夏日還熱情的心意♡",
+      "en-US": "A heart more passionate than summer♡"
+    }
   },
   {
     "id": 10044,
-    "bio": "是大海哦，大海~"
+    "bio": {
+      "zh-CN": "是大海哦，大海~",
+      "zh-TW": "是大海哦，大海~",
+      "en-US": "It's the sea, the sea~"
+    }
   },
   {
     "id": 10045,
-    "bio": "午睡中~欢迎同道中人"
+    "bio": {
+      "zh-CN": "午睡中~欢迎同道中人",
+      "zh-TW": "午睡中~歡迎同道中人",
+      "en-US": "Napping~ Fellow nappers are welcome"
+    }
   },
   {
     "id": 10046,
-    "bio": "这次要在海边修行咯！忍忍！"
+    "bio": {
+      "zh-CN": "这次要在海边修行咯！忍忍！",
+      "zh-TW": "這次要在海邊修行咯！忍忍！",
+      "en-US": "This time I'm going to train at the beach! Nin-nin!"
+    }
   },
   {
     "id": 10047,
-    "bio": "光芒~会在哪里呢？"
+    "bio": {
+      "zh-CN": "光芒~会在哪里呢？",
+      "zh-TW": "光芒~會在哪裡呢？",
+      "en-US": "Where could the light be~?"
+    }
   },
   {
     "id": 10048,
-    "bio": "努力在努力"
+    "bio": {
+      "zh-CN": "努力在努力",
+      "zh-TW": "努力在努力",
+      "en-US": "Trying to try"
+    }
   },
   {
     "id": 10049,
-    "bio": "放学后的甜点部成员"
+    "bio": {
+      "zh-CN": "放学后的甜点部成员",
+      "zh-TW": "放學後的甜點部成員",
+      "en-US": "Member of the After-School Sweets Club"
+    }
   },
   {
     "id": 10050,
-    "bio": "我是山海经的教官！"
+    "bio": {
+      "zh-CN": "我是山海经的教官！",
+      "zh-TW": "我是山海經的教官！",
+      "en-US": "I am the instructor of Shanhaijing!"
+    }
   },
   {
     "id": 10051,
-    "bio": "应援委托受理中！"
+    "bio": {
+      "zh-CN": "应援委托受理中！",
+      "zh-TW": "應援委託受理中！",
+      "en-US": "Support requests are being accepted!"
+    }
   },
   {
     "id": 10052,
-    "bio": "奇普托斯的忧郁"
+    "bio": {
+      "zh-CN": "奇普托斯的忧郁",
+      "zh-TW": "奇普托斯的憂鬱",
+      "en-US": "The Melancholy of Kivotos"
+    }
   },
   {
     "id": 10053,
-    "bio": "晄轮大祭开催中！"
+    "bio": {
+      "zh-CN": "晄轮大祭开催中！",
+      "zh-TW": "晄輪大祭開催中！",
+      "en-US": "Kourin Grand Festival is being held!"
+    }
   },
   {
     "id": 10054,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10055,
-    "bio": "调一杯饮料改变人生的时间到啦"
+    "bio": {
+      "zh-CN": "调一杯饮料改变人生的时间到啦",
+      "zh-TW": "調一杯飲料改變人生的時間到啦",
+      "en-US": "Time to change your life with a drink"
+    }
   },
   {
     "id": 10056,
-    "bio": "在这圣夜里，希望大家都有幸福来敲门"
+    "bio": {
+      "zh-CN": "在这圣夜里，希望大家都有幸福来敲门",
+      "zh-TW": "在這聖夜裡，希望大家都有幸福來敲門",
+      "en-US": "On this holy night, I hope happiness knocks on everyone's door"
+    }
   },
   {
     "id": 10057,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10058,
-    "bio": "我时刻准备着"
+    "bio": {
+      "zh-CN": "我时刻准备着",
+      "zh-TW": "我時刻準備著",
+      "en-US": "I'm always ready"
+    }
   },
   {
     "id": 10059,
-    "bio": "能一起说话的同伴招募中"
+    "bio": {
+      "zh-CN": "能一起说话的同伴招募中",
+      "zh-TW": "能一起說話的同伴招募中",
+      "en-US": "Recruiting companions to talk with"
+    }
   },
   {
     "id": 10060,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10061,
-    "bio": "一直在守望着"
+    "bio": {
+      "zh-CN": "一直在守望着",
+      "zh-TW": "一直在守望著",
+      "en-US": "Always watching over you"
+    }
   },
   {
     "id": 10062,
-    "bio": "时常待机中"
+    "bio": {
+      "zh-CN": "时常待机中",
+      "zh-TW": "時常待機中",
+      "en-US": "Always on standby"
+    }
   },
   {
     "id": 10063,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10064,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10065,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10066,
-    "bio": "我是女仆勇者爱丽丝"
+    "bio": {
+      "zh-CN": "我是女仆勇者爱丽丝",
+      "zh-TW": "我是女僕勇者愛麗絲",
+      "en-US": "I am the maid hero, Aris"
+    }
   },
   {
     "id": 10067,
-    "bio": "作战待机中"
+    "bio": {
+      "zh-CN": "作战待机中",
+      "zh-TW": "作戰待機中",
+      "en-US": "Standing by for operation"
+    }
   },
   {
     "id": 10068,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10069,
-    "bio": "玄武商会开始营业中"
+    "bio": {
+      "zh-CN": "玄武商会开始营业中",
+      "zh-TW": "玄武商會開始營業中",
+      "en-US": "Genbu Shokai is now open for business"
+    }
   },
   {
     "id": 10070,
-    "bio": "我能听到风声"
+    "bio": {
+      "zh-CN": "我能听到风声",
+      "zh-TW": "我能聽到風聲",
+      "en-US": "I can hear the sound of the wind"
+    }
   },
   {
     "id": 10071,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 10072,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 13000,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 13001,
-    "bio": "找到云的话告诉我"
+    "bio": {
+      "zh-CN": "找到云的话告诉我",
+      "zh-TW": "找到雲的話告訴我",
+      "en-US": "Let me know if you find a cloud"
+    }
   },
   {
     "id": 13002,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 13003,
-    "bio": "减肥中……"
+    "bio": {
+      "zh-CN": "减肥中……",
+      "zh-TW": "減肥中……",
+      "en-US": "On a diet..."
+    }
   },
   {
     "id": 13004,
-    "bio": "希望会是快乐的一天"
+    "bio": {
+      "zh-CN": "希望会是快乐的一天",
+      "zh-TW": "希望會是快樂的一天",
+      "en-US": "I hope it will be a happy day"
+    }
   },
   {
     "id": 13005,
-    "bio": "不常用MomoTalk"
+    "bio": {
+      "zh-CN": "不常用MomoTalk",
+      "zh-TW": "不常用MomoTalk",
+      "en-US": "I don't use MomoTalk often"
+    }
   },
   {
     "id": 13006,
-    "bio": "没有什么有趣的事吗~"
+    "bio": {
+      "zh-CN": "没有什么有趣的事吗~",
+      "zh-TW": "沒有什麼有趣的事嗎~",
+      "en-US": "Isn't there anything interesting~"
+    }
   },
   {
     "id": 13007,
-    "bio": "谢绝骚扰 (╬⊙益⊙)"
+    "bio": {
+      "zh-CN": "谢绝骚扰 (╬⊙益⊙)",
+      "zh-TW": "謝絕騷擾 (╬⊙益⊙)",
+      "en-US": "No harassment (╬⊙益⊙)"
+    }
   },
   {
     "id": 13008,
-    "bio": "对策委员会黑见芹香"
+    "bio": {
+      "zh-CN": "对策委员会黑见芹香",
+      "zh-TW": "對策委員會黑見芹香",
+      "en-US": "Countermeasures Committee, Serika Kuromi"
+    }
   },
   {
     "id": 13009,
-    "bio": "好困……"
+    "bio": {
+      "zh-CN": "好困……",
+      "zh-TW": "好困……",
+      "en-US": "So sleepy..."
+    }
   },
   {
     "id": 13010,
-    "bio": "如我所算"
+    "bio": {
+      "zh-CN": "如我所算",
+      "zh-TW": "如我所算",
+      "en-US": "Just as I calculated"
+    }
   },
   {
     "id": 13011,
-    "bio": "致力于游戏！"
+    "bio": {
+      "zh-CN": "致力于游戏！",
+      "zh-TW": "致力於遊戲！",
+      "en-US": "Dedicated to games!"
+    }
   },
   {
     "id": 13012,
-    "bio": "女武神警察学园，转学生募集中！"
+    "bio": {
+      "zh-CN": "女武神警察学园，转学生募集中！",
+      "zh-TW": "女武神警察學園，轉學生募集中！",
+      "en-US": "Valkyrie Police Academy, recruiting transfer students!"
+    }
   },
   {
     "id": 16000,
-    "bio": "请多多指教"
+    "bio": {
+      "zh-CN": "请多多指教",
+      "zh-TW": "請多多指教",
+      "en-US": "Please take care of me"
+    }
   },
   {
     "id": 16001,
-    "bio": "为主人提供最好的服务！"
+    "bio": {
+      "zh-CN": "为主人提供最好的服务！",
+      "zh-TW": "為主人提供最好的服務！",
+      "en-US": "Providing the best service for Master!"
+    }
   },
   {
     "id": 16002,
-    "bio": "赞叹微波吧！"
+    "bio": {
+      "zh-CN": "赞叹微波吧！",
+      "zh-TW": "讚嘆微波吧！",
+      "en-US": "Praise the microwave!"
+    }
   },
   {
     "id": 16003,
-    "bio": "希望今天也是平安的一天"
+    "bio": {
+      "zh-CN": "希望今天也是平安的一天",
+      "zh-TW": "希望今天也是平安的一天",
+      "en-US": "I hope today is another peaceful day"
+    }
   },
   {
     "id": 16004,
-    "bio": "CHUCIJIANMIAN！"
+    "bio": {
+      "zh-CN": "CHUCIJIANMIAN！",
+      "zh-TW": "CHUCIJIANMIAN！",
+      "en-US": "NICE TO MEET YOU!"
+    }
   },
   {
     "id": 16005,
-    "bio": "夏日、青春、大海"
+    "bio": {
+      "zh-CN": "夏日、青春、大海",
+      "zh-TW": "夏日、青春、大海",
+      "en-US": "Summer, youth, and the sea"
+    }
   },
   {
     "id": 16006,
-    "bio": "前往寻找夏天美食之旅！"
+    "bio": {
+      "zh-CN": "前往寻找夏天美食之旅！",
+      "zh-TW": "前往尋找夏天美食之旅！",
+      "en-US": "Off on a journey to find summer delicacies!"
+    }
   },
   {
     "id": 16007,
-    "bio": "想了解切里诺会长的丰功伟业吗？"
+    "bio": {
+      "zh-CN": "想了解切里诺会长的丰功伟业吗？",
+      "zh-TW": "想了解切里諾會長的豐功偉業嗎？",
+      "en-US": "Do you want to know about Chairman Cherino's great achievements?"
+    }
   },
   {
     "id": 16008,
-    "bio": "咖啡有配甜甜圈！"
+    "bio": {
+      "zh-CN": "咖啡有配甜甜圈！",
+      "zh-TW": "咖啡有配甜甜圈！",
+      "en-US": "Coffee comes with donuts!"
+    }
   },
   {
     "id": 16009,
-    "bio": "请订阅「少女忍法帖小满」频道！"
+    "bio": {
+      "zh-CN": "请订阅「少女忍法帖小满」频道！",
+      "zh-TW": "請訂閱「少女忍法帖小滿」頻道！",
+      "en-US": "Please subscribe to the 'Kunoichi Michiru's Ninja Scroll' channel!"
+    }
   },
   {
     "id": 16010,
-    "bio": "如果有更多时间练习的话……"
+    "bio": {
+      "zh-CN": "如果有更多时间练习的话……",
+      "zh-TW": "如果有更多時間練習的話……",
+      "en-US": "If only I had more time to practice..."
+    }
   },
   {
     "id": 16011,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 16012,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 20000,
-    "bio": "虚争空言，不如思而试之"
+    "bio": {
+      "zh-CN": "虚争空言，不如思而试之",
+      "zh-TW": "虛爭空言，不如思而試之",
+      "en-US": "It is better to think and try than to argue in vain."
+    }
   },
   {
     "id": 20001,
-    "bio": "绝不让目标逃跑"
+    "bio": {
+      "zh-CN": "绝不让目标逃跑",
+      "zh-TW": "絕不讓目標逃跑",
+      "en-US": "Never let the target escape"
+    }
   },
   {
     "id": 20002,
-    "bio": "赞扬我吧！"
+    "bio": {
+      "zh-CN": "赞扬我吧！",
+      "zh-TW": "讚揚我吧！",
+      "en-US": "Praise me!"
+    }
   },
   {
     "id": 20003,
-    "bio": "聚沙成塔"
+    "bio": {
+      "zh-CN": "聚沙成塔",
+      "zh-TW": "聚沙成塔",
+      "en-US": "Many a little makes a mickle"
+    }
   },
   {
     "id": 20004,
-    "bio": "井底之蛙 不知大海"
+    "bio": {
+      "zh-CN": "井底之蛙 不知大海",
+      "zh-TW": "井底之蛙 不知大海",
+      "en-US": "A frog in a well does not know the great sea"
+    }
   },
   {
     "id": 20005,
-    "bio": "请看新的佩洛洛大人泳圈！"
+    "bio": {
+      "zh-CN": "请看新的佩洛洛大人泳圈！",
+      "zh-TW": "請看新的佩洛洛大人泳圈！",
+      "en-US": "Please see the new Peroro-sama swim ring!"
+    }
   },
   {
     "id": 20006,
-    "bio": "我什么都知道！"
+    "bio": {
+      "zh-CN": "我什么都知道！",
+      "zh-TW": "我什麼都知道！",
+      "en-US": "I know everything!"
+    }
   },
   {
     "id": 20007,
-    "bio": "演唱会，尽情期待哦！"
+    "bio": {
+      "zh-CN": "演唱会，尽情期待哦！",
+      "zh-TW": "演唱會，盡情期待哦！",
+      "en-US": "Look forward to the concert!"
+    }
   },
   {
     "id": 20008,
-    "bio": "谢绝业务以外的联络"
+    "bio": {
+      "zh-CN": "谢绝业务以外的联络",
+      "zh-TW": "謝絕業務以外的聯絡",
+      "en-US": "No contact outside of business"
+    }
   },
   {
     "id": 20009,
-    "bio": "世界上没有不好的胡子！"
+    "bio": {
+      "zh-CN": "世界上没有不好的胡子！",
+      "zh-TW": "世界上沒有不好的鬍子！",
+      "en-US": "There's no such thing as a bad beard in this world!"
+    }
   },
   {
     "id": 20010,
-    "bio": "227号温泉乡，住宿预约接受中！"
+    "bio": {
+      "zh-CN": "227号温泉乡，住宿预约接受中！",
+      "zh-TW": "227號溫泉鄉，住宿預約接受中！",
+      "en-US": "No. 227 Onsen Village, accommodation reservations are now being accepted!"
+    }
   },
   {
     "id": 20011,
-    "bio": "谨贺新年"
+    "bio": {
+      "zh-CN": "谨贺新年",
+      "zh-TW": "謹賀新年",
+      "en-US": "Happy New Year"
+    }
   },
   {
     "id": 20012,
-    "bio": "请把我设为紧急联络人"
+    "bio": {
+      "zh-CN": "请把我设为紧急联络人",
+      "zh-TW": "請把我設為緊急聯絡人",
+      "en-US": "Please set me as your emergency contact"
+    }
   },
   {
     "id": 20013,
-    "bio": "安全性检查从日常做起"
+    "bio": {
+      "zh-CN": "安全性检查从日常做起",
+      "zh-TW": "安全性檢查從日常做起",
+      "en-US": "Safety checks start from daily life"
+    }
   },
   {
     "id": 20014,
-    "bio": "与其张嘴不如行动"
+    "bio": {
+      "zh-CN": "与其张嘴不如行动",
+      "zh-TW": "與其張嘴不如行動",
+      "en-US": "Actions speak louder than words"
+    }
   },
   {
     "id": 20015,
-    "bio": "今天要玩什么呢！？"
+    "bio": {
+      "zh-CN": "今天要玩什么呢！？",
+      "zh-TW": "今天要玩什麼呢！？",
+      "en-US": "What should we play today!?"
+    }
   },
   {
     "id": 20016,
-    "bio": "读书时除了紧急状况请不要联络我"
+    "bio": {
+      "zh-CN": "读书时除了紧急状况请不要联络我",
+      "zh-TW": "讀書時除了緊急狀況請不要聯絡我",
+      "en-US": "Please don't contact me while I'm reading unless it's an emergency"
+    }
   },
   {
     "id": 20017,
-    "bio": "人生是痛苦的连续……"
+    "bio": {
+      "zh-CN": "人生是痛苦的连续……",
+      "zh-TW": "人生是痛苦的連續……",
+      "en-US": "Life is a series of pains..."
+    }
   },
   {
     "id": 20018,
-    "bio": "正在积极收购没在用的导弹、炮弹！"
+    "bio": {
+      "zh-CN": "正在积极收购没在用的导弹、炮弹！",
+      "zh-TW": "正在積極收購沒在用的導彈、砲彈！",
+      "en-US": "Actively acquiring unused missiles and shells!"
+    }
   },
   {
     "id": 20019,
-    "bio": "和有点新鲜的日常生活一起"
+    "bio": {
+      "zh-CN": "和有点新鲜的日常生活一起",
+      "zh-TW": "和有點新鮮的日常生活一起",
+      "en-US": "With a little fresh daily life"
+    }
   },
   {
     "id": 20020,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 20021,
-    "bio": "在等圣诞老人！"
+    "bio": {
+      "zh-CN": "在等圣诞老人！",
+      "zh-TW": "在等聖誕老人！",
+      "en-US": "Waiting for Santa Claus!"
+    }
   },
   {
     "id": 20022,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 20023,
-    "bio": "为了创建安全的基沃托斯，交给瓦尔基里吧"
+    "bio": {
+      "zh-CN": "为了创建安全的基沃托斯，交给瓦尔基里吧",
+      "zh-TW": "為了創建安全的基沃托斯，交給瓦爾基里吧",
+      "en-US": "Leave it to Valkyrie to create a safe Kivotos"
+    }
   },
   {
     "id": 20024,
-    "bio": "永远游刃有余，优雅面对"
+    "bio": {
+      "zh-CN": "永远游刃有余，优雅面对",
+      "zh-TW": "永遠遊刃有餘，優雅面對",
+      "en-US": "Always at ease, facing with elegance"
+    }
   },
   {
     "id": 20025,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 20026,
-    "bio": "联邦学生会应保证每周休息4天！"
+    "bio": {
+      "zh-CN": "联邦学生会应保证每周休息4天！",
+      "zh-TW": "聯邦學生會應保證每週休息4天！",
+      "en-US": "The General Student Council should guarantee 4 days off per week!"
+    }
   },
   {
     "id": 23000,
-    "bio": "薄荷巧克力最棒了！"
+    "bio": {
+      "zh-CN": "薄荷巧克力最棒了！",
+      "zh-TW": "薄荷巧克力最棒了！",
+      "en-US": "Mint chocolate is the best!"
+    }
   },
   {
     "id": 23001,
-    "bio": "希望至少能过平静的一天(T_T)"
+    "bio": {
+      "zh-CN": "希望至少能过平静的一天(T_T)",
+      "zh-TW": "希望至少能過平靜的一天(T_T)",
+      "en-US": "I hope I can have at least one peaceful day (T_T)"
+    }
   },
   {
     "id": 23002,
-    "bio": "发生什么事的话，不管是谁都请到救护骑士团来！"
+    "bio": {
+      "zh-CN": "发生什么事的话，不管是谁都请到救护骑士团来！",
+      "zh-TW": "發生什麼事的話，不管 terrasse 都請到救護騎士團來！",
+      "en-US": "If anything happens, please come to the Crusader Medical!"
+    }
   },
   {
     "id": 23003,
-    "bio": "有急事请DM"
+    "bio": {
+      "zh-CN": "有急事请DM",
+      "zh-TW": "有急事請DM",
+      "en-US": "DM me for urgent matters"
+    }
   },
   {
     "id": 23004,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 23005,
-    "bio": "珍惜常识的对策委员会"
+    "bio": {
+      "zh-CN": "珍惜常识的对策委员会",
+      "zh-TW": "珍惜常識的對策委員會",
+      "en-US": "The Countermeasures Committee that cherishes common sense"
+    }
   },
   {
     "id": 23006,
-    "bio": "百夜堂，今天也绝赞营业中！"
+    "bio": {
+      "zh-CN": "百夜堂，今天也绝赞营业中！",
+      "zh-TW": "百夜堂，今天也絕讚營業中！",
+      "en-US": "Hyakkiyako, open for business today as well!"
+    }
   },
   {
     "id": 23007,
-    "bio": "喜歡形形「色色」的類型♪"
+    "bio": {
+      "zh-CN": "喜歡形形「色色」的類型♪",
+      "zh-TW": "喜歡形形「色色」的類型♪",
+      "en-US": "I like all 'sorts' of types♪"
+    }
   },
   {
     "id": 23008,
-    "bio": "愿大家的心得到安宁"
+    "bio": {
+      "zh-CN": "愿大家的心得到安宁",
+      "zh-TW": "願大家的心得到安寧",
+      "en-US": "May everyone's hearts be at peace"
+    }
   },
   {
     "id": 26000,
-    "bio": "丧失的前方"
+    "bio": {
+      "zh-CN": "丧失的前方",
+      "zh-TW": "喪失的前方",
+      "en-US": "Beyond the loss"
+    }
   },
   {
     "id": 26001,
-    "bio": "我一直守望着你"
+    "bio": {
+      "zh-CN": "我一直守望着你",
+      "zh-TW": "我一直守望著你",
+      "en-US": "I'm always watching over you"
+    }
   },
   {
     "id": 26002,
-    "bio": "今天也要全力以赴进行料理的练习！"
+    "bio": {
+      "zh-CN": "今天也要全力以赴进行料理的练习！",
+      "zh-TW": "今天也要全力以赴進行料理的練習！",
+      "en-US": "I'll do my best to practice cooking today too!"
+    }
   },
   {
     "id": 26003,
-    "bio": "身体不舒服的人请随时联系我"
+    "bio": {
+      "zh-CN": "身体不舒服的人请随时联系我",
+      "zh-TW": "身體不舒服的人請隨時聯繫我",
+      "en-US": "If you're not feeling well, please contact me anytime"
+    }
   },
   {
     "id": 26004,
-    "bio": "请在借阅期间内还书"
+    "bio": {
+      "zh-CN": "请在借阅期间内还书",
+      "zh-TW": "請在借閱期間內還書",
+      "en-US": "Please return the book within the borrowing period"
+    }
   },
   {
     "id": 26005,
-    "bio": "#还在生长期"
+    "bio": {
+      "zh-CN": "#还在生长期",
+      "zh-TW": "#還在生長期",
+      "en-US": "#StillGrowing"
+    }
   },
   {
     "id": 26006,
-    "bio": "一起去看星星吧！★彡"
+    "bio": {
+      "zh-CN": "一起去看星星吧！★彡",
+      "zh-TW": "一起去看星星吧！★彡",
+      "en-US": "Let's go see the stars together! ★彡"
+    }
   },
   {
     "id": 26007,
-    "bio": "玩的时候就要好好玩！"
+    "bio": {
+      "zh-CN": "玩的时候就要好好玩！",
+      "zh-TW": "玩的時候就要好好玩！",
+      "en-US": "When you play, play hard!"
+    }
   },
   {
     "id": 26008,
-    "bio": "百夜堂连锁店热烈营业中！"
+    "bio": {
+      "zh-CN": "百夜堂连锁店热烈营业中！",
+      "zh-TW": "百夜堂連鎖店熱烈營業中！",
+      "en-US": "Hyakkiyako chain stores are now open!"
+    }
   },
   {
     "id": 26009,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   },
   {
     "id": 26010,
-    "bio": ""
+    "bio": {
+      "zh-CN": "",
+      "zh-TW": "",
+      "en-US": ""
+    }
   }
 ]
