@@ -22,11 +22,14 @@ import InfoBar from '@/components/infoBar';
 
 interface ContentProps {
     id: number,
-    allInfo: studentsJson
+    allInfo: studentsJson,
+    lo: string
 }
 
-function Content({ id, allInfo }: ContentProps) {
+function Content({ id, allInfo, lo }: ContentProps) {
     const info = getStudentInfo(allInfo, id);
+    const bio = info.file?.bio;
+    const bioText = typeof bio === 'object' && bio !== null ? bio[lo] || bio['zh-CN'] : bio;
     return (
         <div id={styles.content}>
             <div className={styles.img}>
@@ -38,7 +41,7 @@ function Content({ id, allInfo }: ContentProps) {
             </div>
             <div className={styles.p}>
                 <p className={styles.name}>{info.schale?.Name}</p>
-                <p className={styles.info}>{info.file?.bio}</p>
+                <p className={styles.info}>{bioText}</p>
             </div>
             <div className={styles.birthday}>
                 <img
@@ -95,7 +98,7 @@ export default function Info() {
             />
             <div id={styles.contentBar}>
                 {state.student !== 0 ?
-                    <Content id={state.student} allInfo={state.studentsJson.data} />
+                    <Content id={state.student} allInfo={state.studentsJson.data} lo={lo} />
                     :
                     <p>{locale('selectStudents')}</p>
                 }
