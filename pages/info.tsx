@@ -15,10 +15,12 @@ import info from '@/components/i18n/config/info';
 
 //Methods
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import getTitle from '@/components/title';
 import { getAllStudentsList, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import { useClassState } from '@/components/extraReact';
 import InfoBar from '@/components/infoBar';
+import { AllStudentsIcon } from '@/components/students';
 
 interface ContentProps {
     id: number,
@@ -69,6 +71,8 @@ export default function Info() {
     });
 
     const [allStuList, setAllStuList] = useState<number[]>([]);
+    const [isContentBarVisible, setIsContentBarVisible] = useState<boolean>(false);
+    const router = useRouter();
 
     useEffect(() => {
         getStudentsJson(lo).then(r => {
@@ -76,6 +80,22 @@ export default function Info() {
             setState({ studentsJson: { data: r } });
         });
     }, [lo]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 580) {
+                setIsContentBarVisible(true);
+            } else {
+                setIsContentBarVisible(false);
+                setState({ student: 0 });
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <MainNode>
@@ -91,14 +111,27 @@ export default function Info() {
                         id={id}
                         allInfo={state.studentsJson.data}
                         key={id}
-                        onClick={_ => setState({ student: id })}
+                        onClick={_ => {
+                            setState({ student: id });
+                            setIsContentBarVisible(true);
+                        }}
                         select={state.student === id}
                     />
                 )}
             />
-            <div id={styles.contentBar}>
+            <div id={styles.contentBar} className={isContentBarVisible ? styles.showContentBar : ''}>
                 {state.student !== 0 ?
-                    <Content id={state.student} allInfo={state.studentsJson.data} lo={lo} />
+                    <>
+                        <div className={styles.header}>
+                            <div className={styles.closeButton} onClick={() => {
+                                setIsContentBarVisible(false);
+                                setState({ student: 0 });
+                            }}>
+                                <img src='/api/icon/close' alt='close' />
+                            </div>
+                        </div>
+                        <Content id={state.student} allInfo={state.studentsJson.data} lo={lo} />
+                    </>
                     :
                     <p>{locale('selectStudents')}</p>
                 }
