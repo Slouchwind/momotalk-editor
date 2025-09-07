@@ -1,6 +1,6 @@
 export interface fileInfo {
     id: number;
-    bio: { [K: string]: string };
+    bio: { [lang: string]: string };
 }
 
 export interface schaleInfo {

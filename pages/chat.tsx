@@ -364,11 +364,11 @@ export default function Chat() {
     const [chatState, setChatState] = useClassState<ChatState>({
         studentsChat: {
             "10000": [
-                { type: 'text', id: 10000, msg: '这是什么？' },
-                { type: 'text', id: 'sensei', msg: '这是什么？' },
+                { type: 'text', id: 10000, msg: 'huh?' },
+                { type: 'text', id: 'sensei', msg: 'huh?' },
             ],
             "10045": [
-                { type: 'text', id: 10045, msg: '好热啊~\n一动不动还是好热啊~' },
+                { type: 'text', id: 10045, msg: locale('hoshinoMsg') },
             ]
         },
     });
