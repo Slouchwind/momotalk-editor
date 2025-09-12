@@ -12,7 +12,7 @@ const chat = {
     allStudents: {
         'zh-CN': '所有学生',
         'zh-TW': '所有學生',
-        'en-US': 'All Studnets',
+        'en-US': 'All Students',
     },
     selectStudents: {
         'zh-CN': '请选择学生。',

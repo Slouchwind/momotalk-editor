@@ -117,9 +117,36 @@
   height: 100%;
   background-color: #fff;
 
+  .chatHeader {
+    height: 50px;
+    background-color: #ff8a9f;
+    border-bottom: #ff8a9f 1px solid;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+
+    .backButton {
+      cursor: pointer;
+      margin-right: 10px;
+      margin-top: 5px;
+
+      img {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    p {
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(255, 255, 255);
+      margin: 0;
+    }
+  }
+
   #content {
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 130px);
     overflow-x: hidden;
     overflow-y: auto;
 
@@ -185,25 +212,49 @@
         margin: 5px 15px 5px 0;
       }
     }
+  }
+
+  div#editor {
+    height: 60px;
+    background-color: #f3f7f8;
+    position: fixed;
+    bottom: 0;
+    width: calc((100% - 70px) / 2);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    border-top: #dce5ec 2px solid;
+
+    > img {
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+
+@media screen and (max-width: 580px) {
+  #contentBar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+    background-color: #fff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+
+    &.showContentBar {
+      transform: translateY(0%);
+    }
 
     div#editor {
-      height: 60px;
-      background-color: #f3f7f8;
-      position: fixed;
-      bottom: 0;
-      width: calc((100% - 70px) / 2);
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      justify-content: space-evenly;
-      align-items: center;
-      border-top: #dce5ec 2px solid;
-
-      > img {
-        cursor: pointer;
-        width: 30px;
-        height: 30px;
-      }
+      width: 100%;
     }
   }
 }
