@@ -1,5 +1,5 @@
-import { studentsJson } from './students';
-import { getStudentInfo } from './studentsMethods';
+import { blueArcBoxInfo, studentsJson } from './students';
+import { getBioInfo, getStudentInfo } from './studentsMethods';
 import ImgCol from '../imgCol';
 import { useLocale } from '../i18n';
 
@@ -12,17 +12,16 @@ export interface MessageData {
 interface StudentProps {
     id: number;
     allInfo: studentsJson;
+    blueArcBoxJson?: blueArcBoxInfo[];
     onClick: React.MouseEventHandler<HTMLDivElement>;
     select: boolean;
     onContentMenu?: React.MouseEventHandler<HTMLDivElement>;
     infoText?: () => string;
+    lo: string;
 }
 
-export default function Student({ id, allInfo, onClick, select, onContentMenu, infoText }: StudentProps) {
+export default function Student({ id, allInfo, blueArcBoxJson, onClick, select, onContentMenu, infoText, lo }: StudentProps) {
     const info = getStudentInfo(allInfo, id);
-    const { lo } = useLocale({});
-    const bio = info.file?.bio;
-    const bioText = typeof bio === 'object' && bio !== null ? bio[lo] || bio['zh-CN'] : bio;
 
     return (
         <div
@@ -41,7 +40,7 @@ export default function Student({ id, allInfo, onClick, select, onContentMenu, i
             />
             <div className='p'>
                 <p className='name'>{info.schale?.Name}</p>
-                <p className='info'>{infoText?.() || bioText}</p>
+                <p className='info'>{infoText?.() || getBioInfo(blueArcBoxJson, id, lo)}</p>
             </div>
             <div className='line' />
         </div>

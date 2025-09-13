@@ -73,3 +73,23 @@ export interface studentInfo {
     file?: fileInfo;
     schale?: schaleInfo;
 }
+
+export type blueArcBoxLang = 'en' | 'jp' | 'kr' | 'tw' | 'zh';
+
+export interface blueArcBoxInfo {
+    Id: number;
+    Avatar: string[];
+    Name: { [lang in blueArcBoxLang]: string };
+    Bio: { [lang in blueArcBoxLang]: string };
+    Nickname: string[];
+    Birthday: string;
+    Age: string;
+    School: string;
+    Club: string;
+    Star: number;
+    Released: boolean;
+    Related: {
+        ItemId: number;
+        ItemType: string;
+    };
+}

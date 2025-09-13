@@ -4,7 +4,7 @@ import MainNode from '@/components/main';
 import Student from '@/components/students';
 
 //Types
-import type { studentsJson } from '@/components/students/students';
+import type { blueArcBoxInfo, studentsJson } from '@/components/students/students';
 
 //Styles
 import styles from '@/styles/Info.module.scss';
@@ -16,20 +16,19 @@ import info from '@/components/i18n/config/info';
 //Methods
 import { useEffect, useState } from 'react';
 import getTitle from '@/components/title';
-import { getAllStudentsList, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
+import { getAllStudentsList, getBioInfo, getBlueArcBoxJson, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import { useClassState } from '@/components/extraReact';
 import InfoBar from '@/components/infoBar';
 
 interface ContentProps {
-    id: number,
-    allInfo: studentsJson,
-    lo: string
+    id: number;
+    allInfo: studentsJson;
+    bioText: string;
+    lo: string;
 }
 
-function Content({ id, allInfo, lo }: ContentProps) {
+function Content({ id, allInfo, bioText, lo }: ContentProps) {
     const info = getStudentInfo(allInfo, id);
-    const bio = info.file?.bio;
-    const bioText = typeof bio === 'object' && bio !== null ? bio[lo] || bio['zh-CN'] : bio;
     return (
         <div id={styles.content}>
             <div className={styles.img}>
@@ -59,13 +58,15 @@ interface State {
     studentsJson: {
         data: studentsJson;
     };
+    blueArcBoxJson: blueArcBoxInfo[];
 }
 
 export default function Info() {
     const { lo, locale } = useLocale(info);
     const [state, setState] = useClassState<State>({
         student: 0,
-        studentsJson: { data: {} }
+        studentsJson: { data: {} },
+        blueArcBoxJson: [],
     });
 
     const [allStuList, setAllStuList] = useState<number[]>([]);
@@ -74,6 +75,9 @@ export default function Info() {
         getStudentsJson(lo).then(r => {
             setAllStuList(getAllStudentsList(r));
             setState({ studentsJson: { data: r } });
+        });
+        getBlueArcBoxJson().then(r => {
+            setState({ blueArcBoxJson: r });
         });
     }, [lo]);
 
@@ -90,18 +94,23 @@ export default function Info() {
                     <Student
                         id={id}
                         allInfo={state.studentsJson.data}
+                        blueArcBoxJson={state.blueArcBoxJson}
                         key={id}
                         onClick={_ => setState({ student: id })}
                         select={state.student === id}
+                        lo={lo}
                     />
                 )}
             />
             <div id={styles.contentBar}>
                 {state.student !== 0 ?
-                    <Content id={state.student} allInfo={state.studentsJson.data} lo={lo} />
-                    :
-                    <p>{locale('selectStudents')}</p>
-                }
+                    <Content
+                        id={state.student}
+                        allInfo={state.studentsJson.data}
+                        bioText={getBioInfo(state.blueArcBoxJson, state.student, lo)}
+                        lo={lo}
+                    />
+                    : <p>{locale('selectStudents')}</p>}
             </div>
         </MainNode>
     );

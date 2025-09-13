@@ -650,6 +650,7 @@ export default function Chat() {
                             if (chat.length === 0) return ' ';
                             return chat[chat.length - 1].msg || ' ';
                         }}
+                        lo={lo}
                     />
                 )}
             />
