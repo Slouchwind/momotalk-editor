@@ -137,11 +137,11 @@ export default function Info() {
                             </div>
                         </div>
                         <Content
-                        id={state.student}
-                        allInfo={state.studentsJson.data}
-                        bioText={getBioInfo(state.blueArcBoxJson, state.student, lo)}
-                        lo={lo}
-                    />
+                            id={state.student}
+                            allInfo={state.studentsJson.data}
+                            bioText={getBioInfo(state.blueArcBoxJson, state.student, lo)}
+                            lo={lo}
+                        />
                     </>
                     :
                     <p>{locale('selectStudents')}</p>
