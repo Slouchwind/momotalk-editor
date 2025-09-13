@@ -53,6 +53,11 @@
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 
+  @media (min-width: 581px) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
   .header {
     display: none;
 
