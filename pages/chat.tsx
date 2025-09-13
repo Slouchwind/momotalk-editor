@@ -372,12 +372,27 @@ export default function Chat() {
             ]
         },
     });
-    const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
+        const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
         x: 0,
         y: 0,
         content: [],
         display: false,
     });
+
+    const [isChatViewActive, setIsChatViewActive] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 580) {
+                setIsChatViewActive(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         let list: string = window.localStorage.studentsList;
@@ -597,64 +612,89 @@ export default function Chat() {
     }, [listState.studentsList]);
 
     return (
-        <MainNode onBodyClick={() => setContentMenu({ display: false })}>
+                    <MainNode onBodyClick={() => setContentMenu({ display: false })} hideMTLeftBar={isChatViewActive && window.innerWidth <= 580}>
             <NextSeo
                 title={getTitle(locale('title'))}
             />
             <AllWindows zIndex={999} allWindow={allWindow} />
             <ContentMenu set={contentMenu} />
-            <InfoBar
-                styles={styles}
-                locale={locale}
-                studentsList={listState.studentsList}
-                right={(['+', '-'] as ('+' | '-')[]).map(v => (
-                    <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
-                        openWindow(allWindow.all, IdPrompt, {
-                            schaleJson: listState.studentsJson.data.schaleJson,
-                            studentsList: listState.studentsList,
-                            type: v,
-                        });
-                    }}>{v}</p>
-                ))}
-                students={id => (
-                    <Student
-                        id={id}
-                        allInfo={listState.studentsJson.data}
-                        onClick={() => setListState({ student: id })}
-                        select={listState.student === id}
-                        onContentMenu={e => {
-                            const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
-                            setContentMenu({
-                                x: e.clientX,
-                                y: e.clientY,
-                                content: [
-                                    { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
-                                    { type: 'separator', color: '#ccc', height: 1 },
-                                    {
-                                        type: 'text', text: locale('delete'), onClick() {
-                                            openWindow(allWindow.all, IdConfirm, {
-                                                student: id,
-                                                textInfo: info.schale?.Name as string,
-                                                studentsList: listState.studentsList,
-                                                studentsChat: chatState.studentsChat,
-                                            });
-                                        }
-                                    },
-                                ],
-                                display: true,
+            {(!isChatViewActive || window.innerWidth > 580) && (
+                <InfoBar
+                    styles={styles}
+                    locale={locale}
+                    studentsList={listState.studentsList}
+                    right={(['+', '-'] as ('+' | '-')[]).map(v => (
+                        <p title={locale(v) + locale('student') + ''} key={v} onClick={_ => {
+                            openWindow(allWindow.all, IdPrompt, {
+                                schaleJson: listState.studentsJson.data.schaleJson,
+                                studentsList: listState.studentsList,
+                                type: v,
                             });
-                        }}
-                        infoText={() => {
-                            const chat = chatState.studentsChat[String(id)];
-                            if (chat === undefined) return ' ';
-                            if (chat.length === 0) return ' ';
-                            return chat[chat.length - 1].msg || ' ';
-                        }}
-                        lo={lo}
-                    />
+                        }}>{v}</p>
+                    ))}
+                    students={id => (
+                        <Student
+                            id={id}
+                            allInfo={listState.studentsJson.data}
+                            onClick={() => {
+                                setListState({ student: id });
+                                setIsChatViewActive(true);
+                            }}
+                            select={listState.student === id}
+                            onContentMenu={e => {
+                                const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
+                                setContentMenu({
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                    content: [
+                                        { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
+                                        { type: 'separator', color: '#ccc', height: 1 },
+                                        {
+                                            type: 'text', text: locale('delete'), onClick() {
+                                                openWindow(allWindow.all, IdConfirm, {
+                                                    student: id,
+                                                    textInfo: info.schale?.Name as string,
+                                                    studentsList: listState.studentsList,
+                                                    studentsChat: chatState.studentsChat,
+                                                });
+                                            }
+                                        },
+                                    ],
+                                    display: true,
+                                });
+                            }}
+                            infoText={() => {
+                                const chat = chatState.studentsChat[String(id)];
+                                if (chat === undefined) return ' ';
+                                if (chat.length === 0) return ' ';
+                                return chat[chat.length - 1].msg || ' ';
+                            }}
+                            lo={lo}
+                        />
+                    )}
+                />
+            )}
+            <div id={styles.contentBar} className={isChatViewActive && window.innerWidth <= 580 ? styles.showContentBar : ''}>
+                {isChatViewActive && window.innerWidth <= 580 && (
+                    <div className={styles.chatHeader}>
+                        <div className={styles.backButton} onClick={() => {
+                            setIsChatViewActive(false);
+                            setListState({ student: 0 });
+                        }}>
+                            <img src='/api/icon/close' alt='back' />
+                        </div>
+                        {listState.student !== 0 && (
+                            <ImgCol
+                                style={{
+                                    marginRight: 10,
+                                }}
+                                size={40}
+                                id={listState.student}
+                            />
+                        )}
+                        <p>{listState.student !== 0 ? getStudentInfo(listState.studentsJson.data, listState.student).schale?.Name : ''}</p>
+                    </div>
                 )}
-            />
-            <div id={styles.contentBar}>
                 <Providers
                     providers={[
                         <StatesContext.Provider key='states' value={{ allWindow, listState, setListState, chatState, setChatState }} />,

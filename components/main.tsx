@@ -71,9 +71,10 @@ function MTStart() {
     )}</>;
 }
 
-export default function MainNode({ children, onBodyClick }: {
+export default function MainNode({ children, onBodyClick, hideMTLeftBar }: {
     children: React.ReactNode;
     onBodyClick?: React.MouseEventHandler;
+    hideMTLeftBar?: boolean;
 }) {
     const { lo, locale, localeString } = useLocale(main);
 
@@ -175,11 +176,11 @@ export default function MainNode({ children, onBodyClick }: {
                     </div>
                 </div>
                 <div id={styles.MTContents}>
-                    <div id={styles.MTLeftBar}>
+                    <div id={styles.MTLeftBar} className={hideMTLeftBar ? styles.hideMTLeftBar : ''}>
                         <MTBarLink type='info' />
                         <MTBarLink type='chat' />
                     </div>
-                    <div id={styles.MTMain}>
+                    <div id={styles.MTMain} className={hideMTLeftBar ? styles.fullWidth : ''}>
                         {children}
                     </div>
                 </div>

@@ -15,10 +15,12 @@ import info from '@/components/i18n/config/info';
 
 //Methods
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import getTitle from '@/components/title';
 import { getAllStudentsList, getBioInfo, getBlueArcBoxJson, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
 import { useClassState } from '@/components/extraReact';
 import InfoBar from '@/components/infoBar';
+import { AllStudentsIcon } from '@/components/students';
 
 interface ContentProps {
     id: number;
@@ -70,6 +72,8 @@ export default function Info() {
     });
 
     const [allStuList, setAllStuList] = useState<number[]>([]);
+    const [isContentBarVisible, setIsContentBarVisible] = useState<boolean>(false);
+    const router = useRouter();
 
     useEffect(() => {
         getStudentsJson(lo).then(r => {
@@ -80,6 +84,22 @@ export default function Info() {
             setState({ blueArcBoxJson: r });
         });
     }, [lo]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 580) {
+                setIsContentBarVisible(true);
+            } else {
+                setIsContentBarVisible(false);
+                setState({ student: 0 });
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <MainNode>
@@ -96,21 +116,36 @@ export default function Info() {
                         allInfo={state.studentsJson.data}
                         blueArcBoxJson={state.blueArcBoxJson}
                         key={id}
-                        onClick={_ => setState({ student: id })}
+                        onClick={_ => {
+                            setState({ student: id });
+                            setIsContentBarVisible(true);
+                        }}
                         select={state.student === id}
                         lo={lo}
                     />
                 )}
             />
-            <div id={styles.contentBar}>
+            <div id={styles.contentBar} className={isContentBarVisible ? styles.showContentBar : ''}>
                 {state.student !== 0 ?
-                    <Content
+                    <>
+                        <div className={styles.header}>
+                            <div className={styles.closeButton} onClick={() => {
+                                setIsContentBarVisible(false);
+                                setState({ student: 0 });
+                            }}>
+                                <img src='/api/icon/close' alt='close' />
+                            </div>
+                        </div>
+                        <Content
                         id={state.student}
                         allInfo={state.studentsJson.data}
                         bioText={getBioInfo(state.blueArcBoxJson, state.student, lo)}
                         lo={lo}
                     />
-                    : <p>{locale('selectStudents')}</p>}
+                    </>
+                    :
+                    <p>{locale('selectStudents')}</p>
+                }
             </div>
         </MainNode>
     );
