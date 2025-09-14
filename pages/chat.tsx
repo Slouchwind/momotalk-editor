@@ -362,15 +362,7 @@ export default function Chat() {
         studentsJson: { data: {} },
     });
     const [chatState, setChatState] = useClassState<ChatState>({
-        studentsChat: {
-            "10000": [
-                { type: 'text', id: 10000, msg: 'huh?' },
-                { type: 'text', id: 'sensei', msg: 'huh?' },
-            ],
-            "10045": [
-                { type: 'text', id: 10045, msg: locale('hoshinoMsg') },
-            ]
-        },
+        studentsChat: {},
     });
     const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
         x: 0,
@@ -413,6 +405,17 @@ export default function Chat() {
                 elem: r
             })
         );
+        setChatState({
+            studentsChat: {
+                "10000": [
+                    { type: 'text', id: 10000, msg: locale('aruMsg') },
+                    { type: 'text', id: 'sensei', msg: locale('senseiMsgAru') },
+                ],
+                "10045": [
+                    { type: 'text', id: 10045, msg: locale('hoshinoMsg') },
+                ]
+            },
+        });
     }, [lo]);
 
     //Window

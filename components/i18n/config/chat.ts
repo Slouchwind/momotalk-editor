@@ -159,10 +159,20 @@ const chat = {
         'zh-TW': '取消',
         'en-US': 'Cancel',
     },
+    aruMsg: {
+        'zh-CN': '嗯？',
+        'zh-TW': '嗯？',
+        'en-US': 'huh?',
+    },
     hoshinoMsg: {
         'zh-CN': '好热……热得我要被晒干了……\n就算没动也好热啊~',
         'zh-TW': '好熱……熱到感覺要被曬乾了……\n明明沒有動卻好熱唷……',
         'en-US': `It's so hot! I'm feeling parched in this heat...\nIt's hot, even when I'm not moving at all...`,
+    },
+    senseiMsgAru : {
+        'zh-CN': '嗯？',
+        'zh-TW': '嗯？',
+        'en-US': 'huh?',
     },
 }
 export default chat;
