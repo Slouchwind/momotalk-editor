@@ -364,7 +364,7 @@ export default function Chat() {
     const [chatState, setChatState] = useClassState<ChatState>({
         studentsChat: {},
     });
-        const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
+    const [contentMenu, setContentMenu] = useClassState<ContentMenuSet>({
         x: 0,
         y: 0,
         content: [],
@@ -615,7 +615,7 @@ export default function Chat() {
     }, [listState.studentsList]);
 
     return (
-                    <MainNode onBodyClick={() => setContentMenu({ display: false })} hideMTLeftBar={isChatViewActive && window.innerWidth <= 580}>
+        <MainNode onBodyClick={() => setContentMenu({ display: false })} hideMTLeftBar={isChatViewActive && window.innerWidth <= 580}>
             <NextSeo
                 title={getTitle(locale('title'))}
             />
