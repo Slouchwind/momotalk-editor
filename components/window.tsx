@@ -67,7 +67,7 @@ export function AllWindows({ zIndex, allWindow }: {
     allWindow: AllWindow
 }) {
     let { all, component } = allWindow;
-    if (all===undefined || !component) return null;
+    if (!all || !component) { return null }
     else {
         let window: RepeatProps<number>['components'] = v => {
             let { name, id, display, arg } = all[v];
