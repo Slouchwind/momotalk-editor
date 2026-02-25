@@ -7,7 +7,7 @@ import { useLocale } from '@/components/i18n';
 import index from '@/components/i18n/config/indexConfig';
 
 //Methods
-import getTitle from '@/components/title';
+import getTitle from '@/lib/title';
 
 export default function Home() {
     const { locale } = useLocale(index);

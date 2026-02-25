@@ -12,8 +12,8 @@ import Window, { AllWindow, AllWindows, getWindowFun } from './window';
 import { Locales, fillBlank, useLocale } from './i18n';
 import main from './i18n/config/main';
 import { Settings, SettingArg } from '@/components/setting';
-import setFontWeight, { fontWeightNames } from './setFontWeight';
-import { useClassState } from './extraReact';
+import setFontWeight, { fontWeightNames } from '@/lib/setFontWeight';
+import { useClassState } from '@/lib/extraReact';
 
 function MomoTalkIcon() {
     return (

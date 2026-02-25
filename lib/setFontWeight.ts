@@ -1,4 +1,4 @@
-import { Settings } from "./setting";
+import { Settings } from "../components/setting";
 
 export const fontWeightNames = [
     'thin',

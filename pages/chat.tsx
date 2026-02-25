@@ -5,11 +5,11 @@ import Student from '@/components/students';
 import ImgCol from '@/components/imgCol';
 import ContentMenu from '@/components/contentMenu';
 import InfoBar from '@/components/infoBar';
-import getTitle from '@/components/title';
+import getTitle from '@/lib/title';
 import { getAllStudentsList, getStudentInfo, getStudentsJson, getStuSenText } from '@/components/students/studentsMethods';
 import Window, { AllWindows, getWindowFun } from '@/components/window';
-import { SetStateFun, useClassState } from '@/components/extraReact';
-import { downloadPNG, downloadFile, downloadSVG, uploadFile } from '@/components/loadFile';
+import { SetStateFun, useClassState } from '@/lib/extraReact';
+import { downloadPNG, downloadFile, downloadSVG, uploadFile } from '@/lib/loadFile';
 import { getSettingFun } from '@/components/setting';
 
 //Types
@@ -32,7 +32,7 @@ import MinusCode from 'minus-code';
 import { useEffect, useRef, createContext, useContext, ChangeEventHandler, Fragment, useState } from 'react';
 import domToImage from 'dom-to-image';
 import Providers from '@/components/providers';
-import { filterObject } from '@/components/extraObject';
+import { filterObject } from '@/lib/extraObject';
 
 const mccode = new MinusCode();
 

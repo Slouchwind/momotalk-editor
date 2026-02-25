@@ -1,7 +1,6 @@
 import { blueArcBoxInfo, studentsJson } from './students';
 import { getBioInfo, getStudentInfo } from './studentsMethods';
 import ImgCol from '../imgCol';
-import { useLocale } from '../i18n';
 
 export interface MessageData {
     type: 'text' | 'img' | 'time';

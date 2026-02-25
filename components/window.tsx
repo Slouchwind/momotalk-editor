@@ -1,7 +1,9 @@
 import React from 'react';
 import Repeat from './repeat';
-import { SetStateFun } from './extraReact';
-import randomId from './randomId';
+import { SetStateFun } from '@/lib/extraReact';
+import randomId from '@/lib/randomId';
+
+import type { RepeatProps } from './repeat';
 
 interface WindowProps<C> {
     /**标题 */
@@ -64,30 +66,28 @@ export function AllWindows({ zIndex, allWindow }: {
     zIndex: number,
     allWindow: AllWindow
 }) {
-    if (allWindow.all?.length !== 0)
-        return (<>
+    let { all, component } = allWindow;
+    if (!all || !component) return null;
+    else {
+        let window: RepeatProps<number>['components'] = v => {
+            let { name, id, display, arg } = all[v];
+            let windowComponent = component[name](zIndex + 1 + (2 * v), id, display, arg, all);
+            return (
+                <div className='window'>
+                    <div className='back' style={{ zIndex: zIndex + (2 * v) }} />
+                    {windowComponent}
+                </div>
+            );
+        }
+        return (
             <Repeat
                 variable={0}
-                repeat={allWindow.all?.length || 0}
+                repeat={all.length}
                 func={v => v + 1}
-                components={v => {
-                    if (allWindow.component && allWindow.all)
-                        return (
-                            <div className='window'>
-                                <div className='back' style={{ zIndex: zIndex + (2 * v) }} />
-                                {allWindow.component[allWindow.all[v].name](
-                                    zIndex + 1 + (2 * v),
-                                    allWindow.all[v].id,
-                                    allWindow.all[v].display,
-                                    allWindow.all[v].arg,
-                                    allWindow.all
-                                )}
-                            </div>
-                        );
-                }}
+                components={window}
             />
-        </>);
-    return null;
+        );
+    }
 }
 
 export function getWindowFun(

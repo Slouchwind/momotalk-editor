@@ -3,7 +3,7 @@ import styles from '@/styles/MainNode.module.scss';
 import React from 'react';
 import Repeat from './repeat';
 import { useForm } from 'react-hook-form';
-import { SetStateFun } from './extraReact';
+import { SetStateFun } from '@/lib/extraReact';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
 

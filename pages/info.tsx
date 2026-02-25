@@ -16,11 +16,10 @@ import info from '@/components/i18n/config/info';
 //Methods
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import getTitle from '@/components/title';
+import getTitle from '@/lib/title';
 import { getAllStudentsList, getBioInfo, getBlueArcBoxJson, getStudentInfo, getStudentsJson } from '@/components/students/studentsMethods';
-import { useClassState } from '@/components/extraReact';
+import { useClassState } from '@/lib/extraReact';
 import InfoBar from '@/components/infoBar';
-import { AllStudentsIcon } from '@/components/students';
 
 interface ContentProps {
     id: number;
@@ -36,7 +35,7 @@ function Content({ id, allInfo, bioText, lo }: ContentProps) {
             <div className={styles.img}>
                 <img
                     className={styles.col}
-                    src={`https://schale.gg/images/student/collection/${id}.webp`}
+                    src={`https://schaledb.com/images/student/collection/${id}.webp`}
                     alt={`${id} collection image`}
                 />
             </div>

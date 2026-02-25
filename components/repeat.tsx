@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface RepeatProps<T> {
+export interface RepeatProps<T> {
     /**自变量初始值 */
     variable: T,
     /**重复次数 */
