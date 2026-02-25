@@ -67,28 +67,25 @@ export function AllWindows({ zIndex, allWindow }: {
     allWindow: AllWindow
 }) {
     let { all, component } = allWindow;
-    if (!all) return null; 
-    else if (!component) return null;
-    else {
-        let window: RepeatProps<number>['components'] = v => {
-            let { name, id, display, arg } = all[v];
-            let windowComponent = component[name](zIndex + 1 + (2 * v), id, display, arg, all);
-            return (
-                <div className='window'>
-                    <div className='back' style={{ zIndex: zIndex + (2 * v) }} />
-                    {windowComponent}
-                </div>
-            );
-        }
+    let window: RepeatProps<number>['components'] = v => {
+        if (!all || !component) return null;
+        let { name, id, display, arg } = all[v];
+        let windowComponent = component[name](zIndex + 1 + (2 * v), id, display, arg, all);
         return (
-            <Repeat
-                variable={0}
-                repeat={all.length}
-                func={v => v + 1}
-                components={window}
-            />
+            <div className='window'>
+                <div className='back' style={{ zIndex: zIndex + (2 * v) }} />
+                {windowComponent}
+            </div>
         );
     }
+    return (
+        <Repeat
+            variable={0}
+            repeat={all ? all.length : 0}
+            func={v => v + 1}
+            components={window}
+        />
+    );
 }
 
 export function getWindowFun(
