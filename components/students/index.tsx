@@ -8,7 +8,7 @@ export interface MessageData {
     msg: string;
 }
 
-interface StudentProps {
+export interface StudentProps {
     id: number;
     allInfo: studentsJson;
     blueArcBoxJson?: blueArcBoxInfo[];

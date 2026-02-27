@@ -14,9 +14,9 @@ import { getSettingFun } from '@/components/setting';
 
 //Types
 import type { RefObject } from 'react';
-import type { MessageData } from '@/components/students';
+import type { MessageData, StudentProps } from '@/components/students';
 import type { studentsJson } from '@/components/students/students';
-import type { AllWindow } from '@/components/window';
+import type { AllWindow, WindowElement, WindowProps } from '@/components/window';
 import type { ContentMenuSet } from '@/components/contentMenu';
 
 //Style
@@ -440,53 +440,124 @@ export default function Chat() {
     //Confirm
     const IdConfirm = new Window<IdConfirmArg>('IdConfirm');
 
+    let IdPromptElement: WindowElement<IdPromptArg> =
+        ({ schaleJson, studentsList, type }) => (close => {
+            let buttonOnClick = () => {
+                let chooseStudentsList = Object.entries(idPromptInputRef.current).filter(v => v[1]).map(v => Number(v[0]));
+                if (type === '+') {
+                    studentsList.push(...chooseStudentsList);
+                    window.localStorage.studentsList = studentsList?.join();
+                    setListState({ studentsList });
+                    close();
+                }
+                else if (type === '-') {
+                    chooseStudentsList.forEach(id => {
+                        const i = studentsList.indexOf(id);
+                        studentsList.splice(i, 1);
+                    });
+                    window.localStorage.studentsList = studentsList.join();
+                    setListState({
+                        student: 0,
+                        studentsList,
+                    });
+                    close();
+                }
+                idPromptInputRef.current = {};
+            };
+            return (
+                <>
+                    <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
+                    <StudentsSelector
+                        schaleJson={schaleJson}
+                        studentsList={type === '+' ?
+                            getAllStudentsList({ schaleJson }).filter(v => !studentsList.includes(v)) :
+                            studentsList}
+                        onClick={(id) => {
+                            let selectStudent = idPromptInputRef.current[String(id)];
+                            idPromptInputRef.current[String(id)] = !selectStudent;
+                        }}
+                        selectStudents={idPromptInputRef.current}
+                    />
+                    <button onClick={buttonOnClick}>{locale(type || '+')}</button>
+                </>
+            );
+        });
+
+    let SendMessageElement: WindowElement<SendMessageArg> =
+        ({ studentsJson, selId, studentsChat, id, type, i }) => (close => {
+            sendMessageInputRef.current = '';
+            const props: {
+                defaultValue?: string;
+                onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+            } = {
+                defaultValue: i !== undefined ? studentsChat[String(selId)][i].msg : undefined,
+                onChange(e) { sendMessageInputRef.current = e.target.value },
+            };
+            let buttonOnClick = () => {
+                if (!studentsChat) return;
+                if (sendMessageInputRef.current.trim() === '') return;
+                let messageData = studentsChat[String(selId)];
+                let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
+                if (i === undefined)
+                    studentsChat[String(selId)] =
+                        messageData ? messageData.concat(newData) : [newData];
+                else
+                    studentsChat[String(selId)][i] = newData;
+                setChatState({ studentsChat });
+                close();
+            };
+            let studentName = getStudentInfo(studentsJson.data, selId).schale?.Name || String(selId);
+            return (<>
+                <p>
+                    {fillBlank(
+                        locale('sendMsgInfo'),
+                        type === 'time' ? '' : locale('sendMsgSenseiInfo'),
+                        type === 'time' ? '' : getStuSenText(id, locale('sensei'), studentName),
+                        locale(type)
+                    )}
+                </p>
+                {type === 'text' && <textarea {...props} />}
+                {type === 'img' && <input {...props} />}
+                {type === 'time' && <textarea {...props} />}
+                <button onClick={buttonOnClick}>{locale('sendMsg')}</button>
+            </>);
+        });
+
+    let IdConfirmElement: (all: AllWindow['all']) => WindowElement<IdConfirmArg> =
+        (all) => ({ studentsList, studentsChat, student, textInfo }) => (close => {
+            let buttonOnClick = () => {
+                if (!studentsList?.includes(student)) {
+                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
+                }
+                else {
+                    const i = studentsList.indexOf(student);
+                    studentsList.splice(i, 1);
+                    const datas = studentsChat;
+                    delete datas[String(student)];
+                    window.localStorage.studentsList = studentsList?.join();
+                    setListState({
+                        student: 0,
+                        studentsList,
+                    });
+                    setChatState({ studentsChat: datas });
+                    close();
+                }
+            };
+            return (<>
+                <p>{fillBlank(locale('idConfirmInfo'), textInfo)}</p>
+                <div>
+                    <button onClick={buttonOnClick}>{locale('confirm')}</button>
+                    <button className='cancel' onClick={() => close()}>{locale('cancel')}</button>
+                </div>
+            </>);
+        });
+
     useEffect(() => {
-        addNewWindow(IdPrompt, (zIndex, id, display, { schaleJson, studentsList, type }, all) => (
+        addNewWindow(IdPrompt, (zIndex, id, display, args, all) => (
             <IdPrompt.Component
                 title={locale('idPromptTitle')}
                 closeWindow={() => closeWindow(all, id)}
-                element={close => {
-                    return (
-                        <>
-                            <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
-                            <StudentsSelector
-                                schaleJson={schaleJson}
-                                studentsList={type === '+' ?
-                                    getAllStudentsList({ schaleJson }).filter(v => !studentsList.includes(v)) :
-                                    studentsList}
-                                onClick={(id) => {
-                                    let selectStudent = idPromptInputRef.current[String(id)];
-                                    idPromptInputRef.current[String(id)] = !selectStudent;
-                                }}
-                                selectStudents={idPromptInputRef.current}
-                            />
-                            <button
-                                onClick={() => {
-                                    let chooseStudentsList = Object.entries(idPromptInputRef.current).filter(v => v[1]).map(v => Number(v[0]));
-                                    if (type === '+') {
-                                        studentsList.push(...chooseStudentsList);
-                                        window.localStorage.studentsList = studentsList?.join();
-                                        setListState({ studentsList });
-                                        close();
-                                    }
-                                    else if (type === '-') {
-                                        chooseStudentsList.forEach(id => {
-                                            const i = studentsList.indexOf(id);
-                                            studentsList.splice(i, 1);
-                                        });
-                                        window.localStorage.studentsList = studentsList.join();
-                                        setListState({
-                                            student: 0,
-                                            studentsList,
-                                        });
-                                        close();
-                                    }
-                                    idPromptInputRef.current = {};
-                                }}
-                            >{locale(type || '+')}</button>
-                        </>
-                    );
-                }}
+                element={IdPromptElement(args)}
                 zIndex={zIndex}
                 display={display}
             />
@@ -503,89 +574,20 @@ export default function Chat() {
                 display={display}
             />
         ));
-        addNewWindow(SendMessage, (zIndex, winId, display, { studentsJson, selId, studentsChat, id, type, i }, all) => (
+        addNewWindow(SendMessage, (zIndex, winId, display, args, all) => (
             <SendMessage.Component
-                title={getStuSenText(id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
+                title={getStuSenText(args.id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
                 closeWindow={() => closeWindow(all, winId)}
-                element={close => {
-                    sendMessageInputRef.current = '';
-                    const props: {
-                        defaultValue?: string;
-                        onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
-                    } = {
-                        defaultValue: i !== undefined ? studentsChat[String(selId)][i].msg : undefined,
-                        onChange(e) { sendMessageInputRef.current = e.target.value },
-                    };
-                    return (<>
-                        <p>
-                            {fillBlank(
-                                locale('sendMsgInfo'),
-                                type === 'time' ? '' : locale('sendMsgSenseiInfo'),
-                                type === 'time' ? '' : getStuSenText(
-                                    id,
-                                    locale('sensei'),
-                                    getStudentInfo(
-                                        studentsJson.data,
-                                        selId
-                                    ).schale?.Name || String(selId)
-                                ),
-                                locale(type)
-                            )}
-                        </p>
-                        {type === 'text' && <textarea {...props} />}
-                        {type === 'img' && <input {...props} />}
-                        {type === 'time' && <textarea {...props} />}
-                        <button
-                            onClick={() => {
-                                if (!studentsChat) return;
-                                if (sendMessageInputRef.current.trim() === '') return;
-                                let messageData = studentsChat[String(selId)];
-                                let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
-                                if (i === undefined)
-                                    studentsChat[String(selId)] =
-                                        messageData ? messageData.concat(newData) : [newData];
-                                else
-                                    studentsChat[String(selId)][i] = newData;
-                                setChatState({ studentsChat });
-                                close();
-                            }}
-                        >{locale('sendMsg')}</button>
-                    </>);
-                }}
+                element={SendMessageElement(args)}
                 zIndex={zIndex}
                 display={display}
             />
         ));
-        addNewWindow(IdConfirm, (zIndex, id, display, { studentsList, studentsChat, student, textInfo }, all) => (
+        addNewWindow(IdConfirm, (zIndex, id, display, args, all) => (
             <IdConfirm.Component
                 title={locale('idConfirmTitle')}
                 closeWindow={() => closeWindow(all, id)}
-                element={close => (<>
-                    <p>{fillBlank(locale('idConfirmInfo'), textInfo)}</p>
-                    <div>
-                        <button
-                            onClick={() => {
-                                if (!studentsList?.includes(student)) {
-                                    openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
-                                }
-                                else {
-                                    const i = studentsList.indexOf(student);
-                                    studentsList.splice(i, 1);
-                                    const datas = studentsChat;
-                                    delete datas[String(student)];
-                                    window.localStorage.studentsList = studentsList?.join();
-                                    setListState({
-                                        student: 0,
-                                        studentsList,
-                                    });
-                                    setChatState({ studentsChat: datas });
-                                    close();
-                                }
-                            }}
-                        >{locale('confirm')}</button>
-                        <button className='cancel' onClick={() => close()}>{locale('cancel')}</button>
-                    </div>
-                </>)}
+                element={IdConfirmElement(all)(args)}
                 zIndex={zIndex}
                 display={display}
             />
@@ -596,16 +598,15 @@ export default function Chat() {
         listState.studentsList.forEach(id => {
             if (listState.studentsJson.data.schaleJson === undefined) return;
             if (getStudentInfo(listState.studentsJson.data, id).schale?.Name !== undefined) return;
+            let fun = () => openWindow(allWindow.all, IdPrompt, {
+                schaleJson: listState.studentsJson.data.schaleJson,
+                studentsList: listState.studentsList,
+                type: '+'
+            });
             openWindow(allWindow.all, TextAlert, {
                 title: locale('error'),
                 elem: fillBlank(locale('undefinedStudent'), String(id)),
-                fun() {
-                    openWindow(allWindow.all, IdPrompt, {
-                        schaleJson: listState.studentsJson.data.schaleJson,
-                        studentsList: listState.studentsList,
-                        type: '+'
-                    });
-                },
+                fun,
             });
             const { studentsList } = listState;
             studentsList.splice(studentsList.indexOf(id), 1);
@@ -614,11 +615,112 @@ export default function Chat() {
         });
     }, [listState.studentsList]);
 
+    let getStudent = (id: number) => {
+        let onContentMenu: StudentProps['onContentMenu'] = e => {
+            const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
+            let onClick = () => openWindow(allWindow.all, IdConfirm, {
+                student: id,
+                textInfo: info.schale?.Name as string,
+                studentsList: listState.studentsList,
+                studentsChat: chatState.studentsChat,
+            });
+            setContentMenu({
+                x: e.clientX,
+                y: e.clientY,
+                content: [
+                    { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
+                    { type: 'separator', color: '#ccc', height: 1 },
+                    { type: 'text', text: locale('delete'), onClick },
+                ],
+                display: true,
+            });
+        }
+        return (<Student
+            id={id}
+            allInfo={listState.studentsJson.data}
+            onClick={() => {
+                setListState({ student: id });
+                setIsChatViewActive(true);
+            }}
+            select={listState.student === id}
+            onContentMenu={onContentMenu}
+            infoText={() => {
+                const chat = chatState.studentsChat[String(id)];
+                if (chat === undefined) return ' ';
+                if (chat.length === 0) return ' ';
+                return chat[chat.length - 1].msg || ' ';
+            }}
+            lo={lo}
+        />);
+    };
+
+    let providers = [
+        <StatesContext.Provider key='states' value={{ allWindow, listState, setListState, chatState, setChatState }} />,
+        <SendMessageFunContext.Provider key='sendMessageFun' value={(id, type = 'text') => {
+            openWindow(allWindow.all, SendMessage, {
+                studentsJson: listState.studentsJson,
+                selId: listState.student,
+                studentsChat: chatState.studentsChat,
+                id, type
+            });
+        }} />,
+        <localeContext.Provider key='locale' value={locale} />,
+        <SetCMMessageFunContext.Provider key='setCMMessageFun' value={(e, i) => {
+            const stu = listState.student || 10000;
+            if (chatState.studentsChat === undefined) return;
+            let msgDatas = chatState.studentsChat;
+            const msgData = msgDatas[stu][i];
+
+            let copyOnClick = () => {
+                if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
+                else if (msgData.type === 'img') {
+                    (async () => {
+                        let img = await axios.get<Response>(msgData.msg);
+                        let blob = await img.data.blob();
+                        let data = new ClipboardItem({ [blob.type]: blob });
+                        await window.navigator.clipboard.write([data]);
+                    })().catch(reason => {
+                        openWindow(allWindow.all, TextAlert, {
+                            title: 'Error',
+                            elem: String(reason),
+                        });
+                    });
+                }
+            };
+
+            let deleteOnClick = () => {
+                msgDatas[stu].splice(i, 1);
+                setChatState({ studentsChat: msgDatas });
+            };
+
+            let editOnClick = () => {
+                const { id, type } = msgData;
+                openWindow(allWindow.all, SendMessage, {
+                    studentsJson: listState.studentsJson,
+                    selId: listState.student,
+                    studentsChat: chatState.studentsChat,
+                    id, type, i
+                });
+            };
+
+            setContentMenu({
+                x: e.clientX,
+                y: e.clientY,
+                content: [
+                    { type: 'text', text: locale('copy'), onClick: copyOnClick },
+                    { type: 'text', text: locale('delete'), onClick: deleteOnClick },
+                    { type: 'text', text: locale('edit'), onClick: editOnClick },
+                ],
+                display: true,
+            });
+        }} />,
+    ];
+
+    let studentName = getStudentInfo(listState.studentsJson.data, listState.student).schale?.Name;
+
     return (
         <MainNode onBodyClick={() => setContentMenu({ display: false })} hideMTLeftBar={isChatViewActive && window.innerWidth <= 580}>
-            <NextSeo
-                title={getTitle(locale('title'))}
-            />
+            <NextSeo title={getTitle(locale('title'))} />
             <AllWindows zIndex={999} allWindow={allWindow} />
             <ContentMenu set={contentMenu} />
             {(!isChatViewActive || window.innerWidth > 580) && (
@@ -635,46 +737,7 @@ export default function Chat() {
                             });
                         }}>{v}</p>
                     ))}
-                    students={id => (
-                        <Student
-                            id={id}
-                            allInfo={listState.studentsJson.data}
-                            onClick={() => {
-                                setListState({ student: id });
-                                setIsChatViewActive(true);
-                            }}
-                            select={listState.student === id}
-                            onContentMenu={e => {
-                                const info = getStudentInfo(listState.studentsJson?.data as studentsJson, id);
-                                setContentMenu({
-                                    x: e.clientX,
-                                    y: e.clientY,
-                                    content: [
-                                        { type: 'title', text: `${info.schale?.Name || ''} id: ${id}` },
-                                        { type: 'separator', color: '#ccc', height: 1 },
-                                        {
-                                            type: 'text', text: locale('delete'), onClick() {
-                                                openWindow(allWindow.all, IdConfirm, {
-                                                    student: id,
-                                                    textInfo: info.schale?.Name as string,
-                                                    studentsList: listState.studentsList,
-                                                    studentsChat: chatState.studentsChat,
-                                                });
-                                            }
-                                        },
-                                    ],
-                                    display: true,
-                                });
-                            }}
-                            infoText={() => {
-                                const chat = chatState.studentsChat[String(id)];
-                                if (chat === undefined) return ' ';
-                                if (chat.length === 0) return ' ';
-                                return chat[chat.length - 1].msg || ' ';
-                            }}
-                            lo={lo}
-                        />
-                    )}
+                    students={getStudent}
                 />
             )}
             <div id={styles.contentBar} className={isChatViewActive && window.innerWidth <= 580 ? styles.showContentBar : ''}>
@@ -688,79 +751,15 @@ export default function Chat() {
                         </div>
                         {listState.student !== 0 && (
                             <ImgCol
-                                style={{
-                                    marginRight: 10,
-                                }}
+                                style={{ marginRight: 10, }}
                                 size={40}
                                 id={listState.student}
                             />
                         )}
-                        <p>{listState.student !== 0 ? getStudentInfo(listState.studentsJson.data, listState.student).schale?.Name : ''}</p>
+                        <p>{listState.student !== 0 ? studentName : ''}</p>
                     </div>
                 )}
-                <Providers
-                    providers={[
-                        <StatesContext.Provider key='states' value={{ allWindow, listState, setListState, chatState, setChatState }} />,
-                        <SendMessageFunContext.Provider key='sendMessageFun' value={(id, type = 'text') => {
-                            openWindow(allWindow.all, SendMessage, {
-                                studentsJson: listState.studentsJson,
-                                selId: listState.student,
-                                studentsChat: chatState.studentsChat,
-                                id, type
-                            });
-                        }} />,
-                        <localeContext.Provider key='locale' value={locale} />,
-                        <SetCMMessageFunContext.Provider key='setCMMessageFun' value={(e, i) => {
-                            const stu = listState.student || 10000;
-                            if (chatState.studentsChat === undefined) return;
-                            let msgDatas = chatState.studentsChat;
-                            const msgData = msgDatas[stu][i];
-                            setContentMenu({
-                                x: e.clientX,
-                                y: e.clientY,
-                                content: [
-                                    {
-                                        type: 'text', text: locale('copy'), onClick() {
-                                            if (msgData.type === 'text') window.navigator.clipboard.writeText(msgData.msg || '')
-                                            else if (msgData.type === 'img') {
-                                                (async () => {
-                                                    let img = await axios.get<Response>(msgData.msg);
-                                                    let blob = await img.data.blob();
-                                                    let data = new ClipboardItem({ [blob.type]: blob });
-                                                    await window.navigator.clipboard.write([data]);
-                                                })().catch(reason => {
-                                                    openWindow(allWindow.all, TextAlert, {
-                                                        title: 'Error',
-                                                        elem: String(reason),
-                                                    });
-                                                });
-                                            }
-                                        }
-                                    },
-                                    {
-                                        type: 'text', text: locale('delete'), onClick() {
-                                            msgDatas[stu].splice(i, 1);
-                                            setChatState({ studentsChat: msgDatas });
-                                        }
-                                    },
-                                    {
-                                        type: 'text', text: locale('edit'), onClick() {
-                                            const { id, type } = msgData;
-                                            openWindow(allWindow.all, SendMessage, {
-                                                studentsJson: listState.studentsJson,
-                                                selId: listState.student,
-                                                studentsChat: chatState.studentsChat,
-                                                id, type, i
-                                            });
-                                        }
-                                    },
-                                ],
-                                display: true,
-                            });
-                        }} />,
-                    ]}
-                    element={<Content />}
-                />
+                <Providers providers={providers} element={<Content />} />
             </div>
         </MainNode>
     );

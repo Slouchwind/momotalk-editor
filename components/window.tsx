@@ -5,7 +5,7 @@ import randomId from '@/lib/randomId';
 
 import type { RepeatProps } from './repeat';
 
-interface WindowProps<C> {
+export interface WindowProps<C> {
     /**标题 */
     title: string;
     /**关闭窗口时调用的函数 */
@@ -17,6 +17,8 @@ interface WindowProps<C> {
     /**窗口是否显示 */
     display: boolean;
 }
+
+export type WindowElement<A> = <C>(args: A) => WindowProps<C>['element'];
 
 interface WindowTypeAll {
     name: string,
