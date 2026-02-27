@@ -440,6 +440,7 @@ export default function Chat() {
     //Confirm
     const IdConfirm = new Window<IdConfirmArg>('IdConfirm');
 
+    // eslint-disable-next-line react/display-name
     let IdPromptElement: WindowElement<IdPromptArg> =
         ({ schaleJson, studentsList, type }) => (close => {
             let buttonOnClick = () => {
@@ -483,6 +484,7 @@ export default function Chat() {
             );
         });
 
+    // eslint-disable-next-line react/display-name
     let SendMessageElement: WindowElement<SendMessageArg> =
         ({ studentsJson, selId, studentsChat, id, type, i }) => (close => {
             sendMessageInputRef.current = '';
@@ -523,6 +525,7 @@ export default function Chat() {
             </>);
         });
 
+    // eslint-disable-next-line react/display-name    
     let IdConfirmElement: (all: AllWindow['all']) => WindowElement<IdConfirmArg> =
         (all) => ({ studentsList, studentsChat, student, textInfo }) => (close => {
             let buttonOnClick = () => {
