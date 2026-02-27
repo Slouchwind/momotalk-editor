@@ -18,7 +18,7 @@ export interface WindowProps<C> {
     display: boolean;
 }
 
-export type WindowElement<A> = <C>(args: A) => WindowProps<C>['element'];
+export type WindowElement<A> = <C>(args: A, close: () => C) => React.ReactNode;
 
 interface WindowTypeAll {
     name: string,

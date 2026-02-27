@@ -440,94 +440,89 @@ export default function Chat() {
     //Confirm
     const IdConfirm = new Window<IdConfirmArg>('IdConfirm');
 
-    // eslint-disable-next-line react/display-name
-    let IdPromptElement: WindowElement<IdPromptArg> =
-        ({ schaleJson, studentsList, type }) => (close => {
-            let buttonOnClick = () => {
-                let chooseStudentsList = Object.entries(idPromptInputRef.current).filter(v => v[1]).map(v => Number(v[0]));
-                if (type === '+') {
-                    studentsList.push(...chooseStudentsList);
-                    window.localStorage.studentsList = studentsList?.join();
-                    setListState({ studentsList });
-                    close();
-                }
-                else if (type === '-') {
-                    chooseStudentsList.forEach(id => {
-                        const i = studentsList.indexOf(id);
-                        studentsList.splice(i, 1);
-                    });
-                    window.localStorage.studentsList = studentsList.join();
-                    setListState({
-                        student: 0,
-                        studentsList,
-                    });
-                    close();
-                }
-                idPromptInputRef.current = {};
-            };
-            return (
-                <>
-                    <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
-                    <StudentsSelector
-                        schaleJson={schaleJson}
-                        studentsList={type === '+' ?
-                            getAllStudentsList({ schaleJson }).filter(v => !studentsList.includes(v)) :
-                            studentsList}
-                        onClick={(id) => {
-                            let selectStudent = idPromptInputRef.current[String(id)];
-                            idPromptInputRef.current[String(id)] = !selectStudent;
-                        }}
-                        selectStudents={idPromptInputRef.current}
-                    />
-                    <button onClick={buttonOnClick}>{locale(type || '+')}</button>
-                </>
-            );
-        });
-
-    // eslint-disable-next-line react/display-name
-    let SendMessageElement: WindowElement<SendMessageArg> =
-        ({ studentsJson, selId, studentsChat, id, type, i }) => (close => {
-            sendMessageInputRef.current = '';
-            const props: {
-                defaultValue?: string;
-                onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
-            } = {
-                defaultValue: i !== undefined ? studentsChat[String(selId)][i].msg : undefined,
-                onChange(e) { sendMessageInputRef.current = e.target.value },
-            };
-            let buttonOnClick = () => {
-                if (!studentsChat) return;
-                if (sendMessageInputRef.current.trim() === '') return;
-                let messageData = studentsChat[String(selId)];
-                let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
-                if (i === undefined)
-                    studentsChat[String(selId)] =
-                        messageData ? messageData.concat(newData) : [newData];
-                else
-                    studentsChat[String(selId)][i] = newData;
-                setChatState({ studentsChat });
+    let IdPromptElement: WindowElement<IdPromptArg> = ({ schaleJson, studentsList, type }, close) => {
+        let buttonOnClick = () => {
+            let chooseStudentsList = Object.entries(idPromptInputRef.current).filter(v => v[1]).map(v => Number(v[0]));
+            if (type === '+') {
+                studentsList.push(...chooseStudentsList);
+                window.localStorage.studentsList = studentsList?.join();
+                setListState({ studentsList });
                 close();
-            };
-            let studentName = getStudentInfo(studentsJson.data, selId).schale?.Name || String(selId);
-            return (<>
-                <p>
-                    {fillBlank(
-                        locale('sendMsgInfo'),
-                        type === 'time' ? '' : locale('sendMsgSenseiInfo'),
-                        type === 'time' ? '' : getStuSenText(id, locale('sensei'), studentName),
-                        locale(type)
-                    )}
-                </p>
-                {type === 'text' && <textarea {...props} />}
-                {type === 'img' && <input {...props} />}
-                {type === 'time' && <textarea {...props} />}
-                <button onClick={buttonOnClick}>{locale('sendMsg')}</button>
-            </>);
-        });
+            }
+            else if (type === '-') {
+                chooseStudentsList.forEach(id => {
+                    const i = studentsList.indexOf(id);
+                    studentsList.splice(i, 1);
+                });
+                window.localStorage.studentsList = studentsList.join();
+                setListState({
+                    student: 0,
+                    studentsList,
+                });
+                close();
+            }
+            idPromptInputRef.current = {};
+        };
+        return (
+            <>
+                <p>{fillBlank(locale('idPromptInfo'), locale(type || '+'))}</p>
+                <StudentsSelector
+                    schaleJson={schaleJson}
+                    studentsList={type === '+' ?
+                        getAllStudentsList({ schaleJson }).filter(v => !studentsList.includes(v)) :
+                        studentsList}
+                    onClick={(id) => {
+                        let selectStudent = idPromptInputRef.current[String(id)];
+                        idPromptInputRef.current[String(id)] = !selectStudent;
+                    }}
+                    selectStudents={idPromptInputRef.current}
+                />
+                <button onClick={buttonOnClick}>{locale(type || '+')}</button>
+            </>
+        );
+    };
 
-    // eslint-disable-next-line react/display-name    
-    let IdConfirmElement: (all: AllWindow['all']) => WindowElement<IdConfirmArg> =
-        (all) => ({ studentsList, studentsChat, student, textInfo }) => (close => {
+    let SendMessageElement: WindowElement<SendMessageArg> = ({ studentsJson, selId, studentsChat, id, type, i }, close) => {
+        sendMessageInputRef.current = '';
+        const props: {
+            defaultValue?: string;
+            onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+        } = {
+            defaultValue: i !== undefined ? studentsChat[String(selId)][i].msg : undefined,
+            onChange(e) { sendMessageInputRef.current = e.target.value },
+        };
+        let buttonOnClick = () => {
+            if (!studentsChat) return;
+            if (sendMessageInputRef.current.trim() === '') return;
+            let messageData = studentsChat[String(selId)];
+            let newData: MessageData = { type, id, msg: sendMessageInputRef.current };
+            if (i === undefined)
+                studentsChat[String(selId)] =
+                    messageData ? messageData.concat(newData) : [newData];
+            else
+                studentsChat[String(selId)][i] = newData;
+            setChatState({ studentsChat });
+            close();
+        };
+        let studentName = getStudentInfo(studentsJson.data, selId).schale?.Name || String(selId);
+        return (<>
+            <p>
+                {fillBlank(
+                    locale('sendMsgInfo'),
+                    type === 'time' ? '' : locale('sendMsgSenseiInfo'),
+                    type === 'time' ? '' : getStuSenText(id, locale('sensei'), studentName),
+                    locale(type)
+                )}
+            </p>
+            {type === 'text' && <textarea {...props} />}
+            {type === 'img' && <input {...props} />}
+            {type === 'time' && <textarea {...props} />}
+            <button onClick={buttonOnClick}>{locale('sendMsg')}</button>
+        </>);
+    };
+
+    let IdConfirmElement: <C>(all: AllWindow['all'], args: IdConfirmArg, close: () => C) => React.ReactNode
+        = (all, { studentsList, studentsChat, student, textInfo }, close) => {
             let buttonOnClick = () => {
                 if (!studentsList?.includes(student)) {
                     openWindow(all, TextAlert, { title: locale('error'), elem: locale('withoutStudent') });
@@ -553,14 +548,14 @@ export default function Chat() {
                     <button className='cancel' onClick={() => close()}>{locale('cancel')}</button>
                 </div>
             </>);
-        });
+        };
 
     useEffect(() => {
         addNewWindow(IdPrompt, (zIndex, id, display, args, all) => (
             <IdPrompt.Component
                 title={locale('idPromptTitle')}
                 closeWindow={() => closeWindow(all, id)}
-                element={IdPromptElement(args)}
+                element={close => IdPromptElement(args, close)}
                 zIndex={zIndex}
                 display={display}
             />
@@ -581,7 +576,7 @@ export default function Chat() {
             <SendMessage.Component
                 title={getStuSenText(args.id, locale('sendMsgStudent'), locale('sendMsgSensei'))}
                 closeWindow={() => closeWindow(all, winId)}
-                element={SendMessageElement(args)}
+                element={close => SendMessageElement(args, close)}
                 zIndex={zIndex}
                 display={display}
             />
@@ -590,7 +585,7 @@ export default function Chat() {
             <IdConfirm.Component
                 title={locale('idConfirmTitle')}
                 closeWindow={() => closeWindow(all, id)}
-                element={IdConfirmElement(all)(args)}
+                element={close => IdConfirmElement(all, args, close)}
                 zIndex={zIndex}
                 display={display}
             />
